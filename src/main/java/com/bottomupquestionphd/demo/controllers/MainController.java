@@ -13,7 +13,7 @@ public class MainController {
   @GetMapping("render-input")
   public String renderInput(Model model){
     model.addAttribute("inputTest", new InputTest());
-    return "index";
+    return "indextry";
   }
 
   @PostMapping("save-input")

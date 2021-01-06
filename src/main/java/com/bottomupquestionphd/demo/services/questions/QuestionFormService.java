@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services;
+package com.bottomupquestionphd.demo.services.questions;
 
 import org.springframework.stereotype.Service;
 

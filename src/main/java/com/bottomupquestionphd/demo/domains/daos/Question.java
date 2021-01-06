@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos.questions;
+package com.bottomupquestionphd.demo.domains.daos;
 
 import javax.persistence.*;
 
@@ -12,7 +12,7 @@ public class Question {
   private String hoverText;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  private Question question;
+  private QuestionForm questionForm;
 
   public Question(){}
 
@@ -45,11 +45,11 @@ public class Question {
     this.hoverText = hoverText;
   }
 
-  public Question getQuestion() {
-    return question;
+  public QuestionForm getQuestionForm() {
+    return questionForm;
   }
 
-  public void setQuestion(Question question) {
-    this.question = question;
+  public void setQuestionForm(QuestionForm questionForm) {
+    this.questionForm = questionForm;
   }
 }

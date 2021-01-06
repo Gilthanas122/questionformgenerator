@@ -1,6 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos;
-
-import com.bottomupquestionphd.demo.domains.dtos.questions.QuestionForm;
+package com.bottomupquestionphd.demo.domains.daos;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +10,7 @@ public class AppUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  private String userName;
+  private String username;
   private String password;
   private boolean active;
   private boolean disabled;
@@ -22,8 +20,8 @@ public class AppUser {
 
   public AppUser(){}
 
-  public AppUser(String userName, String password) {
-    this.userName = userName;
+  public AppUser(String username, String password) {
+    this.username = username;
     this.password = password;
   }
 
@@ -35,12 +33,12 @@ public class AppUser {
     this.id = id;
   }
 
-  public String getUserName() {
-    return userName;
+  public String getUsername() {
+    return username;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public String getPassword() {

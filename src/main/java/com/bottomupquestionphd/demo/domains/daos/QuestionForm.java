@@ -1,6 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos.questions;
-
-import com.bottomupquestionphd.demo.domains.dtos.AppUser;
+package com.bottomupquestionphd.demo.domains.daos;
 
 import javax.persistence.*;
 import java.util.ArrayList;

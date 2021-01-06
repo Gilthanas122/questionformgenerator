@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.controllers;
 
-import com.bottomupquestionphd.demo.services.QuestionFormService;
+import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Controller;
 
 @Controller

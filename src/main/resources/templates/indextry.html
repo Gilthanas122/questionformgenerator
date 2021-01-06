@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Input</title>
+</head>
+<body>
+
+<form id="questionform" th:action="@{/save-input}" method="post" th:object="${inputTest}">
+    <input th:field="*{id}" placeholder="enter id" autofocus>
+
+    <div id="questiondiv">
+        <input class="form-control" value=""  name="names[0]" type="text">
+        <button id="inputbutton" type="button">new input</button>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+<script type="text/javascript" src="js/input.js">
+</script>
+</body>
+</html>

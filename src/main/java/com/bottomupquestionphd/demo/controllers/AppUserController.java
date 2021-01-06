@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.controllers;
 
-import com.bottomupquestionphd.demo.domains.daos.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.dtos.AppUserTokenDTO;
 import com.bottomupquestionphd.demo.domains.dtos.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
@@ -8,8 +9,6 @@ import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.login.LoginException;
 
 @Controller
 public class AppUserController {
@@ -61,8 +60,9 @@ public class AppUserController {
   public String validateLogin(@ModelAttribute LoginDTO loginDTO, Model model){
     try {
       model.addAttribute("loginDTO", loginDTO);
-      long userId = appUserService.validateLogin(loginDTO);
-      return "redirect:/landing-page/" + userId;
+      AppUserTokenDTO appUserTokenDTO = appUserService.validateLogin(loginDTO);
+      model.addAttribute("appUserTokenDTO", appUserTokenDTO);
+      return "redirect:/landing-page";
     }catch (InvalidLoginException e){
       model.addAttribute("error", e.getMessage());
     } catch (NoSuchUserNameException e) {
@@ -75,9 +75,8 @@ public class AppUserController {
     return "login";
   }
   
-  @GetMapping("landing-page/{userId}")
-  public String renderLandingPage(@PathVariable long userId, Model model){
-    model.addAttribute("userId", userId);
+  @GetMapping("landing-page")
+  public String renderLandingPage( Model model){
     return "landing-page";
   }
 

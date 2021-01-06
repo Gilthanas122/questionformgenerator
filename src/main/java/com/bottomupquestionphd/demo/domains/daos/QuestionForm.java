@@ -1,5 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos;
 
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

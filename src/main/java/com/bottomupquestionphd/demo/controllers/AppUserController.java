@@ -6,9 +6,16 @@ import com.bottomupquestionphd.demo.domains.dtos.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Controller
 public class AppUserController {
@@ -72,6 +79,22 @@ public class AppUserController {
     } catch (Exception e){
       model.addAttribute("error", e.getMessage());
     }
+    return "login";
+  }
+
+  @GetMapping("/login-error")
+  public String login(HttpServletRequest request, Model model) throws IOException {
+    HttpSession session = request.getSession(false);
+    String body =  request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    String error = null;
+    if (session != null) {
+      AuthenticationException ex = (AuthenticationException) session
+        .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+      if (ex != null) {
+        error = "Bad username or password";
+      }
+    }
+    model.addAttribute("error", error);
     return "login";
   }
   

@@ -7,7 +7,6 @@ import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.errors.ErrorService;
-import com.bottomupquestionphd.demo.utilities.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -87,7 +86,6 @@ public class AppUserServiceImpl implements AppUserService {
     final UserDetails userDetails = new AppUserPrincipalDetailsService(appUserRepository).loadUserByUsername(playerLoginRequestDTO.getUsername());
     AppUserTokenDTO successUser = new AppUserTokenDTO();
     successUser.setStatus("ok");
-    successUser.setToken(new JwtUtil().generateToken(userDetails));
     return successUser;
   }
 

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Change User Roles</title>
+</head>
+<body>
+<div th:if="${allUsers} != null">
+    <table>
+        <tr th:each="user:${allUsers}" th:object="${user}">
+            <td th:text="*{username}"> </td>
+            <td th:text="*{roles}"> </td>
+            <td> <a type="button" th:href="@{|/admin/add-user-role/teacher/*{id}|}">TO TEACHER</a></td>
+            <td> <a type="button" th:href="@{|/admin/add-user-role/admin/*{id}|}">TO ADMIN</a></td>
+            <td> <a type="button" th:href="@{|/admin/remove-user-role/teacher/*{id}|}">REMOVE TEACHER</a></td>
+            <td> <a type="button" th:href="@{|/admin/remove-user-role/admin/*{id}|}">REMOVE ADMIN</a></td>
+        </tr>
+    </table>
+</div>
+<div th:if="${error} != null">
+    <h2 th:text="${error}"></h2>
+</div>
+
+
+</body>
+</html>

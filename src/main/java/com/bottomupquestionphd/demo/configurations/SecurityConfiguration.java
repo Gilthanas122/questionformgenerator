@@ -1,106 +1,60 @@
 package com.bottomupquestionphd.demo.configurations;
 
-import com.bottomupquestionphd.demo.repositories.AppUserRepository;
-import com.bottomupquestionphd.demo.services.appuser.AppUserPrincipalDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
-@Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-  private AppUserRepository appUserRepository;
-  private AppUserPrincipalDetailsService appUserprincipalDetailsService;
+  private UserDetailsService userDetailsService;
 
-  public SecurityConfiguration(AppUserRepository appUserRepository, AppUserPrincipalDetailsService appUserprincipalDetailsService) {
-    this.appUserRepository = appUserRepository;
-    this.appUserprincipalDetailsService = appUserprincipalDetailsService;
-  }
-
-  @Autowired
-  public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-    auth.jdbcAuthentication().passwordEncoder(new BCryptPasswordEncoder());
+  public SecurityConfiguration(@Qualifier("myUserDetailsService") UserDetailsService userDetailsService) {
+    this.userDetailsService = userDetailsService;
   }
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(authenticationProvider());
-  }
-
-  @Override
-  @Bean
-  public AuthenticationManager authenticationManagerBean() throws Exception {
-    return super.authenticationManagerBean();
-  }
-
-  @Bean
-  public HttpSessionEventPublisher httpSessionEventPublisher() {
-    return new HttpSessionEventPublisher();
-  }
-
-  @Bean
-  public PasswordEncoder getPasswordEncoder() {
-    return new BCryptPasswordEncoder();
+    auth.userDetailsService(userDetailsService);
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-
-    http
-      .authorizeRequests().antMatchers("/register").permitAll()
-      .and()
-      .authorizeRequests()
-      .anyRequest().authenticated()
+    http.authorizeRequests()
+      .antMatchers("/admin").hasRole("ADMIN")
+      .antMatchers("/landing-page").hasAnyRole("ADMIN", "USER")
+      .antMatchers("/", "/login", "/register").permitAll()
       .and()
       .formLogin()
-      .loginPage("/login").permitAll()
-      .loginProcessingUrl("/login").permitAll()
-      .failureUrl("/login-error")
+      .loginPage("/login").usernameParameter("username").passwordParameter("password").permitAll()
+      .loginProcessingUrl("/login")
       .defaultSuccessUrl("/landing-page")
+      .and().csrf()
       .and()
-      .exceptionHandling()
-      .authenticationEntryPoint(new EntryPoint())
+      .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
       .and()
-      .rememberMe()
-      .alwaysRemember(true)
-      .tokenValiditySeconds(30*5)
-      .rememberMeCookieName("mouni")
-      .key(System.getenv("SECRET_KEY"))
-      .and()
-      .csrf().disable();
+      .rememberMe().tokenValiditySeconds(2592000).key("mySecret!").rememberMeParameter("checkRememberMe");
   }
-
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return new AppUserPrincipalDetailsService(appUserRepository);
-  }
-
 
   @Bean
   DaoAuthenticationProvider authenticationProvider(){
-    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider() ;
-    daoAuthenticationProvider.setUserDetailsService(this.appUserprincipalDetailsService);
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
+    daoAuthenticationProvider.setUserDetailsService(userDetailsService);
 
     return daoAuthenticationProvider;
   }
-
   @Bean
-  PasswordEncoder passwordEncoder(){
+  public PasswordEncoder getPasswordEncoder() {
     return new BCryptPasswordEncoder();
   }
 }
-

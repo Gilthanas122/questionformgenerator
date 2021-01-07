@@ -16,19 +16,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AppUserServiceImpl implements AppUserService {
   private final AppUserRepository appUserRepository;
   private final ErrorService errorService;
   private PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
 
-
-  public AppUserServiceImpl(AppUserRepository appUserRepository, ErrorService errorService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+  public AppUserServiceImpl(AppUserRepository appUserRepository, ErrorService errorService, PasswordEncoder passwordEncoder) {
     this.appUserRepository = appUserRepository;
     this.errorService = errorService;
     this.passwordEncoder = passwordEncoder;
-    this.authenticationManager = authenticationManager;
   }
 
   @Override
@@ -43,7 +43,7 @@ public class AppUserServiceImpl implements AppUserService {
       throw new UsernameAlreadyTakenException("The username is already taken");
     }
     appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-    appUser.setActive(1);
+    appUser.setActive(true);
     this.appUserRepository.save(appUser);
   }
 
@@ -56,42 +56,21 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public AppUserTokenDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException {
+  public LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException {
     String errorMessage = errorService.buildMissingFieldErrorMessage(loginDTO);
     if (errorMessage != null){
       throw new InvalidLoginException(errorMessage);
     }
-    AppUser appUser = appUserRepository.findByUsername(loginDTO.getUsername());
-    if (appUser == null){
+    Optional <AppUser> appUser = appUserRepository.findByUsername(loginDTO.getUsername());
+    if (!appUser.isPresent()){
       throw new NoSuchUserNameException("No such username in the database");
     }
-    else if (!passwordEncoder.matches(loginDTO.getPassword(), appUser.getPassword())) {
+    else if (!passwordEncoder.matches(loginDTO.getPassword(), appUser.get().getPassword())) {
       throw new AppUserPasswordMissMatchException("Username didn't match the password");
     }
 
-    return  authentication(loginDTO);
+    return  loginDTO;
   }
 
-  @Override
-  public AppUserTokenDTO authentication(LoginDTO playerLoginRequestDTO)  {
-    AppUser appUser = new AppUser(playerLoginRequestDTO.getUsername(), playerLoginRequestDTO.getPassword());
-    AppUserPrincipal appUserPrincipal = new AppUserPrincipal(appUser);
-    try {
-      this.authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(appUserPrincipal, appUser.getPassword(), appUserPrincipal.getAuthorities()));
-    } catch (BadCredentialsException e) {
-      e.printStackTrace();
-      throw new UsernameNotFoundException("Username or password is incorrect.");
-    }
-    final UserDetails userDetails = new AppUserPrincipalDetailsService(appUserRepository).loadUserByUsername(playerLoginRequestDTO.getUsername());
-    AppUserTokenDTO successUser = new AppUserTokenDTO();
-    successUser.setStatus("ok");
-    return successUser;
-  }
-
-  @Override
-  public AppUser findPlayerByToken() {
-    return appUserRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-  }
 
 }

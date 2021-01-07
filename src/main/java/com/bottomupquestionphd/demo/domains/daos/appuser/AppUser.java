@@ -20,8 +20,8 @@ public class AppUser {
   @Column(nullable = false)
   private String password;
 
-  private int active = 1;
-  private String roles = "USER";
+  private boolean active = true;
+  private String roles = "ROLE_USER";
   private boolean disabled;
 
   @OneToMany(mappedBy = "appUser")
@@ -72,8 +72,12 @@ public class AppUser {
     return roles;
   }
 
-  public void setRoles(String newRole){
+  public void addNewRole(String newRole){
     this.roles += "," + newRole;
+  }
+
+  public void setRoles(String newRole){
+    this.roles = newRole;
   }
 
   public List<String> getRoleList(){
@@ -99,11 +103,11 @@ public class AppUser {
     this.questionForms = questionForms;
   }
 
-  public int getActive() {
+  public boolean isActive() {
     return active;
   }
 
-  public void setActive(int active) {
+  public void setActive(boolean active) {
     this.active = active;
   }
 }

@@ -67,7 +67,7 @@ public class AppUserController {
   public String validateLogin(@ModelAttribute LoginDTO loginDTO, Model model){
     try {
       model.addAttribute("loginDTO", loginDTO);
-      AppUserTokenDTO appUserTokenDTO = appUserService.validateLogin(loginDTO);
+      LoginDTO appUserTokenDTO = appUserService.validateLogin(loginDTO);
       model.addAttribute("appUserTokenDTO", appUserTokenDTO);
       return "redirect:/landing-page";
     }catch (InvalidLoginException e){
@@ -85,7 +85,6 @@ public class AppUserController {
   @GetMapping("/login-error")
   public String login(HttpServletRequest request, Model model) throws IOException {
     HttpSession session = request.getSession(false);
-    String body =  request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     String error = null;
     if (session != null) {
       AuthenticationException ex = (AuthenticationException) session
@@ -103,4 +102,9 @@ public class AppUserController {
     return "landing-page";
   }
 
+  @GetMapping("admin")
+  @ResponseBody
+  public String renderAdmin(){
+    return "hello to the admin page";
+  }
 }

@@ -1,42 +1,44 @@
-package com.bottomupquestionphd.demo.services.appuser;
+package com.bottomupquestionphd.demo.domains.daos.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class AppUserPrincipal implements UserDetails {
-  private AppUser user;
+public class MyUserDetails implements UserDetails {
 
-  public AppUserPrincipal(AppUser user) {
-    this.user = user;
+  private String userName;
+  private String password;
+  private boolean active;
+  private List<GrantedAuthority> authorities;
+
+  public MyUserDetails(AppUser user) {
+    this.userName = user.getUsername();
+    this.password = user.getPassword();
+    this.active = user.isActive();
+    this.authorities = Arrays.stream(user.getRoles().split(","))
+      .map(SimpleGrantedAuthority::new)
+      .collect(Collectors.toList());
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    List<GrantedAuthority> authorities = new ArrayList<>();
-    //EXTRACT PERMISSION
-    //EXTRACT ROLES
-    this.user.getRoleList().forEach(r -> {
-      GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_"+ r);
-      authorities.add(authority);
-    });
     return authorities;
   }
 
   @Override
   public String getPassword() {
-    return this.user.getPassword();
+    return password;
   }
 
   @Override
   public String getUsername() {
-    return this.user.getUsername();
+    return userName;
   }
 
   @Override
@@ -56,7 +58,6 @@ public class AppUserPrincipal implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return this.user.getActive() == 1;
+    return active;
   }
 }
-

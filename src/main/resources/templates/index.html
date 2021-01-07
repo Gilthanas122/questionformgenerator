@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Hello user</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
+
+<header th:insert="fragments/navbar.html :: navbar"> </header>
 <h1>Welcome</h1>
 <a th:href="@{/register}">Register</a>
 <a th:href="@{/login}">Login</a>

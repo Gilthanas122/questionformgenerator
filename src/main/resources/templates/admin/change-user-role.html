@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Change User Roles</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
+
+<header th:insert="fragments/navbar.html :: navbar"> </header>
 <div th:if="${allUsers} != null">
     <table class="table table-hover">
         <tr>
@@ -29,8 +31,8 @@
             <td> <a type="button" th:href="@{|/admin/add-user-role/admin/*{id}|}">TO ADMIN</a></td>
             <td> <a type="button" th:href="@{|/admin/remove-user-role/teacher/*{id}|}">REMOVE TEACHER</a></td>
             <td> <a type="button" th:href="@{|/admin/remove-user-role/admin/*{id}|}">REMOVE ADMIN</a></td>
-            <td> <a type="button" th:href="@{|/admin/remove-user-role/activate-user/*{id}|}">Activate User</a></td>
-            <td> <a type="button" th:href="@{|/admin/remove-user-role/deactivate-user/*{id}|}">Deactivate User</a></td>
+            <td> <a type="button" th:href="@{|/admin/activate-user/*{id}|}">Activate User</a></td>
+            <td> <a type="button" th:href="@{|/admin/deactivate-user/*{id}|}">Deactivate User</a></td>
             <td> <a type="button" th:href="@{|/admin/delete-user/*{id}|}">Delete User</a></td>
         </tr>
     </table>

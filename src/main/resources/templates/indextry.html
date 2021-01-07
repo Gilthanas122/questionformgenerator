@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Save Input</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
+
+<header th:insert="fragments/navbar.html :: navbar"> </header>
 
 <form id="questionform" th:action="@{/save-input}" method="post" th:object="${inputTest}">
     <input th:field="*{id}" placeholder="enter id" autofocus>

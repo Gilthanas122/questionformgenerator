@@ -71,15 +71,18 @@ public class AdminController {
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("deactivate-user/{id}")
-  public String deactivateUser(@PathVariable long id, Model model){
+  public String deactivateUser(@PathVariable long id, Model model) {
     try{
+      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.deactivateUser(id);
       return "redirect:/admin/change-user-role";
     }catch (UserDeactivateException e){
       model.addAttribute("error", e.getMessage());
     }catch (NoSuchUserByIdException e){
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    }catch (NoUsersInDatabaseException e){
+      model.addAttribute("error", e.getMessage());
+    } catch(Exception e){
       model.addAttribute("error", e.getMessage());
     }
     return "admin/change-user-role";
@@ -87,11 +90,14 @@ public class AdminController {
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("activate-user/{id}")
-  public String activateUser(@PathVariable long id, Model model){
+  public String activateUser(@PathVariable long id, Model model) {
     try{
+      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.activateUser(id);
       return "redirect:/admin/change-user-role";
     }catch (UserDeactivateException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (NoUsersInDatabaseException e){
       model.addAttribute("error", e.getMessage());
     } catch (NoSuchUserByIdException e){
       model.addAttribute("error", e.getMessage());
@@ -103,11 +109,14 @@ public class AdminController {
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("delete-user/{id}")
-  public String deleteUser(@PathVariable long id, Model model){
+  public String deleteUser(@PathVariable long id, Model model) throws NoUsersInDatabaseException {
     try{
+      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.deleteUser(id);
       return "redirect:/admin/change-user-role";
-    }catch (NoSuchUserByIdException e){
+    }catch (NoUsersInDatabaseException e){
+      model.addAttribute("error", e.getMessage());
+    } catch (NoSuchUserByIdException e){
       model.addAttribute("error", e.getMessage());
     } catch (Exception e){
       model.addAttribute("error", e.getMessage());

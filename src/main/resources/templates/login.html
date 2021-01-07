@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
+
+<header th:insert="fragments/navbar.html :: navbar"> </header>
 <h2>Login your user here!</h2>
 
 <div th:if="${error} != null">

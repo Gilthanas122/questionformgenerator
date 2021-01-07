@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.controllers;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
+import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +39,7 @@ public class AdminController {
     return "admin/change-user-role";
   }
 
+  @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping("/add-user-role/{role}/{id}")
   public String addUserRole(Model model, @PathVariable String role, @PathVariable long id){
       try{
@@ -52,6 +54,7 @@ public class AdminController {
       return "admin/change-user-role";
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/remove-user-role/{role}/{id}")
   public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id){
     try{
@@ -66,5 +69,50 @@ public class AdminController {
     return "admin/change-user-role";
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("deactivate-user/{id}")
+  public String deactivateUser(@PathVariable long id, Model model){
+    try{
+      adminAppUserService.deactivateUser(id);
+      return "redirect:/admin/change-user-role";
+    }catch (UserDeactivateException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (NoSuchUserByIdException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "admin/change-user-role";
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("activate-user/{id}")
+  public String activateUser(@PathVariable long id, Model model){
+    try{
+      adminAppUserService.activateUser(id);
+      return "redirect:/admin/change-user-role";
+    }catch (UserDeactivateException e){
+      model.addAttribute("error", e.getMessage());
+    } catch (NoSuchUserByIdException e){
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "admin/change-user-role";
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("delete-user/{id}")
+  public String deleteUser(@PathVariable long id, Model model){
+    try{
+      adminAppUserService.deleteUser(id);
+      return "redirect:/admin/change-user-role";
+    }catch (NoSuchUserByIdException e){
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "admin/change-user-role";
+  }
 
 }

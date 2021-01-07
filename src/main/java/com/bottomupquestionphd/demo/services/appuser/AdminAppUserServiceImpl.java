@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
 import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
+import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -67,5 +68,33 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
     else{
       throw new RoleMissMatchException("User doesn't have the given role");
     }
+  }
+
+  @Override
+  public void deactivateUser(long id) throws NoSuchUserByIdException, UserDeactivateException {
+    AppUser appUser = checkIfUserByIdExists(id);
+    if (appUser.isActive()){
+      appUser.setActive(false);
+      appUserRepository.save(appUser);
+    }else{
+      throw new UserDeactivateException("User is already inactive");
+    }
+  }
+
+  @Override
+  public void activateUser(long id) throws NoSuchUserByIdException, UserDeactivateException {
+    AppUser appUser = checkIfUserByIdExists(id);
+    if (!appUser.isActive()){
+      appUser.setActive(true);
+      appUserRepository.save(appUser);
+    }else{
+      throw new UserDeactivateException("User is already active");
+    }
+  }
+
+  @Override
+  public void deleteUser(long id) throws NoSuchUserByIdException {
+    AppUser appUser = checkIfUserByIdExists(id);
+    appUserRepository.delete(appUser);
   }
 }

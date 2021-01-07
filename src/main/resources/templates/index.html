@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <title>Hello user</title>
     <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 
-<header th:insert="fragments/navbar.html :: navbar"> </header>
+<header th:replace="fragments/navbar.html :: navbar"> </header>
 <h1>Welcome</h1>
 <a th:href="@{/register}">Register</a>
 <a th:href="@{/login}">Login</a>
+
+<script th:replace="fragments/navbar.html :: jquery"></script>
+<script th:replace="fragments/navbar.html :: cloudflare"></script>
+<script th:replace="fragments/navbar.html :: bootstrap"></script>
 </body>
 </html>

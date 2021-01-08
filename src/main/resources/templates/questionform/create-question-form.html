@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a new Question Form</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+
+<div th:replace="fragments/error.html :: error" >
+
+<h1>Start creating your own question form</h1>
+<form th:action="@{/create-question-form}" method="post" th:object="${questionFormDTO}">
+    <div>
+        <label for="name">Give a name for your question form</label>
+        <input th:field="name" id="name" autofocus placeholder="Enter your question forms name">
+    </div>
+
+    <div>
+        <label for="description">Give a description for your question form</label>
+        <input th:field="description" id="description" autofocus placeholder="Enter your question form's description">
+    </div>
+
+    <button type="reset"> Reset</button>
+    <button type="submit">SUBMIT</button>
+</form>
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+</body>
+</html>

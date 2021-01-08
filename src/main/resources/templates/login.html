@@ -10,8 +10,7 @@
 <header th:insert="fragments/navbar.html :: navbar"> </header>
 <h2>Login your user here!</h2>
 
-<div th:if="${error} != null">
-    <p th:text="${error}"></p>
+<div th:replace="fragments/error.html :: error" >
 </div>
 <form th:action="@{/login}" method="post">
     <div>
@@ -28,8 +27,8 @@
 </form>
 
 
-<script th:replace="fragments/navbar.html :: jquery"></script>
-<script th:replace="fragments/navbar.html :: cloudflare"></script>
-<script th:replace="fragments/navbar.html :: bootstrap"></script>
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
 </body>
 </html>

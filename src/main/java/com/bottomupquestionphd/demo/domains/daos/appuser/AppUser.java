@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.appuser;
 
-import com.bottomupquestionphd.demo.domains.daos.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionForm;
 
 import javax.persistence.*;
 import java.util.ArrayList;

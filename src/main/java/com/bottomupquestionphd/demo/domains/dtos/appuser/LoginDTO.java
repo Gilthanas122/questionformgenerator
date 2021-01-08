@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos;
+package com.bottomupquestionphd.demo.domains.dtos.appuser;
 
 public class LoginDTO {
   private String username;

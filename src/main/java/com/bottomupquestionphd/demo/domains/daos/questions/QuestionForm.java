@@ -1,17 +1,20 @@
-package com.bottomupquestionphd.demo.domains.daos;
+package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "questionforms")
 public class QuestionForm {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String name;
+  private String description;
   private boolean finished;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -22,8 +25,9 @@ public class QuestionForm {
 
   public QuestionForm(){}
 
-  public QuestionForm(String name) {
+  public QuestionForm(String name, String description) {
     this.name = name;
+    this.description = description;
   }
 
   public long getId() {
@@ -64,5 +68,13 @@ public class QuestionForm {
 
   public void setQuestions(List<Question> questions) {
     this.questions = questions;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }

@@ -1,8 +1,9 @@
-package com.bottomupquestionphd.demo.domains.daos;
+package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "questions")
 public class Question {
 
   @Id

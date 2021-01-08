@@ -7,19 +7,20 @@
     <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
+<header th:replace="fragments/navbar.html :: navbar"> </header>
 
-<div th:replace="fragments/error.html :: error" >
+<div th:replace="fragments/error.html :: error" ></div>
 
 <h1>Start creating your own question form</h1>
-<form th:action="@{/create-question-form}" method="post" th:object="${questionFormDTO}">
+<form th:action="@{/question-form/create-question-form}" method="post" th:object="${questionFormDTO}">
     <div>
         <label for="name">Give a name for your question form</label>
-        <input th:field="name" id="name" autofocus placeholder="Enter your question forms name">
+        <input th:field="*{name}" id="name" autofocus placeholder="Enter your question forms name">
     </div>
 
     <div>
         <label for="description">Give a description for your question form</label>
-        <input th:field="description" id="description" autofocus placeholder="Enter your question form's description">
+        <input th:field="*{description}" id="description" autofocus placeholder="Enter your question form's description">
     </div>
 
     <button type="reset"> Reset</button>

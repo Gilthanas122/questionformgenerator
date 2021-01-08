@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Question for Question Form</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+
+
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+<div th:replace="fragments/error.html :: error" ></div>
+
+    <form th:action="@{|/question/create-question/${questionFormId}|}" method="post" th:object="${questionCreateDTO}">
+        <div>
+            <label for="questionText">Question text:</label>
+            <input id="questionText" th:field="*{questionText}" autofocus placeholder="Enter your question text">
+        </div>
+
+        <div>
+            <label for="hoverText">Enter you explanation text for question</label>
+            <input id="hoverText" th:field="*{hoverText}" autofocus placeholder="Enter your explanatio text for the question (optional)">
+        </div>
+
+
+        <div id="typediv">
+            <p id="explanationtext"> Choose what type of question you wish to create</p>
+            <button  class="inputbuttons" id="true/false" type="button"> True or false</button>
+            <button  class="inputbuttons" id="scale" type="button"> Scale 1-10 </button>
+            <button  class="inputbuttons" id="text" type="button"> Text answer </button>
+        </div>
+        <button type="reset">Reset</button>
+        <button type="submit">SUBMIT</button>
+    </form>
+
+    <script th:replace="fragments/scripts.html :: jquery"></script>
+    <script th:replace="fragments/scripts.html :: cloudflare"></script>
+    <script th:replace="fragments/scripts.html :: bootstrap"></script>
+<script type="text/javascript" th:src="@{/js/questioninput.js}">
+</script>
+</body>
+</html>

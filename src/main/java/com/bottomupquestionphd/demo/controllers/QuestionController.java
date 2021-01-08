@@ -4,9 +4,7 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("question")
@@ -19,8 +17,14 @@ public class QuestionController {
 
   @GetMapping("/create-question/{questionFormId}")
   public String renderCreateQuestion(@PathVariable long questionFormId, Model model){
-    model.addAttribute("questionDTO", new QuestionCreateDTO());
+    model.addAttribute("questionCreateDTO", new QuestionCreateDTO());
     model.addAttribute("questionFormId", questionFormId);
+    return "question/create-question";
+  }
+
+  @PostMapping("/create-question")
+  public String saveQuestion(@PathVariable long questionFormId, @ModelAttribute QuestionCreateDTO questionCreateDTO, Model model){
+    model.addAttribute("questionCreateDTO", questionCreateDTO);
     return "question/create-question";
   }
 }

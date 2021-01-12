@@ -36,10 +36,12 @@ function renderElements(buttonId) {
     form.appendChild(createQuestionTextInputAndLabel());
     if (buttonId === "radio" || buttonId === "checkbox") {
         form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
-    } else if (buttonId === "scale") {
+    } else if ( buttonId === "text") {
+        form.appendChild(createInputTextNode(buttonId));
+    } else if (buttonId === "scale"){
         form.appendChild(createInputScaleTextNode(buttonId));
-    } else {
-        form.appendChild(createInputTextNode(buttonId))
+    } else{
+        alert("Invalid input")
     }
     form.appendChild(createFormResetAndSubmitButtons());
     container.appendChild(form);
@@ -117,33 +119,16 @@ function createAnotherInputField() {
 
 function createInputScaleTextNode(buttonId) {
     let container = document.createElement("DIV");
-    let explanationText = document.createElement("P");
     let resetbutton = createResetButton();
-    container.id = "subdivexample";
 
-    let textInput = document.createElement("INPUT");
-    textInput.value = buttonId;
-    textInput.name = "type";
-    textInput.type = "range";
-    textInput.max = 5;
-    textInput.className = "slider";
-    textInput.id = "scalerange";
+    let label = createTextNode("Provide a max value for the input", "LABEL");
+    let input = document.createElement("INPUT");
+    input.name = "answers[0]";
+    input.placeholder = "enter the max value of the scale";
+    container.appendChild(label);
+    container.appendChild(input);
+    container.appendChild(createSubDivExampleScale(buttonId));
 
-    let rangeOutput = document.createElement("p");
-    rangeOutput.id = "rangeoutput";
-
-    addEventListenerToScaleInput(textInput);
-
-
-
-    let exampleText = createTextNode("How much do you like the book Harry Potter?"
-        + "On a scale of 1 to " + textInput.max, "LABEL")
-
-
-
-    container.appendChild(exampleText);
-    container.appendChild(textInput);
-    container.appendChild(rangeOutput);
     container.appendChild(resetbutton);
 
     return container;
@@ -207,20 +192,34 @@ function createSubDivExampleText() {
     return container;
 }
 
-function createSubDivExampleScale() {
+function createSubDivExampleScale(buttonId) {
     let container = document.createElement("DIV");
+    container.id = "subdivexample";
     let textInput = document.createElement("INPUT");
-    textInput.placeholder = "Enter you answer here";
-    textInput.id = "subdivtextinput";
-    textInput.readonly=true;
-    textInput.disabled = true;
-    let labelSubDivInput = createTextNode("On a  scale from 1 to 10, how much do you like Harry Potter?", "LABEL");
-    labelSubDivInput.for = "subdivtextinput";
-    labelSubDivInput.id = "subdivexamplelabel";
-    container.appendChild(labelSubDivInput);
-    container.appendChild(textInput);
+    textInput.value = buttonId;
+    textInput.name = "type";
+    textInput.type = "range";
+    textInput.max = 5;
+    textInput.className = "slider";
+    textInput.id = "scalerange";
 
+    let rangeOutput = document.createElement("p");
+    rangeOutput.id = "rangeoutput";
+
+    addEventListenerToScaleInput(textInput);
+
+
+
+    let exampleText = createTextNode("How much do you like the book Harry Potter?"
+        + "On a scale of 1 to " + textInput.max, "LABEL")
+
+
+
+    container.appendChild(exampleText);
+    container.appendChild(textInput);
+    container.appendChild(rangeOutput);
     return container;
+
 }
 
 function createTextNode(questionText, tagType) {

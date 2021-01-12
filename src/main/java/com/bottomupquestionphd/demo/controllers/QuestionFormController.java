@@ -1,17 +1,18 @@
 package com.bottomupquestionphd.demo.controllers;
 
-import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
+import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.NoQuestionFormsInDatabaseException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -24,33 +25,70 @@ public class QuestionFormController {
   }
 
   @GetMapping("create")
-  public String renderCreateQuestionForm(Model model){
-    model.addAttribute("questionFormDTO", new QuestionFormCreateDTO());
-    return "questionform/create-question-form";
+  public String renderCreateQuestionForm(Model model) {
+    model.addAttribute("questionFormDTO", new QuestionForm());
+    return "questionform/create";
   }
 
   @PostMapping("create")
-  public String saveQuestionForm(@ModelAttribute QuestionFormCreateDTO questionFormCreateDTO, Model model){
-    model.addAttribute("questionFormDTO", questionFormCreateDTO);
+  public String saveQuestionForm(@ModelAttribute QuestionForm questionForm, Model model) {
+    model.addAttribute("questionFormDTO", questionForm);
     try {
-      long questionFormId = questionFormService.save(questionFormCreateDTO);
+      long questionFormId = questionFormService.save(questionForm);
       return "redirect:/question/create/" + questionFormId;
-    }catch (MissingParamsException e){
+    } catch (MissingParamsException e) {
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormNameAlreadyExistsException e){
+    } catch (QuestionFormNameAlreadyExistsException e) {
       model.addAttribute("error", e.getMessage());
     } catch (NoSuchUserNameException e) {
       model.addAttribute("error", e.getMessage());
-    } catch (Exception e){
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "questionform/create";
   }
 
   @GetMapping("list")
-  public String listTeachersQuestionForms(Model model){
-    try{
-      model.addAttribute(questionFormService.findAll());
+  public String listTeachersQuestionForms(Model model) {
+    try {
+      model.addAttribute("questionForms", questionFormService.findAll());
+    } catch (NoQuestionFormsInDatabaseException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
     }
+    return "questionform/list";
+  }
+
+  @GetMapping("update/{id}")
+  public String modifyQuestionForm(@PathVariable long id, Model model) {
+    try {
+      model.addAttribute("questionForm", questionFormService.findById(id));
+      return "questionform/create";
+    } catch (BelongToAnotherUserException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      model.addAttribute("error", e.getMessage());
+    }catch (MissingUserException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "questionform/list";
+  }
+
+  @PostMapping("/update")
+  public String updateQuestion(@ModelAttribute  QuestionForm questionForm, Model model){
+    System.out.println();
+    try{
+      questionFormService.updateQuestionForm(questionForm);
+    }catch(QuestionFormNotFoundException e){
+    model.addAttribute("error", e.getMessage());
+    }catch (BelongToAnotherUserException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "questionform/list";
   }
 }

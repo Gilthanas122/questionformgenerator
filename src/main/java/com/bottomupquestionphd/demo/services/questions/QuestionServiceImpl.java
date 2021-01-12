@@ -9,6 +9,8 @@ import com.bottomupquestionphd.demo.domains.dtos.question.CheckBoxQuestionDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.answerpossibilities.AnswerPossibilityService;
@@ -28,7 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
+  public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (type.equals("text")){
       saveTextQuestion( questionDTO, questionFormId);
     }else if (type.equals("checkbox")){
@@ -40,7 +42,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
   }
 
-  private void saveScaleQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException {
+  private void saveScaleQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){
       throw new MissingParamsException("Following input field(s) is missing: question text and/or scale");
     }
@@ -51,7 +53,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   }
 
-  private void saveRadioQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
+  private void saveRadioQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
@@ -61,7 +63,7 @@ public class QuestionServiceImpl implements QuestionService {
     questionRepository.save(radioButtonQuestion);
   }
 
-  private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
+  private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
@@ -72,7 +74,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   }
 
-  private void saveTextQuestion(QuestionCreateDTO textQuestionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException {
+  private void saveTextQuestion(QuestionCreateDTO textQuestionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()){
       throw new MissingParamsException("Following input field is missing: question text");
     }

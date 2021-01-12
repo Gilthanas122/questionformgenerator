@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Create a new Question Form</title>
@@ -12,7 +12,10 @@
 <div th:replace="fragments/error.html :: error" ></div>
 
 <h1>Start creating your own question form</h1>
-<form th:action="@{/question-form/create-question-form}" method="post" th:object="${questionFormDTO}">
+<form th:action="@{/question-form/create}" method="post" th:object="${questionForm}">
+    <div>
+        <input hidden name="id" th:field="*{id}">
+    </div>
     <div>
         <label for="name">Give a name for your question form</label>
         <input th:field="*{name}" id="name" autofocus placeholder="Enter your question forms name">

@@ -3,6 +3,8 @@ package com.bottomupquestionphd.demo.controllers;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,20 +23,26 @@ public class QuestionController {
   }
 
   @GetMapping("/create/{questionFormId}")
-  public String renderCreateQuestion(@PathVariable long questionFormId, Model model){
+  public String renderCreateQuestion(@PathVariable long questionFormId, Model model) {
     model.addAttribute("questionFormId", questionFormId);
     return "question/create-question";
   }
 
   @PostMapping("/create/{type}/{questionFormId}")
-  public String saveQuestion(Model model, @ModelAttribute QuestionCreateDTO questionDTO, @PathVariable String type, @PathVariable long questionFormId){
-   model.addAttribute("questionDTO", questionDTO);
-    try{
-      questionService.saveQuestion(type, questionDTO,questionFormId);
+  public String saveQuestion(Model model, @ModelAttribute QuestionCreateDTO questionDTO, @PathVariable String type, @PathVariable long questionFormId) {
+    model.addAttribute("questionDTO", questionDTO);
+    try {
+      questionService.saveQuestion(type, questionDTO, questionFormId);
       return "redirect:/";
-    }catch (MissingParamsException e){
+    } catch (MissingParamsException e) {
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormNotFoundException e){
+    } catch (QuestionFormNotFoundException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (MissingUserException e){
+      model.addAttribute("error", e.getMessage());
+    } catch(Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "question/create-question";

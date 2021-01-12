@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>My Question Forms</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+<div th:replace="fragments/error.html :: error" ></div>
+
+<h1>Question forms created by you</h1>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <td>Name</td>
+        <td>Description</td>
+        <td>Finished</td>
+        <td>Number of questions</td>
+        <td>Edit Question form</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="questionForm:${questionForms}" th:object="${questionForm}">
+        <td th:text="*{name}"></td>
+        <td th:text="*{description}"></td>
+        <td th:text="*{finished}"></td>
+        <td th:text="${#lists.size(questionForm.questions)}"></td>
+        <td><a type="button" th:href="@{|/question-form/update/*{id}|}">EDIT</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+</body>
+</html>

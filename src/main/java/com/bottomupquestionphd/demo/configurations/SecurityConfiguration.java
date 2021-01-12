@@ -31,18 +31,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
       .antMatchers("/admin").hasRole("ADMIN")
-      .antMatchers("/landing-page").hasAnyRole("ADMIN", "USER")
+      .antMatchers("/landing-page").hasAnyRole("ADMIN", "USER", "TEACHER")
       .antMatchers("/", "/login", "/register").permitAll()
+      .anyRequest().authenticated()
       .and()
       .formLogin()
       .loginPage("/login").usernameParameter("username").passwordParameter("password").permitAll()
       .loginProcessingUrl("/login")
       .defaultSuccessUrl("/landing-page")
-      .and().csrf()
       .and()
       .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
       .and()
-      .rememberMe().tokenValiditySeconds(2592000).key(System.getenv("SECRET_KEY")).rememberMeParameter("checkRememberMe");
+      .rememberMe().tokenValiditySeconds(2592000).key(System.getenv("SECRET_KEY")).rememberMeParameter("checkRememberMe")
+      .and().csrf().disable();
   }
 
   @Bean

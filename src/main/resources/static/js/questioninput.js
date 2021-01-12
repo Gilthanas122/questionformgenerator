@@ -16,24 +16,30 @@ function addEventListeners() {
 
 
 function renderElements(buttonId) {
-    let subdivAlreadyRendered = document.getElementById("subdivexample");
+    let inputQuestionFormAlreadyRendered = document.getElementById("inputquestionform");
 
-    disableSubmitButton(false);
-    if (subdivAlreadyRendered != null){
+    /*disableSubmitButton(false);*/
+    if (inputQuestionFormAlreadyRendered != null){
         alert("you already rendered an example, press Reset to choose again");
         return;
     }
     let container = document.getElementById("typediv");
-    let subdiv = document.createElement("DIV");
-    subdiv.id = "subdiv";
+    let form = document.createElement("FORM");
+
+    form.id = "inputquestionform";
+    form.method="POST";
     if (buttonId === "true/false" || buttonId === "checkbox") {
-        subdiv.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
+        form.action="/question/create-multiple/" + buttonId;
+        form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
     } else if ("scale")  {
-        subdiv.appendChild(createInputScaleTextNode(buttonId));
+        form.action="/question/scale";
+        form.appendChild(createInputScaleTextNode(buttonId));
     }else{
-        subdiv.appendChild(createInputTextNode(buttonId))
+        form.action="/question/text";
+        form.appendChild(createInputTextNode(buttonId))
     }
-    container.appendChild(subdiv);
+    form.appendChild(createFormResetAndSubmitButtons());
+    container.appendChild(form);
     }
 
 
@@ -213,16 +219,32 @@ function createResetButton(){
 
 function resetGeneratedSubDiv(){
     let container = document.getElementById("typediv");
-    let subdiv = document.getElementById("subdiv");
-    container.removeChild(subdiv);
-    disableSubmitButton(true);
+    let form = document.getElementById("inputquestionform");
+    container.removeChild(form);
 }
 
 function disableSubmitButton(enable){
-    if (enable){
+    let form = document.getElementById("inputquestionform");
+    if (form != null && enable){
         document.getElementById("questionsubmit").disabled = true;
-    } else{
+    } else if (form != null){
         document.getElementById("questionsubmit").disabled = false;
     }
     }
+
+function createFormResetAndSubmitButtons(){
+    let container = document.createElement("DIV");
+    let submitButton = document.createElement("BUTTON");
+    submitButton.type = "submit";
+    submitButton.textContent = "Submit";
+    submitButton.class ="btn"+ " btn-primary";
+
+    let resetButton = document.createElement("BUTTON");
+    resetButton.type = "reset";
+    resetButton.textContent = "Reset inputs";
+    resetButton.class ="btn"+ " btn-primary";
+    container.appendChild(submitButton);
+    container.appendChild(resetButton);
+    return container;
+}
 

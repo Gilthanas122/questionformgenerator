@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.services.questions;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
 import com.bottomupquestionphd.demo.domains.dtos.question.CheckBoxQuestionDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -34,7 +35,20 @@ public class QuestionServiceImpl implements QuestionService {
       saveCheckBoxQuestion(questionDTO, questionFormId);
     }else if (type.equals("radio")){
       saveRadioQuestion(questionDTO, questionFormId);
+    }else if (type.equals("scale")){
+      saveScaleQuestion(questionDTO, questionFormId);
     }
+  }
+
+  private void saveScaleQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException {
+    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){
+      throw new MissingParamsException("Following input field(s) is missing: question text and/or scale");
+    }
+    QuestionForm questionForm = questionFormService.findById(questionFormId);
+    ScaleQuestion radioButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
+    radioButtonQuestion.setQuestionForm(questionForm);
+    questionRepository.save(radioButtonQuestion);
+
   }
 
   private void saveRadioQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {

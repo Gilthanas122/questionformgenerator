@@ -41,8 +41,6 @@ function createInputTextNode(){
     let container = document.createElement("DIV");
     let explanationText = createTextNode("You have choosen text answer possibility", "P");
     let resetbutton = createResetButton();
-
-    let linebreak = document.createElement("BR");
     let textInput = document.createElement("INPUT");
 
     textInput.value = buttonId;
@@ -51,9 +49,7 @@ function createInputTextNode(){
     textInput.name = "type";
 
     container.appendChild(explanationText);
-    container.appendChild(linebreak);
     container.appendChild(textInput);
-    container.appendChild(linebreak);
     let subdivExample = createSubDivExample(buttonId);
     subdivExample.style.border = "thick solid #0000FF";
 
@@ -67,7 +63,6 @@ function createInputTrueFalseOrCheckboxNode(buttonId) {
     let explanationText = createTextNode("You have choosen" + buttonId +  " answer possibility", "P");
     let resetbutton = createResetButton();
 
-    let linebreak = document.createElement("BR");
     let textInput = document.createElement("INPUT");
 
     textInput.value = buttonId;
@@ -76,9 +71,7 @@ function createInputTrueFalseOrCheckboxNode(buttonId) {
     textInput.name = "type";
 
     container.appendChild(explanationText);
-    container.appendChild(linebreak);
     container.appendChild(textInput);
-    container.appendChild(linebreak);
     let subdivExample = createSubDivExample(buttonId);
     subdivExample.style.border = "thick solid #0000FF";
 
@@ -96,8 +89,6 @@ function createInputScaleTextNode(buttonId){
     container.id = "subdivexample";
 
     container.style.border = "thick solid #0000FF";
-
-    let linebreak = document.createElement("BR");
     let textInput = document.createElement("INPUT");
     textInput.value = buttonId;
     textInput.name = "type";
@@ -119,11 +110,8 @@ function createInputScaleTextNode(buttonId){
     let exampleText = createTextNode("Minimum number textInput is " + textInput.min
         +  '/n' + " Set the maximum textInput in the field below", "P")
 
-    container.appendChild(linebreak);
     container.appendChild(explanationText);
-    container.appendChild(linebreak);
     container.appendChild(exampleText);
-    container.appendChild(linebreak);
     container.appendChild(textInput);
     container.appendChild(output);
     container.appendChild(resetbutton);

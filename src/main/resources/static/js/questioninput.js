@@ -16,7 +16,6 @@ function addEventListeners() {
     checkBoxButton.addEventListener("click", () => renderElements('checkbox'), false);
 }
 
-
 function renderElements(buttonId) {
     let inputQuestionFormAlreadyRendered = document.getElementById("inputquestionform");
 
@@ -45,7 +44,6 @@ function renderElements(buttonId) {
     form.appendChild(createFormResetAndSubmitButtons());
     container.appendChild(form);
 }
-
 
 function createInputTextNode(buttonId) {
     let container = document.createElement("DIV");
@@ -199,28 +197,6 @@ function createInputs(inputType, questionTextInput, input1, input2){
     return container;
 }
 
-/*function createCheckboxes(){
-    let container = document.createElement("DIV");
-    let questionText = createTextNode("Who is your favourite character?", "P");
-    container.appendChild(questionText);
-    for (i = 0; i < 2; i++) {
-        let checkbox = document.createElement("INPUT");
-        checkbox.type = "checkbox";
-        checkbox.id = "checkbox" + i;
-        checkbox.disabled = true;
-        let checkboxLabel = document.createElement("LABEL");
-        checkboxLabel.for = "checkbox" + i;
-        if (i === 0) {
-            checkboxLabel.textContent = "Harry Potter"
-        } else {
-            checkboxLabel.textContent = "Ron Weasley"
-        }
-        container.appendChild(checkboxLabel);
-        container.appendChild(checkbox);
-    }
-    return container;
-}*/
-
 function createSubDivExampleText() {
     let container = document.createElement("DIV");
     container.appendChild(createTextNode("Why do you like Harry Potter?", "LABEL"));
@@ -309,10 +285,9 @@ function enableFinishButton(value){
     finishButton.hidden = value;
 }
 
-function getQuestionFormId(){
+function getQuestionFormId() {
     let questionFormId = document.getElementById("questionFormId");
-    let tagId = questionFormId.textContent;
-    return tagId;
+    return questionFormId.textContent;
 }
 
 

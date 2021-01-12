@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface QuestionService {
-  void saveQuestion(String type, TextQuestionDTO textQuestionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException;
+  void saveQuestion(String type, Object textQuestionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException;
 }

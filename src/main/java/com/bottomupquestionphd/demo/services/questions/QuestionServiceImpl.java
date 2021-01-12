@@ -21,16 +21,19 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void saveQuestion(String type, TextQuestionDTO textQuestionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
-    if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()) {
-      throw new MissingParamsException("Missing field: question text");
+  public void saveQuestion(String type, Object textQuestionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
+    if (type.equals("text")){
+      saveTextQuestion((TextQuestionDTO) textQuestionDTO, questionFormId);
+    }
+  }
+
+  private void saveTextQuestion(TextQuestionDTO textQuestionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException {
+    if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()){
+      throw new MissingParamsException("Following input field is missing: question text");
     }
     QuestionForm questionForm = questionFormService.findById(questionFormId);
-
-    if (type.equals("text")){
-      TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
-      textQuestion.setQuestionForm(questionForm);
-      questionRepository.save(textQuestion);
-    }
+    TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
+    textQuestion.setQuestionForm(questionForm);
+    questionRepository.save(textQuestion);
   }
 }

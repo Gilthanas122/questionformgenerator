@@ -6,10 +6,12 @@ function addEventListeners() {
     let trueFalseButton = document.getElementById("true/false");
     let scaleButton = document.getElementById("scale");
     let textButton = document.getElementById("text");
+    let checkBoxButton = document.getElementById("checkbox");
 
     trueFalseButton.addEventListener("click", () => renderElements('true/false'), false);
     scaleButton.addEventListener("click",() => renderElements('scale'), false);
     textButton.addEventListener("click", () => renderElements('text'), false);
+    checkBoxButton.addEventListener("click", () => renderElements('checkbox'), false);
 }
 
 
@@ -24,15 +26,43 @@ function renderElements(buttonId) {
     let container = document.getElementById("typediv");
     let subdiv = document.createElement("DIV");
     subdiv.id = "subdiv";
-    if (buttonId === "true/false" || buttonId === "text") {
-        subdiv.appendChild(createTrueFalseOrTextNode(buttonId));
-    } else  {
-        subdiv.appendChild(createScaleTextNode(buttonId));
+    if (buttonId === "true/false" || buttonId === "checkbox") {
+        subdiv.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
+    } else if ("scale")  {
+        subdiv.appendChild(createInputScaleTextNode(buttonId));
+    }else{
+        subdiv.appendChild(createInputTextNode(buttonId))
     }
     container.appendChild(subdiv);
     }
 
-function createTrueFalseOrTextNode(buttonId) {
+
+function createInputTextNode(){
+    let container = document.createElement("DIV");
+    let explanationText = createTextNode("You have choosen text answer possibility", "P");
+    let resetbutton = createResetButton();
+
+    let linebreak = document.createElement("BR");
+    let textInput = document.createElement("INPUT");
+
+    textInput.value = buttonId;
+    textInput.type = "hidden"
+    textInput.readonly = "readonly"
+    textInput.name = "type";
+
+    container.appendChild(explanationText);
+    container.appendChild(linebreak);
+    container.appendChild(textInput);
+    container.appendChild(linebreak);
+    let subdivExample = createSubDivExample(buttonId);
+    subdivExample.style.border = "thick solid #0000FF";
+
+    container.appendChild(subdivExample);
+    container.appendChild(resetbutton);
+
+    return container;
+}
+function createInputTrueFalseOrCheckboxNode(buttonId) {
     let container = document.createElement("DIV");
     let explanationText = createTextNode("You have choosen" + buttonId +  " answer possibility", "P");
     let resetbutton = createResetButton();
@@ -58,7 +88,7 @@ function createTrueFalseOrTextNode(buttonId) {
     return container;
 }
 
-function createScaleTextNode(buttonId){
+function createInputScaleTextNode(buttonId){
     let container = document.createElement("DIV");
     let explanationText = document.createElement("P");
     explanationText.textContent = "You have choosen" + buttonId +  " answer possibility";

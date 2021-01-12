@@ -1,3 +1,11 @@
 mydropdown{
     display: inline-block;
 }
+
+form{
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    width:100%;
+}

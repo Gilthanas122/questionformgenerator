@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("admin")
 public class AdminController {
   private AdminAppUserService adminAppUserService;
@@ -25,7 +26,7 @@ public class AdminController {
     this.adminAppUserService = adminAppUserService;
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+
   @GetMapping("change-user-role")
   public String renderChangeUserRoleHTML(Model model) {
     try {
@@ -39,7 +40,7 @@ public class AdminController {
     return "admin/change-user-role";
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+
   @GetMapping("/add-user-role/{role}/{id}")
   public String addUserRole(Model model, @PathVariable String role, @PathVariable long id){
       try{
@@ -54,7 +55,7 @@ public class AdminController {
       return "admin/change-user-role";
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+
   @GetMapping("/remove-user-role/{role}/{id}")
   public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id){
     try{

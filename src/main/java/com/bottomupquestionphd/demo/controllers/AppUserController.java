@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
@@ -94,15 +95,12 @@ public class AppUserController {
     model.addAttribute("error", error);
     return "login";
   }
-  
+
+
+  @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping("landing-page")
   public String renderLandingPage( Model model){
     return "landing-page";
   }
 
-  @GetMapping("admin")
-  @ResponseBody
-  public String renderAdmin(){
-    return "hello to the admin page";
-  }
 }

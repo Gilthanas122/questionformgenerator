@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@PreAuthorize("hasRole('ROLE_TEACHER')")
 @RequestMapping("question-form")
 public class QuestionFormController {
   private final QuestionFormService questionFormService;
@@ -43,5 +45,12 @@ public class QuestionFormController {
       model.addAttribute("error", e.getMessage());
     }
     return "questionform/create";
+  }
+
+  @GetMapping("list")
+  public String listTeachersQuestionForms(Model model){
+    try{
+      model.addAttribute(questionFormService.findAll());
+    }
   }
 }

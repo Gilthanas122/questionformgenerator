@@ -5,11 +5,13 @@ import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@PreAuthorize("hasRole('ROLE_TEACHER')")
 @RequestMapping("question")
 public class QuestionController {
   private final QuestionService questionService;

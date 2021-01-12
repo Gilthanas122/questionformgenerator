@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
 import com.bottomupquestionphd.demo.domains.dtos.question.CheckBoxQuestionDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -29,9 +30,21 @@ public class QuestionServiceImpl implements QuestionService {
   public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
     if (type.equals("text")){
       saveTextQuestion( questionDTO, questionFormId);
-    }if (type.equals("checkbox")){
+    }else if (type.equals("checkbox")){
       saveCheckBoxQuestion(questionDTO, questionFormId);
+    }else if (type.equals("radio")){
+      saveRadioQuestion(questionDTO, questionFormId);
     }
+  }
+
+  private void saveRadioQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {
+    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
+      throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
+    }
+    QuestionForm questionForm = questionFormService.findById(questionFormId);
+    RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
+    radioButtonQuestion.setQuestionForm(questionForm);
+    questionRepository.save(radioButtonQuestion);
   }
 
   private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException {

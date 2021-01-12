@@ -12,25 +12,16 @@
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/error.html :: error" ></div>
 
-    <!--<form th:action="@{|/question/create-question/${questionFormId}|}" method="post" th:object="${questionCreateDTO}">
-        <div>
-            <label for="questionText">Question text:</label>
-            <input id="questionText" th:field="*{questionText}" autofocus placeholder="Enter your question text">
-        </div>
-
-        <div>
-            <label for="hoverText">Enter you explanation text for question</label>
-            <input id="hoverText" th:field="*{hoverText}" autofocus placeholder="Enter your explanatio text for the question (optional)">
-        </div>
-</form>
--->
         <div id="typediv">
+            <p hidden id="questionFormId" th:text="${questionFormId}"></p>
             <p id="explanationtext"> Choose what type of question you wish to create</p>
-            <button  class="inputbuttons" id="true/false" type="button"> True or false</button>
+            <button  class="inputbuttons" id="radio" type="button"> Radio button</button>
             <button  class="inputbuttons" id="checkbox" type="button"> Check box </button>
             <button  class="inputbuttons" id="scale" type="button"> Scale 1-10 </button>
             <button  class="inputbuttons" id="text" type="button"> Text answer </button>
+            <a  class="btn btn-warning" href="/question-form/finish" id="finish" type="button">Submit Form </a>
         </div>
+
 
 
 

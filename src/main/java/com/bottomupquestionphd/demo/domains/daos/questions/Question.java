@@ -1,5 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,16 +12,14 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String questionText;
-  private String hoverText;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private QuestionForm questionForm;
 
   public Question(){}
 
-  public Question(String questionText, String hoverText) {
+  public Question(String questionText) {
     this.questionText = questionText;
-    this.hoverText = hoverText;
   }
 
   public long getId() {
@@ -36,14 +36,6 @@ public class Question {
 
   public void setQuestionText(String questionText) {
     this.questionText = questionText;
-  }
-
-  public String getHoverText() {
-    return hoverText;
-  }
-
-  public void setHoverText(String hoverText) {
-    this.hoverText = hoverText;
   }
 
   public QuestionForm getQuestionForm() {

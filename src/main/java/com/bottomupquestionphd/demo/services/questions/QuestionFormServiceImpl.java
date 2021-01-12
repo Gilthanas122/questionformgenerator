@@ -1,9 +1,10 @@
 package com.bottomupquestionphd.demo.services.questions;
 
-import com.bottomupquestionphd.demo.domains.daos.questions.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,11 @@ public class QuestionFormServiceImpl implements QuestionFormService{
     QuestionForm questionForm = validateQuestionCreateDTO(questionFormCreateDTO);
     questionFormRepository.save(questionForm);
     return questionForm.getId();
+  }
+
+  @Override
+  public QuestionForm findById(long id) throws QuestionFormNotFoundException {
+    return questionFormRepository.findById(id).orElseThrow(() ->new QuestionFormNotFoundException("Question form doesn't exist with the provided id"));
   }
 
   private QuestionForm validateQuestionCreateDTO(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException {

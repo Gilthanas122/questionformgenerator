@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.repositories;
 
-import com.bottomupquestionphd.demo.domains.daos.questions.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

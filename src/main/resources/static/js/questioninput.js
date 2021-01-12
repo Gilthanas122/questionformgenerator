@@ -1,15 +1,17 @@
+let inputIndex = 0;
+
 window.onload = function WindowLoad(event) {
     addEventListeners();
 }
 
 function addEventListeners() {
-    let trueFalseButton = document.getElementById("true/false");
+    let trueFalseButton = document.getElementById("radio");
     let scaleButton = document.getElementById("scale");
     let textButton = document.getElementById("text");
     let checkBoxButton = document.getElementById("checkbox");
 
-    trueFalseButton.addEventListener("click", () => renderElements('true/false'), false);
-    scaleButton.addEventListener("click",() => renderElements('scale'), false);
+    trueFalseButton.addEventListener("click", () => renderElements('radio'), false);
+    scaleButton.addEventListener("click", () => renderElements('scale'), false);
     textButton.addEventListener("click", () => renderElements('text'), false);
     checkBoxButton.addEventListener("click", () => renderElements('checkbox'), false);
 }
@@ -18,44 +20,39 @@ function addEventListeners() {
 function renderElements(buttonId) {
     let inputQuestionFormAlreadyRendered = document.getElementById("inputquestionform");
 
-    /*disableSubmitButton(false);*/
-    if (inputQuestionFormAlreadyRendered != null){
+    if (inputQuestionFormAlreadyRendered != null) {
         alert("you already rendered an example, press Reset to choose again");
         return;
     }
+    enableFinishButton(true);
     let container = document.getElementById("typediv");
     let form = document.createElement("FORM");
+    let explanationText = createTextNode("You have choosen " + buttonId + "  answer possibility", "P");
+
+    form.appendChild(explanationText);
 
     form.id = "inputquestionform";
-    form.method="POST";
-    if (buttonId === "true/false" || buttonId === "checkbox") {
-        form.action="/question/create-multiple/" + buttonId;
+    form.method = "POST";
+   form.appendChild(createQuestionTextInputAndLabel());
+    if (buttonId === "radio" || buttonId === "checkbox") {
+        form.action = "/question/create-multiple/"  + buttonId + "/" +getQuestionFormId();
         form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
-    } else if ("scale")  {
-        form.action="/question/scale";
+    } else if (buttonId === "scale") {
+        form.action = "/question/scale" + "/" +getQuestionFormId();
         form.appendChild(createInputScaleTextNode(buttonId));
-    }else{
-        form.action="/question/text";
+    } else {
+        form.action = "/question/text" + "/" +getQuestionFormId();
         form.appendChild(createInputTextNode(buttonId))
     }
     form.appendChild(createFormResetAndSubmitButtons());
     container.appendChild(form);
-    }
+}
 
 
-function createInputTextNode(){
+function createInputTextNode(buttonId) {
     let container = document.createElement("DIV");
-    let explanationText = createTextNode("You have choosen text answer possibility", "P");
     let resetbutton = createResetButton();
-    let textInput = document.createElement("INPUT");
 
-    textInput.value = buttonId;
-    textInput.type = "hidden"
-    textInput.readonly = "readonly"
-    textInput.name = "type";
-
-    container.appendChild(explanationText);
-    container.appendChild(textInput);
     let subdivExample = createSubDivExample(buttonId);
     subdivExample.style.border = "thick solid #0000FF";
 
@@ -64,96 +61,135 @@ function createInputTextNode(){
 
     return container;
 }
+
 function createInputTrueFalseOrCheckboxNode(buttonId) {
     let container = document.createElement("DIV");
-    let explanationText = createTextNode("You have choosen" + buttonId +  " answer possibility", "P");
     let resetbutton = createResetButton();
 
-    let textInput = document.createElement("INPUT");
+    let innerInputContainer = document.createElement("DIV");
+    innerInputContainer.id = "innerinputcontainer";
+    let textInput = createAnotherInputField();
 
-    textInput.value = buttonId;
-    textInput.type = "hidden"
-    textInput.readonly = "readonly"
-    textInput.name = "type";
+    let anotherInputButton = document.createElement("BUTTON");
+    anotherInputButton.textContent = "Create another input field";
+    anotherInputButton.type = "button";
+    anotherInputButton.addEventListener("click",() => createAnotherInputField());
 
-    container.appendChild(explanationText);
-    container.appendChild(textInput);
+
+    innerInputContainer.appendChild(textInput);
+    innerInputContainer.appendChild(anotherInputButton);
     let subdivExample = createSubDivExample(buttonId);
-    subdivExample.style.border = "thick solid #0000FF";
-
+    container.appendChild(innerInputContainer);
     container.appendChild(subdivExample);
     container.appendChild(resetbutton);
 
     return container;
 }
 
-function createInputScaleTextNode(buttonId){
+function createQuestionTextInputAndLabel(){
+    let container = document.createElement("DIV");
+    let label = document.createElement("LABEL");
+    label.textContent = "Enter your question text";
+    label.for="questiontext";
+    let input = document.createElement("INPUT");
+    input.id = "questiontext";
+    input.name = "questionText";
+    input.placeholder="Enter you questiontext";
+    container.appendChild(label);
+    container.appendChild(input);
+    return container;
+}
+
+function createAnotherInputField() {
+    let form = document.getElementById("innerinputcontainer");
+    let input = document.createElement("input");
+    input.placeholder = "Enter your answer here";
+    let label = createTextNode("Enter answer possibility  " + (inputIndex+1) + " : ", "LABEL");
+    input.type = "text";
+    input.id = "input" + inputIndex;
+    input.name = "answers[" + inputIndex + "]";
+    label.for = "input" + inputIndex;
+    if (form != null){
+        form.insertBefore(input, document.getElementById("input" + (inputIndex -1)).nextSibling);
+        form.insertBefore(label, input);
+        inputIndex++;
+    }else{
+        inputIndex++;
+        return input;
+    }
+}
+
+function createInputScaleTextNode(buttonId) {
     let container = document.createElement("DIV");
     let explanationText = document.createElement("P");
-    explanationText.textContent = "You have choosen" + buttonId +  " answer possibility";
     let resetbutton = createResetButton();
     container.id = "subdivexample";
 
-    container.style.border = "thick solid #0000FF";
     let textInput = document.createElement("INPUT");
     textInput.value = buttonId;
     textInput.name = "type";
-    textInput.type="range";
-    textInput.min=3;
-    textInput.max = 100;
-    textInput.className="slider";
-    textInput.id = "scaleRange";
+    textInput.type = "range";
+    textInput.max = 5;
+    textInput.className = "slider";
+    textInput.id = "scalerange";
+
+    let rangeOutput = document.createElement("p");
+    rangeOutput.id = "rangeoutput";
+
+    addEventListenerToScaleInput(textInput);
 
 
-    let output = document.createElement("INPUT");
-    output.id = "rangeoutput";
-    output.value="";
+
+    let exampleText = createTextNode("How much do you like the book Harry Potter?"
+        + "On a scale of 1 to " + textInput.max, "LABEL")
 
 
 
-    explanationText.textContent = "You have choosen" + buttonId +  " answer possibility. ";
-
-    let exampleText = createTextNode("Minimum number textInput is " + textInput.min
-        +  '/n' + " Set the maximum textInput in the field below", "P")
-
-    container.appendChild(explanationText);
     container.appendChild(exampleText);
     container.appendChild(textInput);
-    container.appendChild(output);
+    container.appendChild(rangeOutput);
     container.appendChild(resetbutton);
 
     return container;
-
-
 }
 
-function createSubDivExample(buttonId){
+function createSubDivExample(buttonId) {
     let container = document.createElement("DIV");
     container.id = "subdivexample";
     let exampleText = createTextNode("An example for the choose question type", "P");
 
     container.appendChild(exampleText);
-    if (buttonId === "true/false"){
-        container.appendChild(createSubDivExampleTrueFalse());
-    }else if (buttonId === "text"){
+    if (buttonId === "radio" || buttonId === "checkbox") {
+        container.appendChild(createSubDivExampleRadioOrCheckbox(buttonId));
+    } else if (buttonId === "text") {
         container.appendChild(createSubDivExampleText())
-    }else{
+    } else {
         container.appendChild(createSubDivExampleScale());
     }
-
     return container;
 }
 
-function createSubDivExampleTrueFalse() {
+function createSubDivExampleRadioOrCheckbox(buttonId) {
+    let container = document.createElement("DIV");
+    if (buttonId == "checkbox"){
+        container.appendChild(createCheckboxes());
+    }else{
+        container.appendChild(createRadioButtons());
+    }
+    return container;
+}
+
+function createRadioButtons(){
     let container = document.createElement("DIV");
     let questionText = createTextNode("Do you like Harry Potter?", "P");
     container.appendChild(questionText);
     for (i = 0; i < 2; i++) {
         let radioButton = document.createElement("INPUT");
         radioButton.type = "radio";
-        radioButton.id = "radionbutton" + i;
+        radioButton.id = "radiobutton" + i;
         let radioButtonLabel = document.createElement("LABEL");
         radioButtonLabel.for = "radiobutton" + i;
+        radioButton.disabled=true;
         if (i === 0) {
             radioButtonLabel.textContent = "yes"
         } else {
@@ -162,50 +198,65 @@ function createSubDivExampleTrueFalse() {
         container.appendChild(radioButtonLabel);
         container.appendChild(radioButton);
     }
-
     return container;
 }
 
-function createSubDivExampleText(){
-    let container = createContainerSubDivExampleScaleAndText("Why do you like Harry Potter?");
+function createCheckboxes(){
+    let container = document.createElement("DIV");
+    let questionText = createTextNode("Who is your favourite character?", "P");
+    container.appendChild(questionText);
+    for (i = 0; i < 2; i++) {
+        let checkbox = document.createElement("INPUT");
+        checkbox.type = "checkbox";
+        checkbox.id = "checkbox" + i;
+        checkbox.disabled = true;
+        let checkboxLabel = document.createElement("LABEL");
+        checkboxLabel.for = "checkbox" + i;
+        if (i === 0) {
+            checkboxLabel.textContent = "Harry Potter"
+        } else {
+            checkboxLabel.textContent = "Ron Weasley"
+        }
+        container.appendChild(checkboxLabel);
+        container.appendChild(checkbox);
+    }
     return container;
-
 }
 
-function createSubDivExampleScale(){
-    let container = createContainerSubDivExampleScaleAndText("On a  scale from 1 to 10, how much do you like Harry Potter?");
-    container.appendChild(document.createElement("BR"));
-    let subDivExampleScaleOutput = document.createElement("OUTPUT");
-    container.appendChild(subDivExampleScaleOutput);
-
+function createSubDivExampleText() {
+    let container = document.createElement("DIV");
+    container.appendChild(createTextNode("Why do you like Harry Potter?", "LABEL"));
+    let exampleInput = document.createElement("INPUT");
+    exampleInput.readonly = true;
+    exampleInput.disabled = true;
+    container.appendChild(exampleInput);
     return container;
-
 }
 
-function createContainerSubDivExampleScaleAndText(labelText){
+function createSubDivExampleScale() {
     let container = document.createElement("DIV");
     let textInput = document.createElement("INPUT");
-    container.appendChild(document.createElement("BR"));
     textInput.placeholder = "Enter you answer here";
     textInput.id = "subdivtextinput";
-    let labelSubDivInput = document.createElement("LABEL");
+    textInput.readonly=true;
+    textInput.disabled = true;
+    let labelSubDivInput = createTextNode("On a  scale from 1 to 10, how much do you like Harry Potter?", "LABEL");
     labelSubDivInput.for = "subdivtextinput";
     labelSubDivInput.id = "subdivexamplelabel";
-    labelSubDivInput.textContent = labelText;
     container.appendChild(labelSubDivInput);
     container.appendChild(textInput);
-    container.appendChild(document.createElement("BR"));
 
     return container;
 }
 
 
-function createTextNode(questionText, tagType){
+function createTextNode(questionText, tagType) {
     let text = document.createElement(tagType);
     text.textContent = questionText;
     return text;
 }
-function createResetButton(){
+
+function createResetButton() {
     let resetbutton = document.createElement("button");
 
     resetbutton.id = "resetbutton";
@@ -217,34 +268,54 @@ function createResetButton(){
 
 }
 
-function resetGeneratedSubDiv(){
+function resetGeneratedSubDiv() {
     let container = document.getElementById("typediv");
     let form = document.getElementById("inputquestionform");
     container.removeChild(form);
+    inputIndex = 0;
+    enableFinishButton(false);
 }
 
-function disableSubmitButton(enable){
+function disableSubmitButton(enable) {
     let form = document.getElementById("inputquestionform");
-    if (form != null && enable){
+    if (form != null && enable) {
         document.getElementById("questionsubmit").disabled = true;
-    } else if (form != null){
+    } else if (form != null) {
         document.getElementById("questionsubmit").disabled = false;
     }
-    }
+}
 
-function createFormResetAndSubmitButtons(){
+function createFormResetAndSubmitButtons() {
     let container = document.createElement("DIV");
     let submitButton = document.createElement("BUTTON");
     submitButton.type = "submit";
-    submitButton.textContent = "Submit";
-    submitButton.class ="btn"+ " btn-primary";
+    submitButton.textContent = "Submit Question";
+    submitButton.class = "btn" + " btn-primary";
 
     let resetButton = document.createElement("BUTTON");
     resetButton.type = "reset";
     resetButton.textContent = "Reset inputs";
-    resetButton.class ="btn"+ " btn-primary";
+    resetButton.class = "btn" + " btn-primary";
     container.appendChild(submitButton);
     container.appendChild(resetButton);
     return container;
 }
+
+function addEventListenerToScaleInput(input){
+    input.onchange = function(){
+        document.getElementById("rangeoutput").textContent=input.value;
+    }
+}
+
+function enableFinishButton(value){
+    let finishButton = document.getElementById("finish");
+    finishButton.hidden = value;
+}
+
+function getQuestionFormId(){
+    let questionFormId = document.getElementById("questionFormId");
+    return questionFormId.id;
+}
+
+
 

@@ -9,3 +9,7 @@ form, #subdivexample{
     align-items:center;
     width:100%;
 }
+
+#subdivexample{
+    border : thick solid #0000FF;
+}

@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.domains.daos.questions;
+package com.bottomupquestionphd.demo.domains.daos.questionform;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;

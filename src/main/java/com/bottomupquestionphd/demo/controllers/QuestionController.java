@@ -22,7 +22,7 @@ public class QuestionController {
     return "question/create-question";
   }
 
-  @PostMapping("/create-question")
+  @PostMapping("/create-question/{questionFormId}")
   public String saveQuestion(@PathVariable long questionFormId, @ModelAttribute QuestionCreateDTO questionCreateDTO, Model model){
     model.addAttribute("questionCreateDTO", questionCreateDTO);
     return "question/create-question";

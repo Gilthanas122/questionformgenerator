@@ -15,6 +15,8 @@ function addEventListeners() {
 
 function renderElements(buttonId) {
     let subdivAlreadyRendered = document.getElementById("subdivexample");
+
+    disableSubmitButton(false);
     if (subdivAlreadyRendered != null){
         alert("you already rendered an example, press Reset to choose again");
         return;
@@ -61,6 +63,7 @@ function createScaleTextNode(buttonId){
     let explanationText = document.createElement("P");
     explanationText.textContent = "You have choosen" + buttonId +  " answer possibility";
     let resetbutton = createResetButton();
+    container.id = "subdivexample";
 
     container.style.border = "thick solid #0000FF";
 
@@ -194,4 +197,14 @@ function resetGeneratedSubDiv(){
     let container = document.getElementById("typediv");
     let subdiv = document.getElementById("subdiv");
     container.removeChild(subdiv);
+    disableSubmitButton(true);
 }
+
+function disableSubmitButton(enable){
+    if (enable){
+        document.getElementById("questionsubmit").disabled = true;
+    } else{
+        document.getElementById("questionsubmit").disabled = false;
+    }
+    }
+

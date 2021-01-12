@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "questions")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "Question_Type")
 public class Question {
 
   @Id

@@ -30,6 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
     if (type.equals("text")){
       TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
       textQuestion.setQuestionForm(questionForm);
+      questionRepository.save(textQuestion);
     }
   }
 }

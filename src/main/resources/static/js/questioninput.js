@@ -33,15 +33,13 @@ function renderElements(buttonId) {
 
     form.id = "inputquestionform";
     form.method = "POST";
-   form.appendChild(createQuestionTextInputAndLabel());
+    form.action = "/question/create" +"/"+ buttonId + "/" +getQuestionFormId();
+    form.appendChild(createQuestionTextInputAndLabel());
     if (buttonId === "radio" || buttonId === "checkbox") {
-        form.action = "/question/create-multiple/"  + buttonId + "/" +getQuestionFormId();
         form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
     } else if (buttonId === "scale") {
-        form.action = "/question/scale" + "/" +getQuestionFormId();
         form.appendChild(createInputScaleTextNode(buttonId));
     } else {
-        form.action = "/question/text" + "/" +getQuestionFormId();
         form.appendChild(createInputTextNode(buttonId))
     }
     form.appendChild(createFormResetAndSubmitButtons());
@@ -172,28 +170,28 @@ function createSubDivExample(buttonId) {
 function createSubDivExampleRadioOrCheckbox(buttonId) {
     let container = document.createElement("DIV");
     if (buttonId == "checkbox"){
-        container.appendChild(createCheckboxes());
+        container.appendChild(createInputs("checkbox", "Which character(s) do you like from the following?", "Ron", "Harry"));
     }else{
-        container.appendChild(createRadioButtons());
+        container.appendChild(createInputs("radio", "Which one is your favourite character?", "Hermione", "Dumbledore"));
     }
     return container;
 }
 
-function createRadioButtons(){
+function createInputs(inputType, questionTextInput, input1, input2){
     let container = document.createElement("DIV");
-    let questionText = createTextNode("Do you like Harry Potter?", "P");
+    let questionText = createTextNode(questionTextInput, "P");
     container.appendChild(questionText);
     for (i = 0; i < 2; i++) {
         let radioButton = document.createElement("INPUT");
-        radioButton.type = "radio";
-        radioButton.id = "radiobutton" + i;
+        radioButton.type = inputType;
+        radioButton.id = inputType + i;
         let radioButtonLabel = document.createElement("LABEL");
-        radioButtonLabel.for = "radiobutton" + i;
+        radioButtonLabel.for = inputType + i;
         radioButton.disabled=true;
         if (i === 0) {
-            radioButtonLabel.textContent = "yes"
+            radioButtonLabel.textContent = input1
         } else {
-            radioButtonLabel.textContent = "no"
+            radioButtonLabel.textContent = input2
         }
         container.appendChild(radioButtonLabel);
         container.appendChild(radioButton);
@@ -201,7 +199,7 @@ function createRadioButtons(){
     return container;
 }
 
-function createCheckboxes(){
+/*function createCheckboxes(){
     let container = document.createElement("DIV");
     let questionText = createTextNode("Who is your favourite character?", "P");
     container.appendChild(questionText);
@@ -221,7 +219,7 @@ function createCheckboxes(){
         container.appendChild(checkbox);
     }
     return container;
-}
+}*/
 
 function createSubDivExampleText() {
     let container = document.createElement("DIV");
@@ -248,7 +246,6 @@ function createSubDivExampleScale() {
 
     return container;
 }
-
 
 function createTextNode(questionText, tagType) {
     let text = document.createElement(tagType);
@@ -314,7 +311,8 @@ function enableFinishButton(value){
 
 function getQuestionFormId(){
     let questionFormId = document.getElementById("questionFormId");
-    return questionFormId.id;
+    let tagId = questionFormId.textContent;
+    return tagId;
 }
 
 

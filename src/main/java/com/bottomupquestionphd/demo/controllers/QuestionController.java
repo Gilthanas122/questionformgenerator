@@ -20,16 +20,15 @@ public class QuestionController {
 
   @GetMapping("/create/{questionFormId}")
   public String renderCreateQuestion(@PathVariable long questionFormId, Model model){
-    model.addAttribute("questionCreateDTO", new QuestionCreateDTO());
     model.addAttribute("questionFormId", questionFormId);
     return "question/create-question";
   }
 
   @PostMapping("/create/{type}/{questionFormId}")
-  public String saveQuestion(Model model, @ModelAttribute TextQuestionDTO textQuestionDTO, @PathVariable String type, @PathVariable long questionFormId){
-   model.addAttribute("textQuestionDTO", textQuestionDTO);
+  public String saveQuestion(Model model, @ModelAttribute QuestionCreateDTO questionDTO, @PathVariable String type, @PathVariable long questionFormId){
+   model.addAttribute("questionDTO", questionDTO);
     try{
-      questionService.saveQuestion(type, textQuestionDTO,questionFormId);
+      questionService.saveQuestion(type, questionDTO,questionFormId);
       return "redirect:/";
     }catch (MissingParamsException e){
       model.addAttribute("error", e.getMessage());

@@ -3,14 +3,15 @@ package com.bottomupquestionphd.demo.domains.dtos.question;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestionCreateDTO {
+public class CheckBoxQuestionDTO {
   private String questionText;
   private List<String> answers = new ArrayList<>();
 
-  public QuestionCreateDTO(){}
+  public  CheckBoxQuestionDTO(){}
 
-  public QuestionCreateDTO(String questionText) {
+  public CheckBoxQuestionDTO(String questionText, List<String> answers) {
     this.questionText = questionText;
+    this.answers = answers;
   }
 
   public String getQuestionText() {

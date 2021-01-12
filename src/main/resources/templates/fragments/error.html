@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div th:fragment="error" th:if="${error} != null">
+<div id="usererror" th:fragment="error" th:if="${error} != null">
     <p th:text="${error}"></p>
 </div>
 

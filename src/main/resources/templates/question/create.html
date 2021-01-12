@@ -19,7 +19,7 @@
             <button  class="inputbuttons" id="checkbox" type="button"> Check box </button>
             <button  class="inputbuttons" id="scale" type="button"> Scale 1-10 </button>
             <button  class="inputbuttons" id="text" type="button"> Text answer </button>
-            <a  class="btn btn-warning" href="/question-form/finish" id="finish" type="button">Submit Form </a>
+            <a  class="btn btn-warning" th:href="@{|/question-form/finish/${questionFormId}|}" id="finish" type="button">Submit Form </a>
         </div>
 
 

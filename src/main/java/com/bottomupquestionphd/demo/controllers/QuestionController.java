@@ -1,7 +1,6 @@
 package com.bottomupquestionphd.demo.controllers;
 
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
-import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -25,7 +24,7 @@ public class QuestionController {
   @GetMapping("/create/{questionFormId}")
   public String renderCreateQuestion(@PathVariable long questionFormId, Model model) {
     model.addAttribute("questionFormId", questionFormId);
-    return "question/create-question";
+    return "question/create";
   }
 
   @PostMapping("/create/{type}/{questionFormId}")
@@ -33,7 +32,7 @@ public class QuestionController {
     model.addAttribute("questionDTO", questionDTO);
     try {
       questionService.saveQuestion(type, questionDTO, questionFormId);
-      return "redirect:/";
+      return "redirect:/question/create/" + questionFormId;
     } catch (MissingParamsException e) {
       model.addAttribute("error", e.getMessage());
     } catch (QuestionFormNotFoundException e) {
@@ -45,6 +44,6 @@ public class QuestionController {
     } catch(Exception e) {
       model.addAttribute("error", e.getMessage());
     }
-    return "question/create-question";
+    return "question/create";
   }
 }

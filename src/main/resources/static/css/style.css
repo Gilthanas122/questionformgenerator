@@ -2,6 +2,11 @@ mydropdown{
     display: inline-block;
 }
 
+#usererror{
+    background-color: grey;
+    color: red;
+}
+
 form, #subdivexample{
     flex-grow: 1;
     display: flex;

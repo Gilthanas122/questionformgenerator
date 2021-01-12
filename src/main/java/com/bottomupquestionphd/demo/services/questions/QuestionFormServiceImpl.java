@@ -2,17 +2,12 @@ package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
-import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.NoQuestionFormsInDatabaseException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,5 +63,15 @@ public class QuestionFormServiceImpl implements QuestionFormService{
   @Override
   public void updateQuestionForm(QuestionForm questionForm) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     questionFormRepository.save(questionForm);
+  }
+
+  @Override
+  public void finishQuestionForm(long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NotEnoughQuestionsToCreateFormException {
+      QuestionForm questionForm = findById(id);
+      if (questionForm.getQuestions().size() < 1){
+        throw new NotEnoughQuestionsToCreateFormException("There should be at least one question to submit a form");
+      }
+      questionForm.setFinished(true);
+      questionFormRepository.save(questionForm);
   }
 }

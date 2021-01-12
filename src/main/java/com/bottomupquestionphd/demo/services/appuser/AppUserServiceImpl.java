@@ -64,5 +64,10 @@ public class AppUserServiceImpl implements AppUserService {
     return  loginDTO;
   }
 
+  @Override
+  public AppUser findByUsername(String username) throws NoSuchUserNameException {
+    return appUserRepository.findByUsername(username).orElseThrow(() -> new NoSuchUserNameException("Could find user with the given username"));
+  }
+
 
 }

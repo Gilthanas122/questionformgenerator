@@ -1,25 +1,38 @@
 package com.bottomupquestionphd.demo.services.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
+import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class QuestionFormServiceImpl implements QuestionFormService{
 
   private final QuestionFormRepository questionFormRepository;
+  private final AppUserService appUserService;
 
-  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository) {
+  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService) {
     this.questionFormRepository = questionFormRepository;
+    this.appUserService = appUserService;
   }
 
   @Override
-  public long save(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException {
+  public long save(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException, NoSuchUserNameException {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
+    AppUser appUser = appUserService.findByUsername(myUserDetails.getUsername());
+
     QuestionForm questionForm = validateQuestionCreateDTO(questionFormCreateDTO);
+    questionForm.setAppUser(appUser);
     questionFormRepository.save(questionForm);
     return questionForm.getId();
   }

@@ -18,16 +18,10 @@ public class QuestionController {
     this.questionService = questionService;
   }
 
-  @GetMapping("/create-question/{questionFormId}")
+  @GetMapping("/create/{questionFormId}")
   public String renderCreateQuestion(@PathVariable long questionFormId, Model model){
     model.addAttribute("questionCreateDTO", new QuestionCreateDTO());
     model.addAttribute("questionFormId", questionFormId);
-    return "question/create-question";
-  }
-
-  @PostMapping("/create-question/{questionFormId}")
-  public String saveQuestion(@PathVariable long questionFormId, @ModelAttribute QuestionCreateDTO questionCreateDTO, Model model){
-    model.addAttribute("questionCreateDTO", questionCreateDTO);
     return "question/create-question";
   }
 

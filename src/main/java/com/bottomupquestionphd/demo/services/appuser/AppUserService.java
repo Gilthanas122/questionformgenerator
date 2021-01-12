@@ -13,4 +13,5 @@ public interface AppUserService {
 
   LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException;
 
+  AppUser findByUsername(String username) throws NoSuchUserNameException;
 }

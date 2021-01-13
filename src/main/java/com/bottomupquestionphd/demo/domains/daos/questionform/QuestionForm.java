@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -63,6 +64,7 @@ public class QuestionForm {
   }
 
   public List<Question> getQuestions() {
+    Collections.sort(questions);
     return questions;
   }
 

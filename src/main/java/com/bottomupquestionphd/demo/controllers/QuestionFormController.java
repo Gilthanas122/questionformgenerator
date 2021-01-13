@@ -94,9 +94,10 @@ public class QuestionFormController {
   }
 
   @GetMapping("/list-questions/{questionFormId}")
-  public String listAllQuestionsBelongingToQuestionFormById(@PathVariable long questionFormId, Model model) {
+  public String listAllQuestionsBelongingToQuestionFormById(@RequestParam(required = false) String error, @PathVariable long questionFormId, Model model) {
     try {
       model.addAttribute("questions", questionFormService.findByIdAndAddQuestionType(questionFormId) );
+      model.addAttribute("error", error);
       return "questionform/list-questions";
     } catch (MissingUserException e) {
       model.addAttribute("error", e.getMessage());

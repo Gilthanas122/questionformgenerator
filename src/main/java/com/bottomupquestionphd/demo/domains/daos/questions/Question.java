@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "questions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "Question_Type")
-public class Question {
+public class Question implements Comparable<Question> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,5 +60,10 @@ public class Question {
 
   public void setListPosition(Integer listPosition) {
     this.listPosition = listPosition;
+  }
+
+  @Override
+  public int compareTo(Question o) {
+    return this.getListPosition().compareTo(o.getListPosition());
   }
 }

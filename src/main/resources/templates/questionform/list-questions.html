@@ -42,8 +42,8 @@
         </td>
         <td th:unless="*{scale} != null">None</td>
         <td> <a type="button" class="btn btn-warning" th:href="@{|/question/update/${question.id}|}">EDIT QUESTION</a></td>
-        <td><a th:href="@{/question/update-position/up}"><i class="icon ion-md-arrow-up"></i></a></td>
-        <td><a th:href="@{/question/update-position/down}"><i class="icon ion-md-arrow-down"></i></a></td>
+        <td><a th:href="@{|/question/update-position/up/*{id}|}"><i class="icon ion-md-arrow-up"></i></a></td>
+        <td><a th:href="@{|/question/update-position/down/*{id}|}"><i class="icon ion-md-arrow-down"></i></a></td>
     </tr>
     </tbody>
 </table>

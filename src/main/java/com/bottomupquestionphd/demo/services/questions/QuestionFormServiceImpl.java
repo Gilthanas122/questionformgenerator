@@ -7,6 +7,8 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
@@ -41,8 +43,6 @@ public class QuestionFormServiceImpl implements QuestionFormService{
     questionFormRepository.save(questionForm);
     return questionForm.getId();
   }
-
-
 
   @Override
   public QuestionForm findById(long id) throws QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
@@ -89,5 +89,25 @@ public class QuestionFormServiceImpl implements QuestionFormService{
       questionWithDTypeDTOS.add(questionWithDTypeDTO);
     }
     return questionWithDTypeDTOS;
+  }
+
+  @Override
+  public Question findQuestionToSwitchPositionWith(QuestionForm questionForm, int currentPosition, String direction) throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
+    if (direction.equals("up")){
+      return questionForm
+        .getQuestions()
+        .stream()
+        .filter(question -> question.getListPosition() < currentPosition)
+        .findFirst()
+        .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element"));
+    }else if (direction.equals("down")){
+      return questionForm
+        .getQuestions()
+        .stream()
+        .filter(question -> question.getListPosition() > currentPosition)
+        .findFirst()
+        .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more backwards. Is the last element"));
+    }
+      throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
   }
 }

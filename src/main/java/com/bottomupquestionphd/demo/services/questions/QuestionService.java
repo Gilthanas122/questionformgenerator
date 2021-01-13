@@ -6,6 +6,8 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -22,4 +24,6 @@ public interface QuestionService {
   Question findById(long questionIq) throws QuestionNotFoundByIdException;
 
   void saveQuestionFromQuestionDType(QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException;
+
+  void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
 }

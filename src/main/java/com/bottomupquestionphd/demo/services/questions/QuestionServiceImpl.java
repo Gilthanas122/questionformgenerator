@@ -6,6 +6,8 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -13,6 +15,8 @@ import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.answerpossibilities.AnswerPossibilityService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -70,6 +74,24 @@ public class QuestionServiceImpl implements QuestionService {
     converted.setId(question.getId());
     converted.setQuestionForm(question.getQuestionForm());
     questionRepository.save(converted);
+  }
+
+  @Override
+  public void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
+      Question question = findById(questionId);
+      if (!change.equals("up") && !change.equals("down")){
+        throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
+      }
+      else if (change.equals("up") && question.getListPosition() == 0){
+        throw new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element");
+      }else if (change.equals("down") && question.getQuestionForm().getQuestions().size() -1 <= question.getListPosition()){
+        throw new InvalidQuestionPositionException("Not possible to move element more backward, is the last element");
+      }
+        int currentPosition = question.getListPosition();
+        Question questionToBeSwitchedWith = questionFormService.findQuestionToSwitchPositionWith(question.getQuestionForm(), currentPosition, change);
+        question.setListPosition(questionToBeSwitchedWith.getListPosition());
+        questionToBeSwitchedWith.setListPosition(currentPosition);
+        questionRepository.saveAll(List.of(question, questionToBeSwitchedWith));
   }
 
   @Override

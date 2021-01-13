@@ -4,6 +4,8 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @PreAuthorize("hasRole('ROLE_TEACHER')")
@@ -66,14 +69,31 @@ public class QuestionController {
   }
 
   @PostMapping("update/{questionId}")
-  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId){
-    try{
+  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
+    try {
       questionService.saveQuestionFromQuestionDType(question);
       return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
       model.addAttribute("error", e.getMessage());
     }
-      return "redirect:/question/update/" + questionId;
+    return "redirect:/question/update/" + questionId;
+  }
+
+  @GetMapping("/update-position/{change}/{questionId}")
+  public String updateListPosition(@PathVariable String change, @PathVariable long questionId, Model model, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
+    try {
+      questionService.changeOrderOfQuestion(change, questionId);
+    } catch (InvalidQuestionPositionChangeException e) {
+      redirectAttributes.addAttribute("error", e.getMessage());
+    } catch (InvalidQuestionPositionException e) {
+      redirectAttributes.addAttribute("error", e.getMessage());
+    } catch (QuestionNotFoundByIdException e) {
+      redirectAttributes.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      redirectAttributes.addAttribute("error", e.getMessage());
+    }
+
+    return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId) + "?error=";
   }
 }

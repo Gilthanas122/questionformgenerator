@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>List of Questions in Question Form</title>
     <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: ion-icon">
     <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
@@ -19,6 +20,9 @@
         <th>Question Text</th>
         <th>Multiple Answer Possibility</th>
         <th>Scale value</th>
+        <th>Edit question</th>
+        <th>Move Forward</th>
+        <th>Move Backward</th>
     </tr>
     </thead>
     <tbody>
@@ -38,10 +42,11 @@
         </td>
         <td th:unless="*{scale} != null">None</td>
         <td> <a type="button" class="btn btn-warning" th:href="@{|/question/update/${question.id}|}">EDIT QUESTION</a></td>
+        <td><a th:href="@{/question/update-position/up}"><i class="icon ion-md-arrow-up"></i></a></td>
+        <td><a th:href="@{/question/update-position/down}"><i class="icon ion-md-arrow-down"></i></a></td>
     </tr>
     </tbody>
 </table>
-
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>
 <script th:replace="fragments/scripts.html :: bootstrap"></script>

@@ -1,20 +1,28 @@
-mydropdown{
+mydropdown {
     display: inline-block;
 }
 
-#usererror{
+#usererror {
     background-color: grey;
     color: red;
 }
 
-form, #subdivexample{
+form, #subdivexample {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items:center;
-    width:100%;
+    align-items: center;
+    width: 100%;
 }
 
-#subdivexample{
-    border : thick solid #0000FF;
+#subdivexample {
+    border: thick solid #0000FF;
+}
+
+#iconfas {
+    transform: scale(1.5,1);
+}
+
+.icon{
+    font-size: 30px;
 }

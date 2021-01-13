@@ -27,17 +27,17 @@
         <td th:text="*{questionType}"></td>
         <td th:text="*{questionText}"></td>
         <td th:if="*{answerPossibilities} != null">
-            <table>
-                <tr th:each="answerPossibility : *{answerPossibilities}" th:object="${answerPossibility}">
-                    <td th:text="*{answerText}"></td>
-                </tr>
-            </table>
-
-
-        </td>
+                <table>
+                    <tr th:each="answerPossibility : *{answerPossibilities}" th:object="${answerPossibility}">
+                        <td th:text="*{answerText}"></td>
+                    </tr>
+                </table>
+            </td>
+        <td th:unless="*{answerPossibilities} != null" >None</td>
         <td th:if="*{scale} != null" th:text="|Max scale value: *{scale}|">
         </td>
-        <td th:if="*{scale == null && answerPossibilities == null}" th:text="No answer possibilities for a text question"></td>
+        <td th:unless="*{scale} != null">None</td>
+        <td> <a type="button" class="btn btn-warning" th:href="@{|/question/update/${question.id}|}">EDIT QUESTION</a></td>
     </tr>
     </tbody>
 </table>

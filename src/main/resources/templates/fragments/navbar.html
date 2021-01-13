@@ -14,7 +14,7 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <li class="dropdown-item" th:href="@{/}">Main page</li>
-            <li> <a sec:authorize="isAnonymous()" class="dropdown-item" th:href="@{/login}">Login</a> /li>
+            <li> <a sec:authorize="isAnonymous()" class="dropdown-item" th:href="@{/login}">Login</a> </li>
             <li> <a sec:authorize="isAnonymous()" class="dropdown-item" th:href="@{/register}">Register</a></li>
             <li> <a sec:authorize="isAuthenticated()" class="dropdown-item" th:href="@{/logout}">Logout</a></li>
         </ul>

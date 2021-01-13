@@ -9,7 +9,7 @@ public class QuestionWithDTypeDTO {
   private long id;
   private String questionType;
   private String questionText;
-  private List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+  private List<AnswerPossibility> answerPossibilities;
   private Integer scale;
 
   public QuestionWithDTypeDTO() {

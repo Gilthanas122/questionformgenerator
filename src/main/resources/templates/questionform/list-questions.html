@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Questions in Question Form</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+<div th:replace="fragments/error.html :: error" ></div>
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th>Position</th>
+        <th>Question Type</th>
+        <th>Question Text</th>
+        <th>Multiple Answer Possibility</th>
+        <th>Scale value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="question, iter : ${questions}" th:object="${question}">
+        <td th:text="${iter.index +1}"></td>
+        <td th:text="*{questionType}"></td>
+        <td th:text="*{questionText}"></td>
+        <td th:if="*{answerPossibilities} != null">
+            <table>
+                <tr th:each="answerPossibility : *{answerPossibilities}" th:object="${answerPossibility}">
+                    <td th:text="*{answerText}"></td>
+                </tr>
+            </table>
+
+
+        </td>
+        <td th:if="*{scale} != null" th:text="|Max scale value: *{scale}|">
+        </td>
+        <td th:if="*{scale == null && answerPossibilities == null}" th:text="No answer possibilities for a text question"></td>
+    </tr>
+    </tbody>
+</table>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+
+</body>
+</html>

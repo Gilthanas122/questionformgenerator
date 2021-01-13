@@ -32,15 +32,17 @@ function renderElements(buttonId) {
 
     form.id = "inputquestionform";
     form.method = "POST";
-    form.action = "/question/create" +"/"+ buttonId + "/" +getQuestionFormId();
+    form.action = "/question/create" + "/" + buttonId + "/" + getQuestionFormId();
     form.appendChild(createQuestionTextInputAndLabel());
+
+
     if (buttonId === "radio" || buttonId === "checkbox") {
         form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
-    } else if ( buttonId === "text") {
+    } else if (buttonId === "text") {
         form.appendChild(createInputTextNode(buttonId));
-    } else if (buttonId === "scale"){
+    } else if (buttonId === "scale") {
         form.appendChild(createInputScaleTextNode(buttonId));
-    } else{
+    } else {
         alert("Invalid input")
     }
     form.appendChild(createFormResetAndSubmitButtons());
@@ -71,7 +73,7 @@ function createInputTrueFalseOrCheckboxNode(buttonId) {
     let anotherInputButton = document.createElement("BUTTON");
     anotherInputButton.textContent = "Create another input field";
     anotherInputButton.type = "button";
-    anotherInputButton.addEventListener("click",() => createAnotherInputField());
+    anotherInputButton.addEventListener("click", () => createAnotherInputField());
 
 
     innerInputContainer.appendChild(textInput);
@@ -84,17 +86,18 @@ function createInputTrueFalseOrCheckboxNode(buttonId) {
     return container;
 }
 
-function createQuestionTextInputAndLabel(){
+function createQuestionTextInputAndLabel() {
     let container = document.createElement("DIV");
     let label = document.createElement("LABEL");
     label.textContent = "Enter your question text";
-    label.for="questiontext";
+    label.for = "questiontext";
     let input = document.createElement("INPUT");
     input.id = "questiontext";
     input.name = "questionText";
-    input.placeholder="Enter you questiontext";
+    input.placeholder = "Enter you questiontext";
     container.appendChild(label);
     container.appendChild(input);
+    addEventlistenerToItem(input);
     return container;
 }
 
@@ -102,16 +105,17 @@ function createAnotherInputField() {
     let form = document.getElementById("innerinputcontainer");
     let input = document.createElement("input");
     input.placeholder = "Enter your answer here";
-    let label = createTextNode("Enter answer possibility  " + (inputIndex+1) + " : ", "LABEL");
+    let label = createTextNode("Enter answer possibility  " + (inputIndex + 1) + " : ", "LABEL");
     input.type = "text";
     input.id = "input" + inputIndex;
     input.name = "answers[" + inputIndex + "]";
     label.for = "input" + inputIndex;
-    if (form != null){
-        form.insertBefore(input, document.getElementById("input" + (inputIndex -1)).nextSibling);
+    addEventlistenerToItem(input);
+    if (form != null) {
+        form.insertBefore(input, document.getElementById("input" + (inputIndex - 1)).nextSibling);
         form.insertBefore(label, input);
         inputIndex++;
-    }else{
+    } else {
         inputIndex++;
         return input;
     }
@@ -124,7 +128,9 @@ function createInputScaleTextNode(buttonId) {
     let label = createTextNode("Provide a max value for the input", "LABEL");
     let input = document.createElement("INPUT");
     input.name = "answers[0]";
+    input.id = "input0";
     input.placeholder = "enter the max value of the scale";
+    addEventlistenerToItem(input);
     container.appendChild(label);
     container.appendChild(input);
     container.appendChild(createSubDivExampleScale(buttonId));
@@ -152,15 +158,15 @@ function createSubDivExample(buttonId) {
 
 function createSubDivExampleRadioOrCheckbox(buttonId) {
     let container = document.createElement("DIV");
-    if (buttonId == "checkbox"){
+    if (buttonId == "checkbox") {
         container.appendChild(createInputs("checkbox", "Which character(s) do you like from the following?", "Ron", "Harry"));
-    }else{
+    } else {
         container.appendChild(createInputs("radio", "Which one is your favourite character?", "Hermione", "Dumbledore"));
     }
     return container;
 }
 
-function createInputs(inputType, questionTextInput, input1, input2){
+function createInputs(inputType, questionTextInput, input1, input2) {
     let container = document.createElement("DIV");
     let questionText = createTextNode(questionTextInput, "P");
     container.appendChild(questionText);
@@ -170,7 +176,7 @@ function createInputs(inputType, questionTextInput, input1, input2){
         radioButton.id = inputType + i;
         let radioButtonLabel = document.createElement("LABEL");
         radioButtonLabel.for = inputType + i;
-        radioButton.disabled=true;
+        radioButton.disabled = true;
         if (i === 0) {
             radioButtonLabel.textContent = input1
         } else {
@@ -209,10 +215,8 @@ function createSubDivExampleScale(buttonId) {
     addEventListenerToScaleInput(textInput);
 
 
-
     let exampleText = createTextNode("How much do you like the book Harry Potter?"
         + "On a scale of 1 to " + textInput.max, "LABEL")
-
 
 
     container.appendChild(exampleText);
@@ -248,18 +252,11 @@ function resetGeneratedSubDiv() {
     enableFinishButton(false);
 }
 
-function disableSubmitButton(enable) {
-    let form = document.getElementById("inputquestionform");
-    if (form != null && enable) {
-        document.getElementById("questionsubmit").disabled = true;
-    } else if (form != null) {
-        document.getElementById("questionsubmit").disabled = false;
-    }
-}
-
 function createFormResetAndSubmitButtons() {
     let container = document.createElement("DIV");
     let submitButton = document.createElement("BUTTON");
+    submitButton.id = "formsubmit";
+    submitButton.disabled = true;
     submitButton.type = "submit";
     submitButton.textContent = "Submit Question";
     submitButton.class = "btn" + " btn-primary";
@@ -273,13 +270,36 @@ function createFormResetAndSubmitButtons() {
     return container;
 }
 
-function addEventListenerToScaleInput(input){
-    input.onchange = function(){
-        document.getElementById("rangeoutput").textContent=input.value;
+function addEventListenerToScaleInput(input) {
+    input.onchange = function () {
+        document.getElementById("rangeoutput").textContent = input.value;
     }
 }
 
-function enableFinishButton(value){
+function addEventlistenerToItem(input) {
+    input.onchange = function () {
+        validateEnablingSubmit();
+    }
+}
+
+function validateEnablingSubmit(){
+    let answers = document.getElementById("input0");
+    if (answers !== null){
+        console.log(answers.value);
+    }
+    let questionInput = document.getElementById("questiontext");
+    console.log(questionInput.value);
+
+    if ((answers === null && questionInput.value !== "") ||(answers !== null &&
+        answers.value !== "" && questionInput.value !=="")) {
+        document.getElementById("formsubmit").disabled = false;
+    }else{
+        document.getElementById("formsubmit").disabled = true;
+
+    }
+}
+
+function enableFinishButton(value) {
     let finishButton = document.getElementById("finish");
     finishButton.hidden = value;
 }

@@ -5,9 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
-import com.bottomupquestionphd.demo.domains.dtos.question.CheckBoxQuestionDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
-import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -31,54 +29,52 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
+    QuestionForm questionForm = questionFormService.findById(questionFormId);
+    questionForm.setFinished(false);
     if (type.equals("text")){
-      saveTextQuestion( questionDTO, questionFormId);
+      saveTextQuestion( questionDTO, questionForm);
     }else if (type.equals("checkbox")){
-      saveCheckBoxQuestion(questionDTO, questionFormId);
+      saveCheckBoxQuestion(questionDTO, questionForm);
     }else if (type.equals("radio")){
-      saveRadioQuestion(questionDTO, questionFormId);
+      saveRadioQuestion(questionDTO, questionForm);
     }else if (type.equals("scale")){
-      saveScaleQuestion(questionDTO, questionFormId);
+      saveScaleQuestion(questionDTO, questionForm);
     }
   }
 
-  private void saveScaleQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
+  private void saveScaleQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){
       throw new MissingParamsException("Following input field(s) is missing: question text and/or scale");
     }
-    QuestionForm questionForm = questionFormService.findById(questionFormId);
     ScaleQuestion radioButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
     radioButtonQuestion.setQuestionForm(questionForm);
     questionRepository.save(radioButtonQuestion);
 
   }
 
-  private void saveRadioQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
+  private void saveRadioQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
-    QuestionForm questionForm = questionFormService.findById(questionFormId);
     RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     radioButtonQuestion.setQuestionForm(questionForm);
     questionRepository.save(radioButtonQuestion);
   }
 
-  private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
+  private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
-    QuestionForm questionForm = questionFormService.findById(questionFormId);
     CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     checkBoxQuestion.setQuestionForm(questionForm);
     questionRepository.save(checkBoxQuestion);
 
   }
 
-  private void saveTextQuestion(QuestionCreateDTO textQuestionDTO, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
+  private void saveTextQuestion(QuestionCreateDTO textQuestionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()){
       throw new MissingParamsException("Following input field is missing: question text");
     }
-    QuestionForm questionForm = questionFormService.findById(questionFormId);
     TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
     textQuestion.setQuestionForm(questionForm);
     questionRepository.save(textQuestion);

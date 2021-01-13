@@ -23,7 +23,7 @@ public class QuestionFormController {
 
   @GetMapping("create")
   public String renderCreateQuestionForm(Model model) {
-    model.addAttribute("questionFormDTO", new QuestionForm());
+    model.addAttribute("questionForm", new QuestionForm());
     return "questionform/create";
   }
 
@@ -91,5 +91,22 @@ public class QuestionFormController {
       model.addAttribute("error", e.getMessage());
     }
     return "question/create";
+  }
+
+  @GetMapping("/list-questions/{questionFormId}")
+  public String listAllQuestionsBelongingToQuestionFormById(@PathVariable long questionFormId, Model model) {
+    try {
+      model.addAttribute("questions", questionFormService.findByIdAndAddQuestionType(questionFormId) );
+      return "questionform/list-questions";
+    } catch (MissingUserException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "questionform/list";
   }
 }

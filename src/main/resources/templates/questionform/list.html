@@ -20,6 +20,8 @@
         <td>Finished</td>
         <td>Number of questions</td>
         <td>Edit Question form</td>
+        <td>Add question</td>
+        <td>List questions</td>
     </tr>
     </thead>
     <tbody>
@@ -28,7 +30,10 @@
         <td th:text="*{description}"></td>
         <td th:text="*{finished}"></td>
         <td th:text="${#lists.size(questionForm.questions)}"></td>
-        <td><a type="button" th:href="@{|/question-form/update/*{id}|}">EDIT</a></td>
+        <td><a type="button" th:href="@{|/question-form/update/*{id}|}">EDIT QUESTION FORM</a></td>
+        <td><a type="button" th:href="@{|/question/create/*{id}|}">ADD Question</a></td>
+        <td><a type="button" th:href="@{|/question-form/list-questions/*{id}|}">List Questions</a></td>
+
     </tr>
     </tbody>
 </table>

@@ -2,6 +2,11 @@ package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questions.MultipleAnswerQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
+import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
@@ -10,6 +15,7 @@ import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -73,5 +79,31 @@ public class QuestionFormServiceImpl implements QuestionFormService{
       }
       questionForm.setFinished(true);
       questionFormRepository.save(questionForm);
+  }
+
+  @Override
+  public List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
+    QuestionForm questionForm = findById(questionFormId);
+    List<QuestionWithDTypeDTO> questionWithDTypeDTOS = new ArrayList<>();
+    for (Question question: questionForm.getQuestions()) {
+      QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(question.getId(), question.getQuestionText());
+      if (question instanceof MultipleAnswerQuestion){
+        MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
+        questionWithDTypeDTO.setAnswerPossibilities(multipleAnswerQuestion.getAnswerPossibilities());
+        if (question instanceof RadioButtonQuestion){
+          questionWithDTypeDTO.setQuestionType("Radio button");
+        }else{
+          questionWithDTypeDTO.setQuestionType("Check box");
+        }
+      }else if (question instanceof ScaleQuestion){
+        ScaleQuestion scaleQuestion = (ScaleQuestion) question;
+        questionWithDTypeDTO.setScale(scaleQuestion.getScale());
+        questionWithDTypeDTO.setQuestionType("Scale");
+      }else{
+        questionWithDTypeDTO.setQuestionType("Text");
+      }
+      questionWithDTypeDTOS.add(questionWithDTypeDTO);
+    }
+    return questionWithDTypeDTOS;
   }
 }

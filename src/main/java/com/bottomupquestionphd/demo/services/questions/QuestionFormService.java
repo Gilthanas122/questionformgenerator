@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -21,4 +22,6 @@ public interface QuestionFormService {
   void updateQuestionForm(QuestionForm questionForm) throws QuestionFormNotFoundException, BelongToAnotherUserException;
 
   void finishQuestionForm(long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NotEnoughQuestionsToCreateFormException;
+
+  List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 }

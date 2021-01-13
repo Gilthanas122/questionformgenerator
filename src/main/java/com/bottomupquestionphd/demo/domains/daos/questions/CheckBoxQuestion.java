@@ -11,7 +11,11 @@ public class CheckBoxQuestion extends MultipleAnswerQuestion{
   public CheckBoxQuestion() {
 
   }
-  public CheckBoxQuestion(String questionText, List<AnswerPossibility> answers) {
-  super(questionText, answers);
+  public CheckBoxQuestion(String questionText, List<AnswerPossibility> answerPossibilities) {
+  super(questionText, answerPossibilities);
+  }
+
+  public CheckBoxQuestion(long id, String questionText, List<AnswerPossibility> answerPossibilities) {
+    super(id, questionText, answerPossibilities);
   }
 }

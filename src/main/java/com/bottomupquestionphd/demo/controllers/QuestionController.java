@@ -1,8 +1,10 @@
 package com.bottomupquestionphd.demo.controllers;
 
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
+import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
@@ -39,11 +41,39 @@ public class QuestionController {
       model.addAttribute("error", e.getMessage());
     } catch (BelongToAnotherUserException e) {
       model.addAttribute("error", e.getMessage());
-    } catch (MissingUserException e){
+    } catch (MissingUserException e) {
       model.addAttribute("error", e.getMessage());
-    } catch(Exception e) {
+    } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
     return "question/create";
+  }
+
+  @GetMapping("update/{questionId}")
+  public String renderQuestionUpdate(@PathVariable long questionId, Model model) {
+    try {
+      QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
+      model.addAttribute("question", question);
+      return "question/update";
+    } catch (QuestionNotFoundByIdException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      model.addAttribute("error", e.getMessage());
+    }
+    return "redirect:/question-form/list";
+  }
+
+  @PostMapping("update/{questionId}")
+  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId){
+    try{
+      questionService.saveQuestionFromQuestionDType(question);
+      return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
+    }catch (Exception e){
+      e.printStackTrace();
+      model.addAttribute("error", e.getMessage());
+    }
+      return "redirect:/question/update/" + questionId;
   }
 }

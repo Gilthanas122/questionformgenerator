@@ -1,17 +1,17 @@
 package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
-import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
-import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
-import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
+import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.answerpossibilities.AnswerPossibilityService;
+import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +20,16 @@ public class QuestionServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
   private final QuestionFormService questionFormService;
   private final AnswerPossibilityService answerPossibilityService;
+  private final AppUserService appUserService;
+  private final QuestionConversionService questionConversionService;
 
-  public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, AnswerPossibilityService answerPossibilityService) {
+
+  public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, AnswerPossibilityService answerPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService) {
     this.questionRepository = questionRepository;
     this.questionFormService = questionFormService;
     this.answerPossibilityService = answerPossibilityService;
+    this.appUserService = appUserService;
+    this.questionConversionService = questionConversionService;
   }
 
   @Override
@@ -41,6 +46,38 @@ public class QuestionServiceImpl implements QuestionService {
       saveScaleQuestion(questionDTO, questionForm);
     }
   }
+
+  @Override
+  public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+    Question question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundByIdException("No question with the given id"));
+    if (question.getQuestionForm().getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()){
+      throw  new BelongToAnotherUserException("Question with a given id belongs to a form of another user");
+    }
+
+    return questionConversionService.convertFromQuestionToQuestionWithDType(question);
+  }
+
+  @Override
+  public Question findById(long questionIq) throws QuestionNotFoundByIdException {
+    Question question = questionRepository.findById(questionIq).orElse(null);
+    return questionRepository.findById(questionIq).orElseThrow(() -> new QuestionNotFoundByIdException("Couldn't find question with the given id"));
+  }
+
+  @Override
+  public void saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException {
+    Question question = findById(questionWithDTypeDTO.getId());
+    Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
+    converted.setId(question.getId());
+    converted.setQuestionForm(question.getQuestionForm());
+    questionRepository.save(converted);
+  }
+
+  @Override
+  public long findQuestionFormIdBelongingToQuestion(long questionId) throws QuestionNotFoundByIdException {
+    Question question = findById(questionId);
+    return question.getQuestionForm().getId();
+  }
+
 
   private void saveScaleQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){

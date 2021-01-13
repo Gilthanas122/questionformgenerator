@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Question</title>
+</head>
+<body>
+<h1>Update your question</h1>
+
+<form th:action="@{|/question/update/${question.id}|}" method="post" th:object="${question}">
+    <input hidden th:field="*{id}">
+    <input hidden th:field="*{questionType}">
+    <input th:field="*{questionText}">
+    <th:block th:switch="*{questionType}">
+        <div th:case="'Radio button'">
+            <tr th:each="answerPossibility, iter : *{answerPossibilities}">
+                <td>
+                    <input th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
+                    <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
+                </td>
+            </tr>
+        </div>
+        <div th:case="'Check box'">
+            <tr th:each="answerPossibility, iter : *{answerPossibilities}">
+                <td>
+                    <input th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
+                    <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
+                </td>
+            </tr>
+        </div>
+        <div th:case="'Scale'">
+            <input th:field = "*{scale}" name="scale">
+        </div>
+    </th:block>
+    <button type="reset">Reset</button>
+    <button type="submit">SUBMIT</button>
+</form>
+</body>
+</html>

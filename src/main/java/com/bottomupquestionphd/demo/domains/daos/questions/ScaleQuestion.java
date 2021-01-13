@@ -17,6 +17,11 @@ public class ScaleQuestion extends Question{
       this.scale = scale;
   }
 
+  public ScaleQuestion(long id, String questionText, Integer scale) {
+    super(id, questionText);
+    this.scale = scale;
+  }
+
   public int getScale() {
     return scale;
   }

@@ -2,7 +2,6 @@ package com.bottomupquestionphd.demo.domains.dtos.question;
 
 import com.bottomupquestionphd.demo.domains.daos.questions.AnswerPossibility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionWithDTypeDTO {
@@ -17,10 +16,7 @@ public class QuestionWithDTypeDTO {
 
   public QuestionWithDTypeDTO(long id, String questionText) {
     this.id = id;
-    this.questionType = questionType;
     this.questionText = questionText;
-    this.answerPossibilities = answerPossibilities;
-    this.scale = scale;
   }
 
   public long getId() {

@@ -24,6 +24,11 @@ public class Question {
     this.questionText = questionText;
   }
 
+  public Question(long id, String questionText) {
+    this.id = id;
+    this.questionText = questionText;
+  }
+
   public long getId() {
     return id;
   }

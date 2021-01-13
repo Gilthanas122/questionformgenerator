@@ -2,10 +2,7 @@ package com.bottomupquestionphd.demo.services.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.daos.questions.MultipleAnswerQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
-import com.bottomupquestionphd.demo.domains.daos.questions.RadioButtonQuestion;
-import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -23,10 +20,12 @@ public class QuestionFormServiceImpl implements QuestionFormService{
 
   private final QuestionFormRepository questionFormRepository;
   private final AppUserService appUserService;
+  private final QuestionConversionService questionConversionService;
 
-  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService) {
+  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService) {
     this.questionFormRepository = questionFormRepository;
     this.appUserService = appUserService;
+    this.questionConversionService = questionConversionService;
   }
 
   @Override
@@ -86,22 +85,7 @@ public class QuestionFormServiceImpl implements QuestionFormService{
     QuestionForm questionForm = findById(questionFormId);
     List<QuestionWithDTypeDTO> questionWithDTypeDTOS = new ArrayList<>();
     for (Question question: questionForm.getQuestions()) {
-      QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(question.getId(), question.getQuestionText());
-      if (question instanceof MultipleAnswerQuestion){
-        MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
-        questionWithDTypeDTO.setAnswerPossibilities(multipleAnswerQuestion.getAnswerPossibilities());
-        if (question instanceof RadioButtonQuestion){
-          questionWithDTypeDTO.setQuestionType("Radio button");
-        }else{
-          questionWithDTypeDTO.setQuestionType("Check box");
-        }
-      }else if (question instanceof ScaleQuestion){
-        ScaleQuestion scaleQuestion = (ScaleQuestion) question;
-        questionWithDTypeDTO.setScale(scaleQuestion.getScale());
-        questionWithDTypeDTO.setQuestionType("Scale");
-      }else{
-        questionWithDTypeDTO.setQuestionType("Text");
-      }
+      QuestionWithDTypeDTO questionWithDTypeDTO = questionConversionService.convertFromQuestionToQuestionWithDType(question);
       questionWithDTypeDTOS.add(questionWithDTypeDTO);
     }
     return questionWithDTypeDTOS;

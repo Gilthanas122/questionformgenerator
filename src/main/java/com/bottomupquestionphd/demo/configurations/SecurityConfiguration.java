@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .formLogin()
       .loginPage("/login").usernameParameter("username").passwordParameter("password").permitAll()
       .loginProcessingUrl("/login")
-      .defaultSuccessUrl("/landing-page")
+      .defaultSuccessUrl("/")
       .and()
       .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
       .and()

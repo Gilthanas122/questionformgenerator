@@ -24,6 +24,16 @@ public  abstract class MultipleAnswerQuestion extends Question{
     addAnswerToPost(answerPossibilities);
   }
 
+  public MultipleAnswerQuestion(String questionText, long id) {
+    super(id, questionText);
+  }
+
+  public MultipleAnswerQuestion(long id, String questionText, List<AnswerPossibility> answerPossibilities) {
+    super(id, questionText);
+    this.answerPossibilities = answerPossibilities;
+  }
+
+
   protected void addAnswerToPost(List<AnswerPossibility> answerPossibilities){
     for (AnswerPossibility answerPossibility: answerPossibilities) {
       this.answerPossibilities.add(answerPossibility);

@@ -14,6 +14,7 @@ public class Question {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String questionText;
+  private Integer listPosition;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private QuestionForm questionForm;
@@ -51,5 +52,13 @@ public class Question {
 
   public void setQuestionForm(QuestionForm questionForm) {
     this.questionForm = questionForm;
+  }
+
+  public Integer getListPosition() {
+    return listPosition;
+  }
+
+  public void setListPosition(Integer listPosition) {
+    this.listPosition = listPosition;
   }
 }

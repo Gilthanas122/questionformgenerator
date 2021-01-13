@@ -83,9 +83,10 @@ public class QuestionServiceImpl implements QuestionService {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){
       throw new MissingParamsException("Following input field(s) is missing: question text and/or scale");
     }
-    ScaleQuestion radioButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
-    radioButtonQuestion.setQuestionForm(questionForm);
-    questionRepository.save(radioButtonQuestion);
+    ScaleQuestion scaleButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
+    scaleButtonQuestion.setQuestionForm(questionForm);
+    scaleButtonQuestion.setListPosition(questionForm.getQuestions().size());
+    questionRepository.save(scaleButtonQuestion);
 
   }
 
@@ -95,6 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
     RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     radioButtonQuestion.setQuestionForm(questionForm);
+    radioButtonQuestion.setListPosition(questionForm.getQuestions().size());
     questionRepository.save(radioButtonQuestion);
   }
 
@@ -104,6 +106,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
     CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     checkBoxQuestion.setQuestionForm(questionForm);
+    checkBoxQuestion.setListPosition(questionForm.getQuestions().size());
     questionRepository.save(checkBoxQuestion);
 
   }
@@ -114,6 +117,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
     TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
     textQuestion.setQuestionForm(questionForm);
+    textQuestion.setListPosition(questionForm.getQuestions().size());
     questionRepository.save(textQuestion);
   }
 }

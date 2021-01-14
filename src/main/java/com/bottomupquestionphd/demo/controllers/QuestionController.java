@@ -81,7 +81,7 @@ public class QuestionController {
   }
 
   @GetMapping("/update-position/{change}/{questionId}")
-  public String updateListPosition(@PathVariable String change, @PathVariable long questionId, Model model, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
+  public String updateListPosition(@PathVariable String change, @PathVariable long questionId, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
     try {
       questionService.changeOrderOfQuestion(change, questionId);
     } catch (InvalidQuestionPositionChangeException e) {
@@ -95,5 +95,21 @@ public class QuestionController {
     }
 
     return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId) + "?error=";
+  }
+
+  @GetMapping("/delete/{questionId}")
+  public String deleteQuestionById(@PathVariable long questionId, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
+   long formId = 0;
+    try{
+      formId = questionService.deleteQuestion(questionId);
+      return "redirect:/question-form/list-questions/" +formId;
+    }catch (QuestionNotFoundByIdException e){
+      redirectAttributes.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e){
+      redirectAttributes.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      redirectAttributes.addAttribute("error", e.getMessage());
+    }
+    return "redirect:/question-form/list/";
   }
 }

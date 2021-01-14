@@ -27,7 +27,6 @@ public class QuestionServiceImpl implements QuestionService {
   private final AppUserService appUserService;
   private final QuestionConversionService questionConversionService;
 
-
   public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, AnswerPossibilityService answerPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService) {
     this.questionRepository = questionRepository;
     this.questionFormService = questionFormService;
@@ -92,11 +91,21 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
+  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+      Question question = findById(questionId);
+      long formId = question.getQuestionForm().getId();
+      if (question.getQuestionForm().getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()){
+        throw new BelongToAnotherUserException("Given question belongs to another user");
+      }
+      questionRepository.delete(question);
+      return formId;
+  }
+
+  @Override
   public long findQuestionFormIdBelongingToQuestion(long questionId) throws QuestionNotFoundByIdException {
     Question question = findById(questionId);
     return question.getQuestionForm().getId();
   }
-
 
   private void saveScaleQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()) {

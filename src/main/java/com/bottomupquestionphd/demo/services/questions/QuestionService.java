@@ -26,4 +26,6 @@ public interface QuestionService {
   void saveQuestionFromQuestionDType(QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException;
 
   void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
+
+  long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException;
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public  abstract class MultipleAnswerQuestion extends Question{
 
   @OneToMany(mappedBy = "multipleAnswerQuestion", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  public List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+  private List<AnswerPossibility> answerPossibilities = new ArrayList<>();
 
 
   public MultipleAnswerQuestion() {

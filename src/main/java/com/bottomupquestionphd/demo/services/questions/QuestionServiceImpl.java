@@ -69,6 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
     Question question = findById(questionWithDTypeDTO.getId());
     Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
     converted.setId(question.getId());
+    converted.setListPosition(question.getListPosition());
     converted.setQuestionForm(question.getQuestionForm());
     questionRepository.save(converted);
   }
@@ -150,7 +151,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   private int getListPositionForQuestions(QuestionForm questionForm) {
-    if (questionForm.getQuestions().size() < 1) {
+    if (questionForm.getQuestions() == null || questionForm.getQuestions().size() < 1) {
       return 0;
     }
     return questionForm.getQuestions().get(questionForm.getQuestions().size() - 1).getListPosition() + 1;

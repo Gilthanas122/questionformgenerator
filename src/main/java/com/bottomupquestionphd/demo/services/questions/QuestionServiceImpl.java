@@ -40,13 +40,13 @@ public class QuestionServiceImpl implements QuestionService {
   public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
     questionForm.setFinished(false);
-    if (type.equals("text")){
-      saveTextQuestion( questionDTO, questionForm);
-    }else if (type.equals("checkbox")){
+    if (type.equals("text")) {
+      saveTextQuestion(questionDTO, questionForm);
+    } else if (type.equals("checkbox")) {
       saveCheckBoxQuestion(questionDTO, questionForm);
-    }else if (type.equals("radio")){
+    } else if (type.equals("radio")) {
       saveRadioQuestion(questionDTO, questionForm);
-    }else if (type.equals("scale")){
+    } else if (type.equals("scale")) {
       saveScaleQuestion(questionDTO, questionForm);
     }
   }
@@ -54,16 +54,14 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
     Question question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundByIdException("No question with the given id"));
-    if (question.getQuestionForm().getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()){
-      throw  new BelongToAnotherUserException("Question with a given id belongs to a form of another user");
+    if (question.getQuestionForm().getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()) {
+      throw new BelongToAnotherUserException("Question with a given id belongs to a form of another user");
     }
-
     return questionConversionService.convertFromQuestionToQuestionWithDType(question);
   }
 
   @Override
   public Question findById(long questionIq) throws QuestionNotFoundByIdException {
-    Question question = questionRepository.findById(questionIq).orElse(null);
     return questionRepository.findById(questionIq).orElseThrow(() -> new QuestionNotFoundByIdException("Couldn't find question with the given id"));
   }
 
@@ -78,20 +76,19 @@ public class QuestionServiceImpl implements QuestionService {
 
   @Override
   public void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
-      Question question = findById(questionId);
-      if (!change.equals("up") && !change.equals("down")){
-        throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
-      }
-      else if (change.equals("up") && question.getListPosition() == 0){
-        throw new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element");
-      }else if (change.equals("down") && question.getQuestionForm().getQuestions().size() -1 <= question.getListPosition()){
-        throw new InvalidQuestionPositionException("Not possible to move element more backward, is the last element");
-      }
-        int currentPosition = question.getListPosition();
-        Question questionToBeSwitchedWith = questionFormService.findQuestionToSwitchPositionWith(question.getQuestionForm(), currentPosition, change);
-        question.setListPosition(questionToBeSwitchedWith.getListPosition());
-        questionToBeSwitchedWith.setListPosition(currentPosition);
-        questionRepository.saveAll(List.of(question, questionToBeSwitchedWith));
+    Question question = findById(questionId);
+    if (!change.equals("up") && !change.equals("down")) {
+      throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
+    } else if (change.equals("up") && question.getListPosition() == 0) {
+      throw new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element");
+    } else if (change.equals("down") && question.getQuestionForm().getQuestions().size() - 1 <= question.getListPosition()) {
+      throw new InvalidQuestionPositionException("Not possible to move element more backward, is the last element");
+    }
+    int currentPosition = question.getListPosition();
+    Question questionToBeSwitchedWith = questionFormService.findQuestionToSwitchPositionWith(question.getQuestionForm(), currentPosition, change);
+    question.setListPosition(questionToBeSwitchedWith.getListPosition());
+    questionToBeSwitchedWith.setListPosition(currentPosition);
+    questionRepository.saveAll(List.of(question, questionToBeSwitchedWith));
   }
 
   @Override
@@ -102,44 +99,51 @@ public class QuestionServiceImpl implements QuestionService {
 
 
   private void saveScaleQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
-    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()){
+    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty()) {
       throw new MissingParamsException("Following input field(s) is missing: question text and/or scale");
     }
     ScaleQuestion scaleButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
     scaleButtonQuestion.setQuestionForm(questionForm);
-    scaleButtonQuestion.setListPosition(questionForm.getQuestions().size());
+    scaleButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));
     questionRepository.save(scaleButtonQuestion);
 
   }
 
   private void saveRadioQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
-    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
+    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2) {
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
     RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     radioButtonQuestion.setQuestionForm(questionForm);
-    radioButtonQuestion.setListPosition(questionForm.getQuestions().size());
+    radioButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));;
     questionRepository.save(radioButtonQuestion);
   }
 
   private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
-    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2){
+    if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2) {
       throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
     }
     CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     checkBoxQuestion.setQuestionForm(questionForm);
-    checkBoxQuestion.setListPosition(questionForm.getQuestions().size());
+    checkBoxQuestion.setListPosition(getListPositionForQuestions(questionForm));;
     questionRepository.save(checkBoxQuestion);
 
   }
 
   private void saveTextQuestion(QuestionCreateDTO textQuestionDTO, QuestionForm questionForm) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException {
-    if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()){
+    if (textQuestionDTO.getQuestionText() == null || textQuestionDTO.getQuestionText().isEmpty()) {
       throw new MissingParamsException("Following input field is missing: question text");
     }
     TextQuestion textQuestion = new TextQuestion(textQuestionDTO.getQuestionText());
     textQuestion.setQuestionForm(questionForm);
-    textQuestion.setListPosition(questionForm.getQuestions().size());
+    textQuestion.setListPosition(getListPositionForQuestions(questionForm));
     questionRepository.save(textQuestion);
+  }
+
+  private int getListPositionForQuestions(QuestionForm questionForm) {
+    if (questionForm.getQuestions().size() < 1) {
+      return 0;
+    }
+    return questionForm.getQuestions().get(questionForm.getQuestions().size() - 1).getListPosition() + 1;
   }
 }

@@ -47,9 +47,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .and().csrf().disable();
   }
 
+  // fixes that login doesn't redirect you to css
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/javax.faces.resource/**");
+    web.ignoring().antMatchers("/resources/**");
   }
 
   @Bean

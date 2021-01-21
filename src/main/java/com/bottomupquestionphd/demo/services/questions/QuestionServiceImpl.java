@@ -99,6 +99,7 @@ public class QuestionServiceImpl implements QuestionService {
         throw new BelongToAnotherUserException("Given question belongs to another user");
       }
       questionRepository.delete(question);
+      questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());
       return formId;
   }
 

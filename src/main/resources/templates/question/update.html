@@ -15,7 +15,7 @@
         <div th:case="'Radio button'">
             <tr th:each="answerPossibility, iter : *{answerPossibilities}">
                 <td>
-                    <input th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
+                    <input th:field="*{answerPossibilities[__${iter.index}__].answerText}" th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
                     <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
                 </td>
             </tr>
@@ -23,7 +23,7 @@
         <div th:case="'Check box'">
             <tr th:each="answerPossibility, iter : *{answerPossibilities}">
                 <td>
-                    <input th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
+                    <input th:field="*{answerPossibilities[__${iter.index}__].answerText}" th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
                     <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
                 </td>
             </tr>

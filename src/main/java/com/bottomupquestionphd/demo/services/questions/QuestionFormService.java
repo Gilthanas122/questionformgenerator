@@ -29,4 +29,6 @@ public interface QuestionFormService {
   List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
   Question findQuestionToSwitchPositionWith(QuestionForm questionForm, int currentPosition, String direction) throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
+
+  void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
 }

@@ -97,17 +97,28 @@ public class QuestionFormServiceImpl implements QuestionFormService{
       return questionForm
         .getQuestions()
         .stream()
-        .filter(question -> question.getListPosition() < currentPosition)
+        .filter(question -> question.getListPosition() == currentPosition -1)
         .findFirst()
         .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element"));
     }else if (direction.equals("down")){
       return questionForm
         .getQuestions()
         .stream()
-        .filter(question -> question.getListPosition() > currentPosition)
+        .filter(question -> question.getListPosition() == currentPosition+1)
         .findFirst()
         .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more backwards. Is the last element"));
     }
       throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
+  }
+
+  @Override
+  public void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm) {
+    for (int i = 0; i <questionForm.getQuestions().size()-1 ; i++) {
+      if (questionForm.getQuestions().get(i).getListPosition() +1 < questionForm.getQuestions().get(i+1).getListPosition()){
+        questionForm.getQuestions().get(i+1).setListPosition(questionForm.getQuestions().get(i).getListPosition()+1);
+      }
+        questionFormRepository.save(questionForm);
+    }
+
   }
 }

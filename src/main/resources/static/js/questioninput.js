@@ -172,11 +172,11 @@ function createInputs(inputType, questionTextInput, input1, input2) {
     container.appendChild(questionText);
     for (i = 0; i < 2; i++) {
         let radioButton = document.createElement("INPUT");
+        radioButton.class = "check";
         radioButton.type = inputType;
         radioButton.id = inputType + i;
         let radioButtonLabel = document.createElement("LABEL");
         radioButtonLabel.for = inputType + i;
-        radioButton.disabled = true;
         if (i === 0) {
             radioButtonLabel.textContent = input1;
             radioButton.checked=true;

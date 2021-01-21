@@ -16,6 +16,9 @@ public abstract class Answer {
   @OneToMany(mappedBy = "answer")
   private List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
 
+  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  private AnswerForm answerForm;
+
   public Answer() {
   }
 
@@ -41,5 +44,13 @@ public abstract class Answer {
 
   public void setActualAnswerTexts(List<ActualAnswerText> actualAnswerTexts) {
     this.actualAnswerTexts = actualAnswerTexts;
+  }
+
+  public AnswerForm getAnswerForm() {
+    return answerForm;
+  }
+
+  public void setAnswerForm(AnswerForm answerForm) {
+    this.answerForm = answerForm;
   }
 }

@@ -31,4 +31,6 @@ public interface QuestionFormService {
   Question findQuestionToSwitchPositionWith(QuestionForm questionForm, int currentPosition, String direction) throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
 
   void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
+
+  QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException;
 }

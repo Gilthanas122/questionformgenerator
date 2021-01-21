@@ -5,12 +5,20 @@
     <title>Create Answerform</title>
     <link th:replace="fragments/navbar.html :: bootstrap-link">
     <link th:replace="fragments/navbar.html :: css">
+    <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
+
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"> </header>
-
 <div th:replace="fragments/error.html :: error" ></div>
 
+<h1 th:text="${answerForm.name}">Fill out your answerform</h1>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    callAlert(/*[[${answerForm.name}]]*/)
+    /*]]>*/
+</script>
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

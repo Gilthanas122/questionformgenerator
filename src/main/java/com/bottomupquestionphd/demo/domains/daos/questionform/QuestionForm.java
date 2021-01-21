@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.questionform;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 
@@ -24,7 +25,14 @@ public class QuestionForm {
   @OneToMany(mappedBy = "questionForm", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private List<Question> questions = new ArrayList<>();
 
+  @OneToMany(mappedBy = "questionForm",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  private List<AnswerForm> answerForms = new ArrayList<>();
+
   public QuestionForm(){}
+
+  public QuestionForm(List<AnswerForm> answerForms){
+    this.answerForms = answerForms;
+  }
 
   public QuestionForm(String name, String description) {
     this.name = name;
@@ -78,5 +86,17 @@ public class QuestionForm {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public List<AnswerForm> getAnswerForms() {
+    return answerForms;
+  }
+
+  public void setAnswerForms(List<AnswerForm> answerForms) {
+    this.answerForms = answerForms;
+  }
+
+  public void addAnswerForm(AnswerForm answerForm) {
+    this.answerForms.add(answerForm);
   }
 }

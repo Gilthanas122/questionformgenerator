@@ -13,18 +13,22 @@ public class AnswerForm {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  private String name;
 
-  @ManyToOne
+  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private QuestionForm questionForm;
 
-  @OneToMany(mappedBy = "answerform")
+  @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private List<Answer> answers = new ArrayList<>();
 
   public AnswerForm(){}
 
-  public AnswerForm(String name) {
-    this.name = name;
+  public AnswerForm(QuestionForm questionForm, List<Answer> answers) {
+    this.questionForm = questionForm;
+    this.answers = answers;
+  }
+
+  public AnswerForm(QuestionForm questionForm) {
+    this.questionForm = questionForm;
   }
 
   public long getId() {
@@ -33,14 +37,6 @@ public class AnswerForm {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public QuestionForm getQuestionForm() {

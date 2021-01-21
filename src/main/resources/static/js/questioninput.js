@@ -37,7 +37,7 @@ function renderElements(buttonId) {
 
 
     if (buttonId === "radio" || buttonId === "checkbox") {
-        form.appendChild(createInputTrueFalseOrCheckboxNode(buttonId));
+        form.appendChild(createInputRadioOrCheckboxNode(buttonId));
     } else if (buttonId === "text") {
         form.appendChild(createInputTextNode(buttonId));
     } else if (buttonId === "scale") {
@@ -62,7 +62,7 @@ function createInputTextNode(buttonId) {
     return container;
 }
 
-function createInputTrueFalseOrCheckboxNode(buttonId) {
+function createInputRadioOrCheckboxNode(buttonId) {
     let container = document.createElement("DIV");
     let resetbutton = createResetButton();
 
@@ -178,9 +178,13 @@ function createInputs(inputType, questionTextInput, input1, input2) {
         radioButtonLabel.for = inputType + i;
         radioButton.disabled = true;
         if (i === 0) {
-            radioButtonLabel.textContent = input1
+            radioButtonLabel.textContent = input1;
+            radioButton.checked=true;
         } else {
-            radioButtonLabel.textContent = input2
+            if (inputType === "checkbox"){
+                radioButton.checked =true;
+            }
+            radioButtonLabel.textContent = input2;
         }
         container.appendChild(radioButtonLabel);
         container.appendChild(radioButton);

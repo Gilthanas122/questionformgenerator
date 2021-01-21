@@ -11,7 +11,7 @@
 
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/error.html :: error" ></div>
-<a type="button btn-info" th:href="@{|/question-form/list-questions/${question.questionFormId}|}">See question of the question form</a>
+<a class="btn btn-info" th:href="@{|/question-form/list-questions/${question.questionFormId}|}">See the questions belonging to the question form</a>
 <h1>Update your question</h1>
 
 

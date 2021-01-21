@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Question</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
+
+
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+<div th:replace="fragments/error.html :: error" ></div>
+<a type="button btn-info" th:href="@{|/question-form/list-questions/${question.questionFormId}|}">See question of the question form</a>
 <h1>Update your question</h1>
+
 
 <form th:action="@{|/question/update/${question.id}|}" method="post" th:object="${question}">
     <input hidden th:field="*{id}">

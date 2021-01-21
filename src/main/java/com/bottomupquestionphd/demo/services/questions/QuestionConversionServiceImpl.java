@@ -11,6 +11,7 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
   @Override
   public QuestionWithDTypeDTO convertFromQuestionToQuestionWithDType(Question question) {
     QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(question.getId(), question.getQuestionText());
+    questionWithDTypeDTO.setQuestionFormId(question.getQuestionForm().getId());
     if (question instanceof MultipleAnswerQuestion){
       MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
       questionWithDTypeDTO.setAnswerPossibilities(multipleAnswerQuestion.getAnswerPossibilities());

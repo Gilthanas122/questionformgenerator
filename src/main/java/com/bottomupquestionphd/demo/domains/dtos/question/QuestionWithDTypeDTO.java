@@ -7,6 +7,7 @@ import java.util.List;
 
 public class QuestionWithDTypeDTO {
   private long id;
+  private long questionFormId;
   private String questionType;
   private String questionText;
   private List<AnswerPossibility> answerPossibilities = new ArrayList<>();
@@ -58,5 +59,13 @@ public class QuestionWithDTypeDTO {
 
   public void setScale(Integer scale) {
     this.scale = scale;
+  }
+
+  public long getQuestionFormId() {
+    return questionFormId;
+  }
+
+  public void setQuestionFormId(long questionFormId) {
+    this.questionFormId = questionFormId;
   }
 }

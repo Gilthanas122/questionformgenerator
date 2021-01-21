@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.controllers;
+package com.bottomupquestionphd.demo.controllers.questions;
 
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;

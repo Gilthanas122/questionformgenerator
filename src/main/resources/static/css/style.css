@@ -18,22 +18,12 @@ form, #subdivexample {
     border: thick solid #0000FF;
 }
 
-#subdivexample input:checked ~ .check{
+#subdivexample input:disabled ~ .check{
     background-color: #2196F3;
 }
 
 
-/* Create the checkmark/indicator (hidden when not checked) */
-.check:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
 
-/* Show the checkmark when checked */
-#subdivexample input:checked ~ .check:after {
-    display: block;
-}
 
 #iconfas {
     transform: scale(1.5,1);

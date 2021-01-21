@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.controllers;
+package com.bottomupquestionphd.demo.controllers.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;

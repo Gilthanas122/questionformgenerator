@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.controllers;
+package com.bottomupquestionphd.demo.controllers.admin;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;

@@ -1,4 +1,7 @@
 var actualAnswerIndexForTextQuestion = 0;
+var buttonIndexToEnable = 0;
+var textQuestionIndex = 0;
+
 
 function renderQuestion(type, idName, scale, index) {
     let container = document.getElementById("questions[" + index + "]");
@@ -22,12 +25,15 @@ function createTextQuestionInput(index, idName) {
     let input = document.createElement("INPUT");
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "]";
     let anotherInputButton = createAnotherInputButton(index, idName);
-    anotherInputButton.id = "textanswerbutton" + index;
+    anotherInputButton.disabled = true;
+    anotherInputButton.id = "textanswerbutton" + textQuestionIndex;
     let finishButton = createFinishButtonForTextAnswer(index);
 
     container.appendChild(input);
     container.appendChild(anotherInputButton);
     container.appendChild(finishButton);
+    enableDisableFinishAndAddAnotherTextFieldButtons();
+    textQuestionIndex++;
     return container;
 }
 
@@ -75,7 +81,9 @@ function renderCheckBoxOrRadioButtonQuestion(type, idName, index, answerTexts) {
 
 function createAnotherInputButton(index, idName) {
     let anotherInputButton = document.createElement("BUTTON");
+    anotherInputButton.id = "anotherinputbutton" + index;
     anotherInputButton.textContent = "Create another input field";
+    anotherInputButton.className = "buttonsToDisableEnable";
     anotherInputButton.type = "button";
     anotherInputButton.addEventListener("click", () => createAnotherInputField(index, idName));
     return anotherInputButton;
@@ -94,15 +102,36 @@ function createAnotherInputField(index, idName){
 function createFinishButtonForTextAnswer(index){
     let finishButton = document.createElement("BUTTON");
     finishButton.textContent = "FINISH THIS QUESTION";
-    finishButton.id = "finishbutton" + index;
+    finishButton.id = "finishbutton" + textQuestionIndex;
     finishButton.type = "button";
+    finishButton.className = "buttonsToDisableEnable";
+    finishButton.disabled = true;
     finishButton.addEventListener("click", () => resetActualAnswerIndexForTextQuestion());
     return finishButton;
 }
 
 function resetActualAnswerIndexForTextQuestion(){
     actualAnswerIndexForTextQuestion = 0;
+    buttonIndexToEnable++;
     console.log("actual answer index is " + actualAnswerIndexForTextQuestion);
+    console.log("current text question index is " + buttonIndexToEnable);
+    enableDisableFinishAndAddAnotherTextFieldButtons();
+}
+
+function  enableDisableFinishAndAddAnotherTextFieldButtons(){
+
+    let buttons = document.getElementsByClassName("buttonsToDisableEnable");
+    for (let i = 0; i < buttons.length; i++) {
+        if (buttons[i].id === "finishbutton" + buttonIndexToEnable
+            || buttons[i].id === "textanswerbutton" + buttonIndexToEnable){
+            buttons[i].disabled = false;
+        }else{
+            buttons[i].disabled = true;
+        }
+    }
+    console.log("button index to enable" + buttonIndexToEnable);
+    console.log("text question index" + textQuestionIndex);
+
 }
 
 

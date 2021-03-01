@@ -29,4 +29,10 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
         return new CreateAnswerFormDTO(answerForm.getId(), questionForm.getId(), questionForm.getQuestions());
     }
+
+    @Override
+    public void saveAnswerForm(AnswerForm answerForm) {
+        System.out.println();
+        answerFormRepository.save(answerForm);
+    }
 }

@@ -1,14 +1,12 @@
 package com.bottomupquestionphd.demo.controllers.answers;
 
-import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("answer-form")
@@ -32,5 +30,12 @@ public class AnswerFormController {
     }
 
     return "answerform/create";
+  }
+
+  @PostMapping("submit/{answerFormId}")
+  @ResponseBody
+  public String submitAnswerForm(@ModelAttribute AnswerForm answerForm){
+    answerFormService.saveAnswerForm(answerForm);
+    return "success";
   }
 }

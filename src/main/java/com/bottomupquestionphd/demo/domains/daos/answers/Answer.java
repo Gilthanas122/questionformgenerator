@@ -8,7 +8,7 @@ import java.util.List;
 @Table(name="answers")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "Answer_Type")
-public abstract class Answer {
+public class Answer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;

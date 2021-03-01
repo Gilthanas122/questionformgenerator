@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.answerforms;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AnswerFormService {
   CreateAnswerFormDTO createFirstAnswerForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException;
+
+    void saveAnswerForm(AnswerForm answerForm);
 }

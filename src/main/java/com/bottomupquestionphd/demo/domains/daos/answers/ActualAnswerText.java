@@ -8,6 +8,7 @@ public class ActualAnswerText {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  private String answerText;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private Answer answer;
@@ -33,5 +34,13 @@ public class ActualAnswerText {
 
   public void setAnswer(Answer answer) {
     this.answer = answer;
+  }
+
+  public String getAnswerText() {
+    return answerText;
+  }
+
+  public void setAnswerText(String answerText) {
+    this.answerText = answerText;
   }
 }

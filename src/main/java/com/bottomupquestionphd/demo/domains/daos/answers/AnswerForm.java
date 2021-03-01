@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 
 import javax.persistence.*;
@@ -19,6 +20,9 @@ public class AnswerForm {
 
   @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private List<Answer> answers = new ArrayList<>();
+
+  @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  private AppUser appUser;
 
   public AnswerForm(){}
 
@@ -54,4 +58,13 @@ public class AnswerForm {
   public void setAnswers(List<Answer> answers) {
     this.answers = answers;
   }
+
+  public AppUser getAppUser() {
+    return appUser;
+  }
+
+  public void setAppUser(AppUser appUser) {
+    this.appUser = appUser;
+  }
 }
+

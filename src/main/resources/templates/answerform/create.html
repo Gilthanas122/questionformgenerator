@@ -5,6 +5,7 @@
     <title>Create Answerform</title>
     <link th:replace="fragments/navbar.html :: bootstrap-link">
     <link th:replace="fragments/navbar.html :: css">
+
     <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
 
 </head>
@@ -12,14 +13,31 @@
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/error.html :: error" ></div>
 
-<h1 th:text="${answerForm.name}">Fill out your answerform</h1>
+<h1 th:text="|${answerForm.answerFormId} is your answerform's name|">Fill out your answerform</h1>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    callAlert(/*[[${answerForm.name}]]*/)
-    /*]]>*/
-</script>
+<form th:action="@{|/answer-form/submit/${answerFormId}|}" method="post">
+    <table>
+        <tr th:each="question : ${answerForm.questions}" th:object="${question}">
+                <p th:text="*{questionText}"></p>
+                <th:block th:switch="*{getDiscriminatorValue()}">
+                    <div th:case="'CheckBoxQuestion'">
+                        <p th:text="CheckBox"> </p>
+                    </div>
+                    <div th:case="'RadioButtonQuestion'">
+                        <p th:text="Radio"> </p>
+                    </div>
+                    <div th:case="'ScaleQuestion'">
+                        <p th:text="Scale"> </p>
+                    </div>
+                    <div th:case="'TextQuestion'">
+                        <p th:text="Text"> </p>
+                    </div>
+                </th:block>
+        </tr>
+    </table>
+</form>
 
+<script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>
 <script th:replace="fragments/scripts.html :: bootstrap"></script>

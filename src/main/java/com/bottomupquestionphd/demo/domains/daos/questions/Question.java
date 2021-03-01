@@ -66,4 +66,10 @@ public class Question implements Comparable<Question> {
   public int compareTo(Question o) {
     return this.getListPosition().compareTo(o.getListPosition());
   }
+
+
+  @Transient
+  public String getDiscriminatorValue() {
+    return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+  }
 }

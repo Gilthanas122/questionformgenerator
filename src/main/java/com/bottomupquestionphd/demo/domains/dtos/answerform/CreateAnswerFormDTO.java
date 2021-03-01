@@ -1,46 +1,23 @@
 package com.bottomupquestionphd.demo.domains.dtos.answerform;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CreateAnswerFormDTO {
-  private String name;
-  private long answerFormId;
   private long questionFormId;
-  private List<Answer> answers = new ArrayList<>();
+  private long answerFormId;
+  private List<Question> questions = new ArrayList<>();
 
   public CreateAnswerFormDTO() {
   }
 
-  public CreateAnswerFormDTO(String name, long answerFormId, long questionFormId) {
-    this.name = name;
-    this.answerFormId = answerFormId;
+  public CreateAnswerFormDTO(long questionFormId, long answerFormId, List<Question> questions) {
     this.questionFormId = questionFormId;
-  }
-
-  public CreateAnswerFormDTO(String name, long answerFormId, long questionFormId, List<Answer> answers) {
-    this.name = name;
     this.answerFormId = answerFormId;
-    this.questionFormId = questionFormId;
-    this.answers = answers;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public long getAnswerFormId() {
-    return answerFormId;
-  }
-
-  public void setAnswerFormId(long answerFormId) {
-    this.answerFormId = answerFormId;
+    this.questions = questions;
   }
 
   public long getQuestionFormId() {
@@ -51,11 +28,19 @@ public class CreateAnswerFormDTO {
     this.questionFormId = questionFormId;
   }
 
-  public List<Answer> getAnswers() {
-    return answers;
+  public long getAnswerFormId() {
+    return answerFormId;
   }
 
-  public void setAnswers(List<Answer> answers) {
-    this.answers = answers;
+  public void setAnswerFormId(long answerFormId) {
+    this.answerFormId = answerFormId;
+  }
+
+  public List<Question> getQuestions() {
+    return questions;
+  }
+
+  public void setQuestions(List<Question> questions) {
+    this.questions = questions;
   }
 }

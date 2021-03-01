@@ -52,6 +52,7 @@ public class QuestionFormServiceImpl implements QuestionFormService{
     } else if (questionForm.getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()){
       throw new BelongToAnotherUserException("Given forms belongs to another user");
     }
+
     return questionForm;
   }
 

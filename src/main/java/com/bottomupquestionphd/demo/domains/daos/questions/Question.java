@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.domains.daos.questions;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "questions")
@@ -71,5 +72,9 @@ public class Question implements Comparable<Question> {
   @Transient
   public String getDiscriminatorValue() {
     return this.getClass().getAnnotation(DiscriminatorValue.class).value();
+  }
+
+  public List<String> getAnswerPossibilitiesTexts(){
+    return null;
   }
 }

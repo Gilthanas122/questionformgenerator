@@ -126,7 +126,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
     RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
     radioButtonQuestion.setQuestionForm(questionForm);
-    radioButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));;
+    radioButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));
     questionRepository.save(radioButtonQuestion);
   }
 

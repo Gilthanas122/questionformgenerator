@@ -49,4 +49,13 @@ public  abstract class MultipleAnswerQuestion extends Question{
     this.answerPossibilities = answerPossibilities;
   }
 
+  @Override
+  public List<String> getAnswerPossibilitiesTexts(){
+    List<String> answerPossibilitiesText = new ArrayList<>();
+    this.answerPossibilities
+            .stream()
+            .forEach( answerPossibility -> answerPossibilitiesText.add(answerPossibility.getAnswerText()));
+    return answerPossibilitiesText;
+  }
+
 }

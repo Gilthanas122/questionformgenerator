@@ -1,6 +1,6 @@
 var actualAnswerIndexForTextQuestion = 0;
 var buttonIndexToEnable = 0;
-var textQuestionIndex = 0;
+var currentTextAnswerIndex = 0;
 
 
 function renderQuestion(type, idName, scale, index) {
@@ -26,14 +26,17 @@ function createTextQuestionInput(index, idName) {
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "]";
     let anotherInputButton = createAnotherInputButton(index, idName);
     anotherInputButton.disabled = true;
-    anotherInputButton.id = "textanswerbutton" + textQuestionIndex;
-    let finishButton = createFinishButtonForTextAnswer(index);
+    anotherInputButton.id = "textanswerbutton" + currentTextAnswerIndex;
+    let finishButton = createFinishButtonForTextAnswer(currentTextAnswerIndex);
+
+    let reEnableButton = createReenableButton(currentTextAnswerIndex);
 
     container.appendChild(input);
     container.appendChild(anotherInputButton);
     container.appendChild(finishButton);
+    container.appendChild(reEnableButton);
     enableDisableFinishAndAddAnotherTextFieldButtons();
-    textQuestionIndex++;
+    currentTextAnswerIndex++;
     return container;
 }
 
@@ -95,14 +98,14 @@ function createAnotherInputField(index, idName){
     let input = document.createElement("INPUT");
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "]";
 
-    container.insertBefore(input, document.getElementById("textanswerbutton" + index));
+    container.insertBefore(input, document.getElementById("textanswerbutton" + buttonIndexToEnable));
 
 }
 
 function createFinishButtonForTextAnswer(index){
     let finishButton = document.createElement("BUTTON");
     finishButton.textContent = "FINISH THIS QUESTION";
-    finishButton.id = "finishbutton" + textQuestionIndex;
+    finishButton.id = "finishbutton" + currentTextAnswerIndex;
     finishButton.type = "button";
     finishButton.className = "buttonsToDisableEnable";
     finishButton.disabled = true;
@@ -118,20 +121,38 @@ function resetActualAnswerIndexForTextQuestion(){
     enableDisableFinishAndAddAnotherTextFieldButtons();
 }
 
-function  enableDisableFinishAndAddAnotherTextFieldButtons(){
+function enableDisableFinishAndAddAnotherTextFieldButtons(){
 
     let buttons = document.getElementsByClassName("buttonsToDisableEnable");
     for (let i = 0; i < buttons.length; i++) {
         if (buttons[i].id === "finishbutton" + buttonIndexToEnable
-            || buttons[i].id === "textanswerbutton" + buttonIndexToEnable){
+            || buttons[i].id === "textanswerbutton" + buttonIndexToEnable
+            || (buttons[i].id.includes("reenablebutton") && parseInt(buttons[i].id.charAt(buttons[i].id.length -1)) !==  buttonIndexToEnable) ){
             buttons[i].disabled = false;
         }else{
             buttons[i].disabled = true;
         }
     }
     console.log("button index to enable" + buttonIndexToEnable);
-    console.log("text question index" + textQuestionIndex);
+    console.log("current text answer index" + currentTextAnswerIndex);
 
+}
+
+function createReenableButton(currentIndex){
+    let enableButton = document.createElement("BUTTON");
+    enableButton.textContent = "Reenable to modify";
+    enableButton.id = "reenablebutton" + currentIndex;
+    enableButton.disabled = true;
+    enableButton.className = "buttonsToDisableEnable";
+    enableButton.type = "button";
+    enableButton.addEventListener("click", () => reEnableTextQuestion(currentIndex));
+    return enableButton;
+
+}
+
+function reEnableTextQuestion(currentIndex){
+    buttonIndexToEnable = currentIndex;
+    enableDisableFinishAndAddAnotherTextFieldButtons();
 }
 
 

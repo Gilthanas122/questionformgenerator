@@ -16,24 +16,43 @@
 <h1 th:text="|${answerForm.answerFormId} is your answerform's name|">Fill out your answerform</h1>
 
 <form th:action="@{|/answer-form/submit/${answerFormId}|}" method="post">
-    <table>
-        <tr th:each="question : ${answerForm.questions}" th:object="${question}">
-                <p th:text="*{questionText}"></p>
-                <th:block th:switch="*{getDiscriminatorValue()}">
-                    <div th:case="'CheckBoxQuestion'">
-                        <p th:text="CheckBox"> </p>
+    <table class="table table-hover">
+                <tr th:each="question, iter : ${answerForm.questions}" th:object="${question}">
+
+                        <p th:text="*{questionText}"></p>
+                    <div  th:id="|questions[${iter.index}]|">
+                        <th:block th:switch="*{getDiscriminatorValue()}">
+                            <div th:case="'CheckBoxQuestion'">
+                                <script th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    renderQuestion("checkbox" )
+                                    /*]]>*/
+                                </script>
+                            </div>
+                            <div th:case="'RadioButtonQuestion'">
+                                <script th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    renderQuestion("radiobutton")
+                                    /*]]>*/
+                                </script>
+                            </div>
+                            <div th:case="'ScaleQuestion'">
+                                <script th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    renderQuestion("scale", "answers", /*[[*{scale}]], [[${iter.index}]]*/)
+                                    /*]]>*/
+                                </script>
+                            </div>
+                            <div th:case="'TextQuestion'">
+                                <script th:inline="javascript">
+                                    /*<![CDATA[*/
+                                    renderQuestion("text", "answers", null, /*[[${iter.index}]]*/)
+                                    /*]]>*/
+                                </script>
+                            </div>
+                        </th:block>
                     </div>
-                    <div th:case="'RadioButtonQuestion'">
-                        <p th:text="Radio"> </p>
-                    </div>
-                    <div th:case="'ScaleQuestion'">
-                        <p th:text="Scale"> </p>
-                    </div>
-                    <div th:case="'TextQuestion'">
-                        <p th:text="Text"> </p>
-                    </div>
-                </th:block>
-        </tr>
+                </tr>
     </table>
 </form>
 

@@ -1,7 +1,4 @@
-function callAlert(input) {
-    alert("This is the input " + input);
-}
-
+var actualAnswerIndexForTextQuestion = 0;
 
 function renderQuestion(type, idName, scale, index) {
     let container = document.getElementById("questions[" + index + "]");
@@ -13,19 +10,24 @@ function renderQuestion(type, idName, scale, index) {
     }
 }
 
-
 function createTextNode(questionText, tagType) {
     let text = document.createElement(tagType);
     text.textContent = questionText;
-
     return text;
 }
 
 function createTextQuestionInput(index, idName) {
     let container = document.createElement("DIV");
+    container.id = "textanswers";
     let input = document.createElement("INPUT");
-    input.name = idName + "[" + index + "]";
+    input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "]";
+    let anotherInputButton = createAnotherInputButton(index, idName);
+    anotherInputButton.id = "textanswerbutton" + index;
+    let finishButton = createFinishButtonForTextAnswer(index);
+
     container.appendChild(input);
+    container.appendChild(anotherInputButton);
+    container.appendChild(finishButton);
     return container;
 }
 
@@ -71,11 +73,36 @@ function renderCheckBoxOrRadioButtonQuestion(type, idName, index, answerTexts) {
     return container;
 }
 
-function createAnotherInputButton() {
+function createAnotherInputButton(index, idName) {
     let anotherInputButton = document.createElement("BUTTON");
     anotherInputButton.textContent = "Create another input field";
     anotherInputButton.type = "button";
-    anotherInputButton.addEventListener("click", () => createAnotherInputField());
+    anotherInputButton.addEventListener("click", () => createAnotherInputField(index, idName));
     return anotherInputButton;
 }
+
+function createAnotherInputField(index, idName){
+    let container = document.getElementById("textanswers");
+    actualAnswerIndexForTextQuestion++;
+    let input = document.createElement("INPUT");
+    input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "]";
+
+    container.insertBefore(input, document.getElementById("textanswerbutton" + index));
+
+}
+
+function createFinishButtonForTextAnswer(index){
+    let finishButton = document.createElement("BUTTON");
+    finishButton.textContent = "FINISH THIS QUESTION";
+    finishButton.id = "finishbutton" + index;
+    finishButton.type = "button";
+    finishButton.addEventListener("click", () => resetActualAnswerIndexForTextQuestion());
+    return finishButton;
+}
+
+function resetActualAnswerIndexForTextQuestion(){
+    actualAnswerIndexForTextQuestion = 0;
+    console.log("actual answer index is " + actualAnswerIndexForTextQuestion);
+}
+
 

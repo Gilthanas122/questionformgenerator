@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@PreAuthorize("hasRole('ROLE_TEACHER')")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 @RequestMapping("question-form")
 public class QuestionFormController {
   private final QuestionFormService questionFormService;

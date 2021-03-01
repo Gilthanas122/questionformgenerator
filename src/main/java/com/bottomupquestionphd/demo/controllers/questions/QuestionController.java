@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@PreAuthorize("hasRole('ROLE_TEACHER')")
+@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 @RequestMapping("question")
 public class QuestionController {
   private final QuestionService questionService;

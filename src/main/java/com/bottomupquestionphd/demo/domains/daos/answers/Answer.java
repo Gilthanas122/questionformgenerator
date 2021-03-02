@@ -13,7 +13,7 @@ public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @OneToMany(mappedBy = "answer")
+  @OneToMany(mappedBy = "answer", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
 
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})

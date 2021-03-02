@@ -132,14 +132,5 @@ public class QuestionFormServiceImpl implements QuestionFormService {
         return questionForm;
     }
 
-    @Override
-    public boolean checkIfUserHasFilledOutQuestionForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
-        QuestionForm questionForm = findById(questionFormId);
-        return
-                questionForm
-                        .getAnswerForms()
-                        .stream()
-                        .filter(form -> form.getAppUser() != null)
-                        .anyMatch(form -> form.getAppUser().getId() == currentUser.getId());
-    }
+
 }

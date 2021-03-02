@@ -35,5 +35,4 @@ public interface QuestionFormService {
 
   QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException;
 
-  boolean checkIfUserHasFilledOutQuestionForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 }

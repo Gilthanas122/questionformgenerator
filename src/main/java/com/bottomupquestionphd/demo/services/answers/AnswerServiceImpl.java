@@ -31,19 +31,12 @@ public class AnswerServiceImpl implements AnswerService {
 
         for (int i = 0; i <questionForm.getQuestions().size() ; i++) {
             answers.get(i).setQuestion(questionForm.getQuestions().get(i));
+            answerRepository.saveAndFlush(answers.get(i));
         }
-        answerRepository.saveAll(answers);
     }
 
     @Override
     public void connectAnswersToActualAnswers(List<Answer> answers) {
-       /* for (Answer answer: answers) {
-            for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
-                actualAnswerText.setAnswer(answer);
-                actualAnswerTextService.saveActualAnswer(actualAnswerText);
-            }
-        }*/
-
         for (int i = 0; i <answers.size() ; i++) {
             Answer currentAnswer = answers.get(i);
             for (int j = 0; j <answers.get(i).getActualAnswerTexts().size() ; j++) {

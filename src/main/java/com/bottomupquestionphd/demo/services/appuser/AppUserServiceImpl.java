@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,6 +85,17 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public AppUser findById(long appUserId) throws NoSuchUserByIdException {
     return appUserRepository.findById(appUserId).orElseThrow(() -> new NoSuchUserByIdException("Couldn't find appuser with the given id"));
+  }
+
+  public void deleteAnswerFormIfUserHasOneAlready(long answerFormId, AppUser appUser){
+    List<AnswerForm> answerForms = appUser.getAnswerForms();
+    for (int i = 0; i <answerForms.size() ; i++) {
+      if (answerForms.get(i).getId() == answerFormId){
+        answerForms.remove(i);
+      }
+    }
+    appUser.setAnswerForms(answerForms);
+    appUserRepository.save(appUser);
   }
 
 }

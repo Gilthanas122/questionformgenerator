@@ -15,7 +15,7 @@
 
 
 
-<form th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.userId}|}" method="post">
+<form id="answerform" th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.userId}|}" method="post">
     <table class="table table-hover">
                 <tr th:each="question, iter : ${answerForm.questions}" th:object="${question}">
 
@@ -54,8 +54,6 @@
                     </div>
                 </tr>
     </table>
-    <button type="submit">Submit</button>
-    <button type="reset">Reset</button>
 </form>
 
 <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>

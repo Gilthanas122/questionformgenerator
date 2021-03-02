@@ -9,13 +9,15 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AppUserService {
 
-  void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, PasswordNotComplexEnoughException;
+    void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, PasswordNotComplexEnoughException;
 
-  LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException;
+    LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException;
 
-  AppUser findByUsername(String username) throws NoSuchUserNameException;
+    AppUser findByUsername(String username) throws NoSuchUserNameException;
 
-  AppUser findCurrentlyLoggedInUser();
+    AppUser findCurrentlyLoggedInUser();
 
     AppUser findById(long appUserId) throws NoSuchUserByIdException;
+
+    void deleteAnswerFormIfUserHasOneAlready(long answerFormId, AppUser appUser);
 }

@@ -1,6 +1,11 @@
 var actualAnswerIndexForTextQuestion = 0;
 var buttonIndexToEnable = 0;
 var currentTextAnswerIndex = 0;
+var numberOfInputFieldsCreated = 0;
+
+window.onload = function WindowLoad(event) {
+    createValidateResetAndSubmitButtons();
+}
 
 
 function renderQuestion(type, idName, scale, index) {
@@ -23,6 +28,7 @@ function createTextQuestionInput(index, idName) {
     let container = document.createElement("DIV");
     container.id = "textanswers" + index;
     let input = document.createElement("INPUT");
+    numberOfInputFieldsCreated++;
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
     let anotherInputButton = createAnotherInputButton(index, idName);
     anotherInputButton.disabled = true;
@@ -30,6 +36,8 @@ function createTextQuestionInput(index, idName) {
     let finishButton = createFinishButtonForTextAnswer(currentTextAnswerIndex);
 
     let reEnableButton = createReenableButton(currentTextAnswerIndex);
+
+
 
     container.appendChild(input);
     container.appendChild(anotherInputButton);
@@ -43,6 +51,7 @@ function createTextQuestionInput(index, idName) {
 function createScaleInput(index, scale, idName) {
     let container = document.createElement("DIV");
     let input = document.createElement("INPUT");
+    numberOfInputFieldsCreated++;
     input.name = idName + "[" + index + "].actualAnswerTexts[0].answerText" ;
     input.type = "range";
     input.max = scale;
@@ -69,6 +78,7 @@ function renderCheckBoxOrRadioButtonQuestion(type, idName, index, answerTexts) {
 
     for (let i = 0; i < answerTexts.length; i++) {
         let input = document.createElement("INPUT");
+        numberOfInputFieldsCreated++;
         input.id = type + index;
         if (type === "checkbox"){
             input.name = idName + "[" + index + "].actualAnswerTexts[" + i + "].answerText"
@@ -101,6 +111,7 @@ function createAnotherInputField(index, idName){
     let container = document.getElementById("textanswers" + index);
     actualAnswerIndexForTextQuestion++;
     let input = document.createElement("INPUT");
+    numberOfInputFieldsCreated++;
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText" ;
 
     container.insertBefore(input, document.getElementById("textanswerbutton" + buttonIndexToEnable));
@@ -157,6 +168,48 @@ function createReenableButton(currentIndex){
 function reEnableTextQuestion(currentIndex){
     buttonIndexToEnable = currentIndex;
     enableDisableFinishAndAddAnotherTextFieldButtons();
+}
+
+function createValidInputFieldsButton(){
+    let validateEmptyFieldsButton = document.createElement("BUTTON");
+    validateEmptyFieldsButton.textContent = "Validate Inputs";
+    validateEmptyFieldsButton.type = "button";
+    validateEmptyFieldsButton.addEventListener("click", () => checkEmptyInputFields());
+    return validateEmptyFieldsButton;
+
+}
+
+function createValidateResetAndSubmitButtons(){
+    let form = document.getElementById("answerform");
+    let submitButton = document.createElement("BUTTON");
+    submitButton.type= "submit";
+    submitButton.id = "submitbutton";
+    submitButton.textContent = "SUBMIT";
+    submitButton.disabled = true;
+
+    let resetButton = document.createElement("BUTTON");
+    resetButton.type = "reset";
+    resetButton.textContent = "RESET";
+
+    let validateButton = createValidInputFieldsButton();
+
+    form.appendChild(resetButton);
+    form.appendChild(validateButton);
+    form.appendChild(submitButton);
+}
+
+function checkEmptyInputFields(){
+    let inputFields = document.getElementsByTagName("INPUT");
+    let isThereAnEmptyField = false;
+    for (let i = 0; i < inputFields.length; i++) {
+        if (inputFields[i].value === "" || inputFields[i].value === null){
+            isThereAnEmptyField = true;
+        }
+    }
+    if (!isThereAnEmptyField){
+        let submitButton = document.getElementById("submitbutton");
+        submitButton.disabled = false;
+    }
 }
 
 

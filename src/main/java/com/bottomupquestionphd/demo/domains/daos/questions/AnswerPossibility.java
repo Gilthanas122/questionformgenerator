@@ -1,7 +1,5 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
-import com.bottomupquestionphd.demo.domains.daos.questions.MultipleAnswerQuestion;
-
 import javax.persistence.*;
 
 @Entity

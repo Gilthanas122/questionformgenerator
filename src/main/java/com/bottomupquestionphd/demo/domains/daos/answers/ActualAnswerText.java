@@ -2,7 +2,6 @@ package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "actualanswertexts")
 public class ActualAnswerText {
@@ -10,6 +9,7 @@ public class ActualAnswerText {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private String answerText;
+  private boolean deleted;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private Answer answer;
@@ -43,5 +43,13 @@ public class ActualAnswerText {
 
   public void setAnswerText(String answerText) {
     this.answerText = answerText;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 }

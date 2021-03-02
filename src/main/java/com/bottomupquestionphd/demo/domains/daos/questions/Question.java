@@ -1,8 +1,10 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,6 +21,9 @@ public class Question implements Comparable<Question> {
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private QuestionForm questionForm;
+
+  @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  private List<Answer> answers = new ArrayList<>();
 
   public Question(){}
 
@@ -76,5 +81,13 @@ public class Question implements Comparable<Question> {
 
   public List<String> getAnswerPossibilitiesTexts(){
     return null;
+  }
+
+  public List<Answer> getAnswers() {
+    return answers;
+  }
+
+  public void setAnswers(List<Answer> answers) {
+    this.answers = answers;
   }
 }

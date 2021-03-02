@@ -21,7 +21,7 @@ public class AnswerForm {
   @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private List<Answer> answers = new ArrayList<>();
 
-  @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @ManyToOne(cascade = CascadeType.ALL)
   private AppUser appUser;
 
   public AnswerForm(){}

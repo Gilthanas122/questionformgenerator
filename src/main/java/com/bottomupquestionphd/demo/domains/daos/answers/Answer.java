@@ -1,13 +1,13 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="answers")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "Answer_Type")
 public class Answer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,9 @@ public class Answer {
 
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private AnswerForm answerForm;
+
+  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  private Question question;
 
   public Answer() {
   }
@@ -52,5 +55,13 @@ public class Answer {
 
   public void setAnswerForm(AnswerForm answerForm) {
     this.answerForm = answerForm;
+  }
+
+  public Question getQuestion() {
+    return question;
+  }
+
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 }

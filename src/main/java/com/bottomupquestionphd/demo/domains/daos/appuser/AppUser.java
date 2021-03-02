@@ -28,8 +28,8 @@ public class AppUser {
   @OneToMany(mappedBy = "appUser")
   private List<QuestionForm> questionForms = new ArrayList<>();
 
-  @OneToOne(mappedBy = "appUser", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  private AnswerForm answerForm;
+  @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<AnswerForm> answerForms = new ArrayList<>();
 
   public AppUser(){}
 
@@ -115,11 +115,21 @@ public class AppUser {
     this.active = active;
   }
 
-  public AnswerForm getAnswerForm() {
-    return answerForm;
+  public List<AnswerForm> getAnswerForms() {
+    return answerForms;
   }
 
-  public void setAnswerForm(AnswerForm answerForm) {
-    this.answerForm = answerForm;
+  public void setAnswerForms(List<AnswerForm> answerForms) {
+    this.answerForms = answerForms;
+  }
+
+  public void addOneAnswerForm(AnswerForm answerForm){
+    this.answerForms.add(answerForm);
+  }
+
+  public boolean hasAnswerForm(long answerFormId){
+    return answerForms
+            .stream()
+            .anyMatch(form -> form.getId() == answerFormId);
   }
 }

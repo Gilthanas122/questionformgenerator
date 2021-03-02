@@ -41,12 +41,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         if (!hasTheUserAlreadyFilledOutThisQuestionForm) {
             return new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionForm.getQuestions());
         }
-        AnswerForm answerForm = currentUser
-                .getAnswerForms()
-                .stream()
-                .filter(form -> findAnswerFormBelongingToQuestionFormById(form.getId(), questionForm))
-                .findFirst()
-                .orElseThrow(() -> new AnswerFormNotFoundException("Couldn't find answerform with the given id"));
+        AnswerForm answerForm = findAnswerFormBelongingToUserByAGivenQuestionForm(questionForm, currentUser);
         return new CreateAnswerFormDTO(answerForm.getId(), questionFormId, currentUser.getId(), questionForm.getQuestions(), answerForm.getAnswers());
     }
 
@@ -115,5 +110,14 @@ public class AnswerFormServiceImpl implements AnswerFormService {
             }
         }
         return false;
+    }
+
+    private AnswerForm findAnswerFormBelongingToUserByAGivenQuestionForm(QuestionForm questionForm, AppUser currentUser) throws AnswerFormNotFoundException {
+       return currentUser
+                .getAnswerForms()
+                .stream()
+                .filter(form -> findAnswerFormBelongingToQuestionFormById(form.getId(), questionForm))
+                .findFirst()
+                .orElseThrow(() -> new AnswerFormNotFoundException("Couldn't find answerform with the given id"));
     }
 }

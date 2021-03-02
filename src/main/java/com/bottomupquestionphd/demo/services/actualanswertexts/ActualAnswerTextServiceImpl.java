@@ -19,6 +19,6 @@ public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
 
     @Override
     public void saveActualAnswer(ActualAnswerText actualAnswerText) {
-        this.actualAnswerTextRepository.save(actualAnswerText);
+        this.actualAnswerTextRepository.saveAndFlush(actualAnswerText);
     }
 }

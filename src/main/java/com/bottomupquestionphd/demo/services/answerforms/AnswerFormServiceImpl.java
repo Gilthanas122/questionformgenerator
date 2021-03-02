@@ -19,9 +19,6 @@ import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-
 @Service
 public class AnswerFormServiceImpl implements AnswerFormService {
     private final AnswerFormRepository answerFormRepository;
@@ -66,11 +63,10 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         answerForm.setAppUser(appUser);
         answerForm.setQuestionForm(questionForm);
         checkForEmptyAnswerText(answerForm);
-        answerService.connectQuestionsToAnswers(answerForm.getAnswers(), questionForm.getId());
         answerService.connectAnswersToActualAnswers(answerForm.getAnswers());
+        answerService.connectQuestionsToAnswers(answerForm.getAnswers(), questionForm.getId());
         connectAnswerFormToAnswers(answerForm);
         answerFormRepository.save(answerForm);
-
     }
 
     private void connectAnswerFormToAnswers(AnswerForm answerForm) {

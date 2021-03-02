@@ -37,10 +37,19 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void connectAnswersToActualAnswers(List<Answer> answers) {
-        for (Answer answer: answers) {
+       /* for (Answer answer: answers) {
             for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
                 actualAnswerText.setAnswer(answer);
                 actualAnswerTextService.saveActualAnswer(actualAnswerText);
+            }
+        }*/
+
+        for (int i = 0; i <answers.size() ; i++) {
+            Answer currentAnswer = answers.get(i);
+            for (int j = 0; j <answers.get(i).getActualAnswerTexts().size() ; j++) {
+                ActualAnswerText currentActualAnswer = currentAnswer.getActualAnswerTexts().get(j);
+                currentActualAnswer.setAnswer(currentAnswer);
+                actualAnswerTextService.saveActualAnswer(currentActualAnswer);
             }
         }
     }

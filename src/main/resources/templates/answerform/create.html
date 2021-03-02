@@ -13,9 +13,9 @@
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/error.html :: error" ></div>
 
-<h1 th:text="|${answerForm.answerFormId} is your answerform's name|">Fill out your answerform</h1>
 
-<form th:action="@{|/answer-form/submit/${answerFormId}|}" method="post">
+
+<form th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.userId}|}" method="post">
     <table class="table table-hover">
                 <tr th:each="question, iter : ${answerForm.questions}" th:object="${question}">
 

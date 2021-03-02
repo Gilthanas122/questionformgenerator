@@ -6,7 +6,7 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
-import com.bottomupquestionphd.demo.services.errors.ErrorService;
+import com.bottomupquestionphd.demo.services.error.ErrorService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -78,6 +78,11 @@ public class AppUserServiceImpl implements AppUserService {
     MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
     AppUser appUser = appUserRepository.findByUsername(myUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
     return appUser;
+  }
+
+  @Override
+  public AppUser findById(long appUserId) throws NoSuchUserByIdException {
+    return appUserRepository.findById(appUserId).orElseThrow(() -> new NoSuchUserByIdException("Couldn't find appuser with the given id"));
   }
 
 }

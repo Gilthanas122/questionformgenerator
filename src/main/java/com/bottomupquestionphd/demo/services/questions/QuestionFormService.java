@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
@@ -33,4 +34,6 @@ public interface QuestionFormService {
   void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
 
   QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException;
+
+  boolean checkIfUserHasFilledOutQuestionForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 }

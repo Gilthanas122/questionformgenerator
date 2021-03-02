@@ -31,6 +31,11 @@ public class AnswerForm {
     this.answers = answers;
   }
 
+  public AnswerForm(QuestionForm questionForm, AppUser appUser) {
+    this.questionForm = questionForm;
+    this.appUser = appUser;
+  }
+
   public AnswerForm(QuestionForm questionForm) {
     this.questionForm = questionForm;
   }

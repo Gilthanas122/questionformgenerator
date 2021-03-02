@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.errors;
+package com.bottomupquestionphd.demo.services.error;
 
 import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,6 @@ public class ErrorServiceImpl implements ErrorService {
     return errorMessage;
   }
 
-  @Override
-  public ErrorMessageDTO defaultExceptionResponse(Exception exception) {
-    ErrorMessageDTO error = new ErrorMessageDTO();
-    error.setStatus("error");
-    error.setMessage(exception.getMessage());
-    return error;
-  }
 
   @Override
   public List<String> checkInputNullFields(Object object) {

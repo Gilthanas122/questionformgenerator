@@ -16,4 +16,6 @@ public interface AppUserService {
   AppUser findByUsername(String username) throws NoSuchUserNameException;
 
   AppUser findCurrentlyLoggedInUser();
+
+    AppUser findById(long appUserId) throws NoSuchUserByIdException;
 }

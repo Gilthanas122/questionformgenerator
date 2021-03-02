@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import javax.persistence.*;
 
+
 @Entity
 @Table(name = "actualanswertexts")
 public class ActualAnswerText {

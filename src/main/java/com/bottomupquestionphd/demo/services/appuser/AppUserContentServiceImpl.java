@@ -18,7 +18,6 @@ public class AppUserContentServiceImpl implements AppUserContentService {
 
     @Override
     public List<AppUsersQuestionFormsDTO> findQuestionFormBelongingToUser(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException {
-        List<AppUsersQuestionFormsDTO> appUsersQuestionFormsDTOS = answerFormService.findQuestionFormsFilledOutByAppUserId(appUserId);
         return answerFormService.findQuestionFormsFilledOutByAppUserId(appUserId);
     }
 }

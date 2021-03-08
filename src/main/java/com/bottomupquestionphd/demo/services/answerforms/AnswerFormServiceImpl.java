@@ -98,7 +98,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) {
+    public List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) throws BelongToAnotherUserException {
+        appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         return answerFormRepository.findAllQuestionFormsFilledOutByUser(appUserId);
     }
 

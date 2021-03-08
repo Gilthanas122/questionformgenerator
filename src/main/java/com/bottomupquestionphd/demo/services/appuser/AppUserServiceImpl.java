@@ -98,4 +98,15 @@ public class AppUserServiceImpl implements AppUserService {
     appUserRepository.save(appUser);
   }
 
+  @Override
+  public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
+    AppUser appUser = appUserRepository.findByUsername(myUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
+    if (appUser.getId() != appUserId){
+      throw new BelongToAnotherUserException("Current data belongs to another user");
+    }
+  }
+
+
 }

@@ -12,4 +12,8 @@ public class AppUserQuestionFormServiceImpl implements AppUserQuestionFormServic
     }
 
 
+    @Override
+    public Object findQuestionFormBelongingToUser(long appUserId) {
+        return null;
+    }
 }

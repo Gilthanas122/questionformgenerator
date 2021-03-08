@@ -5,17 +5,18 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 @Controller
 public class PublicController {
@@ -57,30 +58,12 @@ public class PublicController {
   }
 
   @GetMapping("login")
-  public String renderLogin(Model model){
-    model.addAttribute("error", null);
+  public String renderLogin(Model model, @RequestParam (required = false) String error){
+    model.addAttribute("error", error);
     model.addAttribute("loginDTO", new LoginDTO());
     return "login";
   }
 
-  @PostMapping("login")
-  public String validateLogin(@ModelAttribute LoginDTO loginDTO, Model model){
-    try {
-      model.addAttribute("loginDTO", loginDTO);
-      LoginDTO appUserTokenDTO = appUserService.validateLogin(loginDTO);
-      model.addAttribute("appUserTokenDTO", appUserTokenDTO);
-      return "redirect:/app-user/landing-page";
-    }catch (InvalidLoginException e){
-      model.addAttribute("error", e.getMessage());
-    } catch (NoSuchUserNameException e) {
-      model.addAttribute("error", e.getMessage());
-    } catch (AppUserPasswordMissMatchException e) {
-      model.addAttribute("error", e.getMessage());
-    } catch (Exception e){
-      model.addAttribute("error", e.getMessage());
-    }
-    return "login";
-  }
 
   @GetMapping("/login-error")
   public String login(HttpServletRequest request, Model model){

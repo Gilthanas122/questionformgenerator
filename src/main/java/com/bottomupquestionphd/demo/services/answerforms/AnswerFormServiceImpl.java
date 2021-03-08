@@ -51,6 +51,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         AppUser appUser = appUserService.findById(appUserId);
 
         if (appUser.hasAnswerForm(answerFormId)){
+            answerService.setActualAnswersToDeleted(appUserId, questionFormId);
             appUserService.deleteAnswerFormIfUserHasOneAlready(answerFormId, appUser);
         }
         appUser.addOneAnswerForm(answerForm);
@@ -58,6 +59,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         answerForm.setAppUser(appUser);
         answerForm.setQuestionForm(questionForm);
         checkForEmptyAnswerText(answerForm);
+
         answerService.connectAnswersToActualAnswers(answerForm.getAnswers());
         answerService.connectQuestionsToAnswers(answerForm.getAnswers(), questionForm.getId());
         connectAnswerFormToAnswers(answerForm);

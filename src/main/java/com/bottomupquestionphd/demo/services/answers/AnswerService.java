@@ -13,4 +13,6 @@ public interface AnswerService {
     void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
     void connectAnswersToActualAnswers(List<Answer> answers);
+
+    void setActualAnswersToDeleted(long appUserId, long questionFormId);
 }

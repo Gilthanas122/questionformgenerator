@@ -13,6 +13,8 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private boolean deleted;
+
     @OneToMany(mappedBy = "answer", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
 
@@ -63,5 +65,13 @@ public class Answer {
 
     public void setQuestion(Question question) {
         this.question = question;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

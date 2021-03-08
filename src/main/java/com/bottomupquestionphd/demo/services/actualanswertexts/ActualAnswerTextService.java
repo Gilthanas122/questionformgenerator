@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface ActualAnswerTextService {
 
-    void setToDeleted(long answerId);
+    void setToDeleted(List<Long> answerIds);
 
     void saveActualAnswer(ActualAnswerText actualAnswerText);
 }

@@ -46,4 +46,11 @@ public class AnswerServiceImpl implements AnswerService {
             }
         }
     }
+
+    @Override
+    public void setActualAnswersToDeleted(long appUserId, long questionFormId) {
+        List<Long> answerIdsToBeDeleted = answerRepository.findAllAnswerToBeDeleted(appUserId);
+        answerRepository.setAnswerToDeletedByQuestionFormId(questionFormId);
+        actualAnswerTextService.setToDeleted(answerIdsToBeDeleted);
+    }
 }

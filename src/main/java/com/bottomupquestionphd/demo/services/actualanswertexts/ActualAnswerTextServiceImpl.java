@@ -4,6 +4,8 @@ import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.repositories.ActualAnswerTextRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
     private final ActualAnswerTextRepository actualAnswerTextRepository;
@@ -13,8 +15,10 @@ public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
     }
 
     @Override
-    public void setToDeleted(long answerId) {
-        actualAnswerTextRepository.setElementsToDeleted(answerId);
+    public void setToDeleted(List<Long> answerIds) {
+        for (int i = 0; i < answerIds.size(); i++) {
+            actualAnswerTextRepository.setElementsToDeleted(answerIds.get(i));
+        }
     }
 
     @Override

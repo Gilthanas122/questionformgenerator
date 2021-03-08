@@ -19,6 +19,8 @@ import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AnswerFormServiceImpl implements AnswerFormService {
     private final AnswerFormRepository answerFormRepository;
@@ -50,7 +52,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     public void saveAnswerForm(AnswerForm answerForm, long answerFormId, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
         AppUser appUser = appUserService.findById(appUserId);
 
-        if (appUser.hasAnswerForm(answerFormId)){
+        if (appUser.hasAnswerForm(answerFormId)) {
             answerService.setActualAnswersToDeleted(appUserId, questionFormId);
             appUserService.deleteAnswerFormIfUserHasOneAlready(answerFormId, appUser);
         }
@@ -67,7 +69,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     private void connectAnswerFormToAnswers(AnswerForm answerForm) {
-        for (Answer answer: answerForm.getAnswers()) {
+        for (Answer answer : answerForm.getAnswers()) {
             answer.setAnswerForm(answerForm);
         }
     }
@@ -105,9 +107,9 @@ public class AnswerFormServiceImpl implements AnswerFormService {
                         .anyMatch(form -> form.getAppUser().getId() == currentUser.getId());
     }
 
-    public boolean findAnswerFormBelongingToQuestionFormById(long answerFormId, QuestionForm questionForm){
-        for (AnswerForm answerform: questionForm.getAnswerForms()) {
-            if (answerform.getId() == answerFormId){
+    public boolean findAnswerFormBelongingToQuestionFormById(long answerFormId, QuestionForm questionForm) {
+        for (AnswerForm answerform : questionForm.getAnswerForms()) {
+            if (answerform.getId() == answerFormId) {
                 return true;
             }
         }
@@ -115,7 +117,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     private AnswerForm findAnswerFormBelongingToUserByAGivenQuestionForm(QuestionForm questionForm, AppUser currentUser) throws AnswerFormNotFoundException {
-       return currentUser
+        return currentUser
                 .getAnswerForms()
                 .stream()
                 .filter(form -> findAnswerFormBelongingToQuestionFormById(form.getId(), questionForm))

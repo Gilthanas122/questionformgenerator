@@ -80,6 +80,7 @@ function renderCheckBoxOrRadioButtonQuestion(type, idName, index, answerTexts) {
         let input = document.createElement("INPUT");
         numberOfInputFieldsCreated++;
         input.id = type + index;
+        input.className = "radiocheckbox";
         if (type === "checkbox"){
             input.name = idName + "[" + index + "].actualAnswerTexts[" + i + "].answerText"
         }else{

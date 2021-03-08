@@ -52,7 +52,7 @@ public class AnswerFormController {
     public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId) {
         try {
             answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
-            return "redirect:/answer-form/list/" + appUserId;
+            return "redirect:/question-form/list/" + appUserId;
         } catch (MissingUserException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (NoSuchUserByIdException e) {
@@ -69,4 +69,5 @@ public class AnswerFormController {
         redirectAttributes.addFlashAttribute("answerForm", answerForm);
         return "redirect:/answer-form/create/" + questionFormId;
     }
+
 }

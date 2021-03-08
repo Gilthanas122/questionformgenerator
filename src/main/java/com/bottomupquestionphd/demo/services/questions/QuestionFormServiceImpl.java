@@ -3,9 +3,11 @@ package com.bottomupquestionphd.demo.services.questions;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
@@ -132,5 +134,13 @@ public class QuestionFormServiceImpl implements QuestionFormService {
         return questionForm;
     }
 
+    @Override
+    public List<AppUsersQuestionFormsDTO> findQuestionFormsByAppUserId(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException {
+        AppUser appUser = appUserService.findById(appUserId);
+        if (appUser.getId() != appUserService.findCurrentlyLoggedInUser().getId()){
+            throw new BelongToAnotherUserException("This question form doesn't belong to your user");
+        }
+        return questionFormRepository.findAllbyAppUserIdSelectTitleAndId(appUserId);
+    }
 
 }

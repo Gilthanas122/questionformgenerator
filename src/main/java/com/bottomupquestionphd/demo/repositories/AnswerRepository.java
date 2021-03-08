@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.repositories;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,5 +21,4 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("SELECT a.id FROM Answer a WHERE a.answerForm.id = ?1")
     List<Long> findAllAnswerToBeDeleted(long appUserId);
-
 }

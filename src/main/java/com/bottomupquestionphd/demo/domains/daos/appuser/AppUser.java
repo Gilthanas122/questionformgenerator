@@ -25,7 +25,7 @@ public class AppUser {
   private String roles = "ROLE_USER";
   private boolean disabled;
 
-  @OneToMany(mappedBy = "appUser")
+  @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private List<QuestionForm> questionForms = new ArrayList<>();
 
   @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)

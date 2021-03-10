@@ -30,6 +30,7 @@ function createTextQuestionInput(index, idName) {
     let input = document.createElement("INPUT");
     numberOfInputFieldsCreated++;
     input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
+    input.id= "textanswer"+currentTextAnswerIndex;
     let anotherInputButton = createAnotherInputButton(index, idName);
     anotherInputButton.disabled = true;
     anotherInputButton.id = "textanswerbutton" + currentTextAnswerIndex;
@@ -126,15 +127,13 @@ function createFinishButtonForTextAnswer(index){
     finishButton.type = "button";
     finishButton.className = "buttonsToDisableEnable";
     finishButton.disabled = true;
-    finishButton.addEventListener("click", () => resetActualAnswerIndexForTextQuestion());
+    finishButton.addEventListener("click", () => resetActualAnswerIndexForTextQuestion(currentTextAnswerIndex));
     return finishButton;
 }
 
-function resetActualAnswerIndexForTextQuestion(){
+function resetActualAnswerIndexForTextQuestion(currentTextAnswerIndex){
     actualAnswerIndexForTextQuestion = 0;
     buttonIndexToEnable++;
-    console.log("actual answer index is " + actualAnswerIndexForTextQuestion);
-    console.log("current text question index is " + buttonIndexToEnable);
     enableDisableFinishAndAddAnotherTextFieldButtons();
 }
 
@@ -193,6 +192,9 @@ function createValidateResetAndSubmitButtons(){
     let resetButton = document.createElement("BUTTON");
     resetButton.type = "reset";
     resetButton.textContent = "RESET";
+    resetButton.addEventListener('click', function (){
+        submitButton.disabled = true;
+    })
 
     let validateButton = createValidInputFieldsButton();
 
@@ -214,5 +216,12 @@ function checkEmptyInputFields(){
         submitButton.disabled = false;
     }
 }
+
+$(document).ready(function(){
+    var checked = $(".radiocheckbox input:checked").length > 0;
+    if (!checked){
+        alert("check me")
+    }
+});
 
 

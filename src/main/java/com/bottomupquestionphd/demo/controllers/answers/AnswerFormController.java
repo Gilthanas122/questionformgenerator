@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
@@ -29,16 +30,17 @@ public class AnswerFormController {
     public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
         try {
                 model.addAttribute("answerForm", answerFormService.createAnswerForm(questionFormId));
+            return "app-user/create";
         } catch (MissingUserException e) {
             model.addAttribute("error", e.getMessage());
         } catch (QuestionFormNotFoundException e) {
             model.addAttribute("error", e.getMessage());
+        } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
+            model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            e.printStackTrace();
         }
-
-        return "answerform/create";
+        return "redirect:/app-user/question-form/list";
     }
 
     @PostMapping("create/{answerFormId}/{questionFormId}/{appUserId}")
@@ -56,6 +58,8 @@ public class AnswerFormController {
         } catch (BelongToAnotherUserException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (MissingParamsException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -76,6 +80,8 @@ public class AnswerFormController {
         }catch (MissingUserException e){
             model.addAttribute("error", e.getMessage());
         }catch (AnswerFormNotFilledOutException e){
+            model.addAttribute("error", e.getMessage());
+        }catch (AnswerFormAlreadyFilledOutByCurrentUserException e){
             model.addAttribute("error", e.getMessage());
         }catch (Exception e){
             model.addAttribute("error", e.getMessage());

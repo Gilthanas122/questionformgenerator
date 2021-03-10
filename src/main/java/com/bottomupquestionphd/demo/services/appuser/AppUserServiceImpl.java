@@ -87,17 +87,6 @@ public class AppUserServiceImpl implements AppUserService {
     return appUserRepository.findById(appUserId).orElseThrow(() -> new NoSuchUserByIdException("Couldn't find appuser with the given id"));
   }
 
-  public void deleteAnswerFormIfUserHasOneAlready(long answerFormId, AppUser appUser){
-    List<AnswerForm> answerForms = appUser.getAnswerForms();
-    for (int i = 0; i <answerForms.size() ; i++) {
-      if (answerForms.get(i).getId() == answerFormId){
-        answerForms.remove(i);
-      }
-    }
-    appUser.setAnswerForms(answerForms);
-    appUserRepository.save(appUser);
-  }
-
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -107,6 +96,4 @@ public class AppUserServiceImpl implements AppUserService {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }
   }
-
-
 }

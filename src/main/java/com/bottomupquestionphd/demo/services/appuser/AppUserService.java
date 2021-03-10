@@ -19,7 +19,5 @@ public interface AppUserService {
 
     AppUser findById(long appUserId) throws NoSuchUserByIdException;
 
-    void deleteAnswerFormIfUserHasOneAlready(long answerFormId, AppUser appUser);
-
     void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException;
 }

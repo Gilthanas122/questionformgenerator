@@ -1,13 +1,9 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
-import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserQuestionFormsBelongsToUserDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
-import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -33,7 +29,7 @@ public class AppUserContentServiceImpl implements AppUserContentService {
     }
 
     @Override
-    public List<QuestionFormNotFilledOutByUserDTO>  findAllQuestionFormsNotFilledOutByUser(long appUserId) throws BelongToAnotherUserException {
+    public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormsNotFilledOutByUser(long appUserId) throws BelongToAnotherUserException {
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         List<Long> ids = answerFormService.findQuestionFormIdsFilledOutByUser(appUserId);
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);

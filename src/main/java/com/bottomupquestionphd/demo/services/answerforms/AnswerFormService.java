@@ -26,8 +26,6 @@ public interface AnswerFormService {
 
     boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
-    CreateAnswerFormDTO convertAnswerFormToCreateAnswerFormDTO(long questionFormId, AnswerForm answerForm) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
-
     List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) throws BelongToAnotherUserException;
 
     List<Long> findQuestionFormIdsFilledOutByUser(long appUserId);

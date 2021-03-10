@@ -91,13 +91,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public CreateAnswerFormDTO convertAnswerFormToCreateAnswerFormDTO(long questionFormId, AnswerForm answerForm) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
-        QuestionForm questionForm = questionFormService.findById(questionFormId);
-        AppUser appUser = appUserService.findCurrentlyLoggedInUser();
-        return new CreateAnswerFormDTO(answerForm.getId(), questionFormId, appUser.getId(), questionForm.getQuestions(), answerForm.getAnswers());
-    }
-
-    @Override
     public List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) throws BelongToAnotherUserException {
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         return answerFormRepository.findAllQuestionFormsFilledOutByUser(appUserId);

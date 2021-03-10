@@ -29,4 +29,6 @@ public interface AnswerFormService {
     CreateAnswerFormDTO convertAnswerFormToCreateAnswerFormDTO(long questionFormId, AnswerForm answerForm) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
     List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) throws BelongToAnotherUserException;
+
+    List<Long> findQuestionFormIdsFilledOutByUser(long appUserId);
 }

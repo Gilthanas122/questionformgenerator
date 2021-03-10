@@ -18,4 +18,7 @@ public interface AnswerFormRepository extends JpaRepository<AnswerForm, Long> {
     List<AppUsersQuestionFormsDTO> findAllQuestionFormsFilledOutByUser(long appUserId);
 
     Optional<Object> findById(long answerFormId);
+
+    @Query("SELECT q.id from AnswerForm a JOIN a.questionForm q where a.appUser.id = ?1")
+    List<Long> findAllQuestionFormIdsFilledOutByAppUser(long appUserId);
 }

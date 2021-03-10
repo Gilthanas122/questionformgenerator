@@ -20,8 +20,18 @@
         </ul>
     </span>
 
-    <span sec:authorize="hasRole('ROLE_TEACHER')">
+    <span sec:authorize="isAuthenticated()">
         <button class="btn btn-secondary-alert dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            User menu
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+            <a class="dropdown-item" th:href="@{/app-user/question-form/list-not-filled-out}">List available question forms</a>
+            <a class="dropdown-item" th:href="@{/app-user/question-form/list}">List question forms filled out by me</a>
+        </div>
+    </span>
+
+    <span sec:authorize="hasRole('ROLE_TEACHER') OR hasRole('ROLE_ADMIN')" >
+        <button class="btn btn-secondary-alert dropdown-toggle" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Teacher Menu
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
@@ -31,7 +41,7 @@
     </span>
 
     <span sec:authorize="hasRole('ROLE_ADMIN')">
-        <button class="btn btn-secondary-alert dropdown-toggle" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary-alert dropdown-toggle" type="button" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Admin Menu
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">

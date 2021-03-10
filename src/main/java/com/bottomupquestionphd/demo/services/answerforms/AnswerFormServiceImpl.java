@@ -97,14 +97,16 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public CreateAnswerFormDTO updateAnswerForm(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
+    public CreateAnswerFormDTO updateAnswerForm(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException {
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
-        checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
         AnswerForm answerForm = questionForm.getAnswerForms()
                 .stream()
                 .filter(a -> a.getId() == answerFormId)
                 .findFirst().orElse(null);
+        if (answerForm == null) {
+            throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it");
+        }
 
         CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(questionFormId, appUserId, answerFormId, questionForm.getQuestions(), answerForm.getAnswers());
         return createAnswerFormDTO;

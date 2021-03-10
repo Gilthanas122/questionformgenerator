@@ -157,7 +157,9 @@ function createReenableButton(currentIndex){
     let enableButton = document.createElement("BUTTON");
     enableButton.textContent = "Reenable to modify";
     enableButton.id = "reenablebutton" + currentIndex;
-    enableButton.disabled = true;
+    if (currentTextAnswerIndex !== 0){
+        enableButton.disabled = true;
+    }
     enableButton.className = "buttonsToDisableEnable";
     enableButton.type = "button";
     enableButton.addEventListener("click", () => reEnableTextQuestion(currentIndex));

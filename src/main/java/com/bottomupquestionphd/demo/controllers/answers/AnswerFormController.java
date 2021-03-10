@@ -29,8 +29,8 @@ public class AnswerFormController {
     @GetMapping("create/{questionFormId}")
     public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
         try {
-                model.addAttribute("answerForm", answerFormService.createAnswerForm(questionFormId));
-            return "app-user/create";
+            model.addAttribute("answerForm", answerFormService.createAnswerForm(questionFormId));
+            return "answerform/create";
         } catch (MissingUserException e) {
             model.addAttribute("error", e.getMessage());
         } catch (QuestionFormNotFoundException e) {
@@ -69,21 +69,19 @@ public class AnswerFormController {
     }
 
     @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
-    public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model){
+    public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
         try {
             model.addAttribute("answerForm", answerFormService.updateAnswerForm(questionFormId, answerFormId, appUserId));
             return "answerform/update";
-        }catch (BelongToAnotherUserException e){
+        } catch (BelongToAnotherUserException e) {
             model.addAttribute("error", e.getMessage());
-        }catch (QuestionFormNotFoundException e){
+        } catch (QuestionFormNotFoundException e) {
             model.addAttribute("error", e.getMessage());
-        }catch (MissingUserException e){
+        } catch (MissingUserException e) {
             model.addAttribute("error", e.getMessage());
-        }catch (AnswerFormNotFilledOutException e){
+        } catch (AnswerFormNotFilledOutException e) {
             model.addAttribute("error", e.getMessage());
-        }catch (AnswerFormAlreadyFilledOutByCurrentUserException e){
-            model.addAttribute("error", e.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
         return "app-user/landing-page";

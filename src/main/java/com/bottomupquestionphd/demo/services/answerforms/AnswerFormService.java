@@ -32,5 +32,5 @@ public interface AnswerFormService {
 
     List<Long> findQuestionFormIdsFilledOutByUser(long appUserId);
 
-    CreateAnswerFormDTO updateAnswerForm(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException, AnswerFormAlreadyFilledOutByCurrentUserException;
+    CreateAnswerFormDTO updateAnswerForm(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException;
 }

@@ -22,11 +22,11 @@ public class QueryServiceImpl implements QueryService {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.em = em;
     }
-    
+
     @Override
-    public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormNotFilledOutByUser(List<Long> ids){
+    public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormNotFilledOutByUser(List<Long> ids) {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
-        if (ids == null || ids.isEmpty()){
+        if (ids == null || ids.isEmpty()) {
             return namedParameterJdbcTemplate.query(
                     "SELECT id, name FROM questionforms WHERE deleted = 0", parameters,
                     (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"))

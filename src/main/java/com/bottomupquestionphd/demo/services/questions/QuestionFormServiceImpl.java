@@ -128,11 +128,8 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException, BelongToAnotherUserException {
-        QuestionForm questionForm = findById(questionFormId);
-        if (questionForm.getAppUser() == null) {
-            throw new MissingUserException("No user belonging to the question form");
-        }
+    public QuestionForm findByIdForAnswerForm(long questionFormId) {
+        QuestionForm questionForm = questionFormRepository.findById(questionFormId);
         return questionForm;
     }
 

@@ -103,7 +103,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
     @Override
     public boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
-        QuestionForm questionForm = questionFormService.findById(questionFormId);
+        QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
         return
                 questionForm
                         .getAnswerForms()

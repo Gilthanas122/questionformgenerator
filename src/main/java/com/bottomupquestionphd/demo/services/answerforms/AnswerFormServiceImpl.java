@@ -87,7 +87,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     public AnswerForm findAnswerFormById(long answerFormId) throws NoSuchAnswerformById {
-        return answerFormRepository.findById(answerFormId).orElseThrow(() -> new NoSuchAnswerformById("Couldn't find answerform belonging to the given id"));
+        return (AnswerForm) answerFormRepository.findById(answerFormId).orElseThrow(() -> new NoSuchAnswerformById("Couldn't find answerform belonging to the given id"));
     }
 
     @Override

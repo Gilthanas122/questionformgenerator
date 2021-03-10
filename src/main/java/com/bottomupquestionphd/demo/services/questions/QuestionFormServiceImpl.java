@@ -51,10 +51,8 @@ public class QuestionFormServiceImpl implements QuestionFormService {
         QuestionForm questionForm = questionFormRepository.findById(id).orElseThrow(() -> new QuestionFormNotFoundException("Question form doesn't exist with the provided id"));
         if (questionForm.getAppUser() == null) {
             throw new MissingUserException("No user belonging to the question form");
-        } else if (questionForm.getAppUser().getId() != appUserService.findCurrentlyLoggedInUser().getId()) {
-            throw new BelongToAnotherUserException("Given forms belongs to another user");
         }
-
+        appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
         return questionForm;
     }
 
@@ -69,7 +67,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public void updateQuestionForm(QuestionForm questionForm) throws QuestionFormNotFoundException, BelongToAnotherUserException {
+    public void updateQuestionForm(QuestionForm questionForm) {
         questionFormRepository.save(questionForm);
     }
 
@@ -137,9 +135,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     @Override
     public List<AppUsersQuestionFormsDTO> findQuestionFormsByAppUserId(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException {
         AppUser appUser = appUserService.findById(appUserId);
-        if (appUser.getId() != appUserService.findCurrentlyLoggedInUser().getId()){
-            throw new BelongToAnotherUserException("This question form doesn't belong to your user");
-        }
+        appUserService.checkIfCurrentUserMatchesUserIdInPath(appUser.getId());
         return questionFormRepository.findAllbyAppUserIdSelectTitleAndId(appUserId);
     }
 

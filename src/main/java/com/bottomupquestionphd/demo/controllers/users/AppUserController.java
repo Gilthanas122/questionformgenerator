@@ -33,11 +33,11 @@ public class AppUserController {
         }catch (Exception e){
             model.addAttribute("error", e.getMessage());
         }
-        return "landing-page";
+        return "app-user/landing-page";
     }
 
     @GetMapping("landing-page")
     public String renderLandingPage(){
-        return "landing-page";
+        return "app-user/landing-page";
     }
 }

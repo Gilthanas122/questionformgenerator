@@ -42,10 +42,11 @@ public class AnswerFormController {
     }
 
     @PostMapping("create/{answerFormId}/{questionFormId}/{appUserId}")
-    public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId) {
+    public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
         try {
             answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
-            return "redirect:/question-form/list/" + appUserId;
+            model.addAttribute("successMessage", "Question formed successfully filled out");
+            return "redirect:/app-user/landing-page/";
         } catch (MissingUserException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         } catch (NoSuchUserByIdException e) {

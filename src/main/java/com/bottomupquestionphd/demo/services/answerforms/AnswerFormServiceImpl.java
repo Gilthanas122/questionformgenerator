@@ -59,7 +59,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
             appUserService.deleteAnswerFormIfUserHasOneAlready(answerFormId, appUser);
         }
         appUser.addOneAnswerForm(answerForm);
-        QuestionForm questionForm = questionFormService.findById(questionFormId);
+        QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
         answerForm.setAppUser(appUser);
         answerForm.setQuestionForm(questionForm);
         checkForEmptyAnswerText(answerForm);
@@ -75,7 +75,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
             answer.setAnswerForm(answerForm);
         }
     }
-
 
     private void checkForEmptyAnswerText(AnswerForm answerForm) throws MissingParamsException {
         for (Answer answer : answerForm.getAnswers()) {

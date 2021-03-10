@@ -29,7 +29,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
-        QuestionForm questionForm = questionFormService.findById(questionFormId);
+        QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
 
         for (int i = 0; i <questionForm.getQuestions().size() ; i++) {
             answers.get(i).setQuestion(questionForm.getQuestions().get(i));

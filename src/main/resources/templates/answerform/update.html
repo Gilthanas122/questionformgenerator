@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Update Answerform</title>
-    <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<table class="table table-hover">
-
-    <tr th:each="question, iter : ${answerForm.questions}" >
+<form >
+    <tr th:each="question, itemStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
-        <div th:id="questionupdate[${iter.index}]">
+        <div>
             <th:block th:switch="${question.getDiscriminatorValue()}">
                 <div th:case="'CheckBoxQuestion'">
-                    <span th:each="answerPossibility, list : ${answerForm.answers[${iter.index}]}">
-                   <input th:field="answers[${iter.index}].actualAnswerTexts[${list.index}].actualAnswer" th:name="">
+                    <span th:each="answerPossibility, list : ${answerForm.answers[__${itemStat.index}__]}">
+                        <label th:text="${question[__${itemStat.index}__]}"></label>
+                   <input th:name="${answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].actualAnswer">
                     </span>
                 </div>
                 <div th:case="'RadioButtonQuestion'">
@@ -43,7 +44,10 @@
             </th:block>
         </div>
     </tr>
-</table>
+    </table>
+</form>
+
+
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

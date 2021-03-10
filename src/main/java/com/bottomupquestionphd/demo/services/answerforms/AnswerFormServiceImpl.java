@@ -6,8 +6,10 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.QuestionAndAnswersForUpdatingAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFoundException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -37,17 +39,16 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public CreateAnswerFormDTO createFirstAnswerForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, NoSuchUserByIdException, BelongToAnotherUserException, AnswerFormNotFoundException {
+    public CreateAnswerFormDTO createAnswerForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, NoSuchUserByIdException, BelongToAnotherUserException, AnswerFormNotFoundException {
         QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
         AppUser currentUser = appUserService.findCurrentlyLoggedInUser();
-        boolean hasTheUserAlreadyFilledOutThisQuestionForm = checkIfUserHasFilledOutAnswerForm(questionFormId, currentUser);
+        boolean hasTheUserAlreadyFilledOutThisQuestionForm = checkIfUserHasFilledOutAnswerForm(questionFormId, currentUser.getId());
         if (!hasTheUserAlreadyFilledOutThisQuestionForm) {
             return new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionForm.getQuestions());
         }
         AnswerForm answerForm = findAnswerFormBelongingToUserByAGivenQuestionForm(questionForm, currentUser);
         return new CreateAnswerFormDTO(answerForm.getId(), questionFormId, currentUser.getId(), questionForm.getQuestions(), answerForm.getAnswers());
     }
-
 
     @Override
     public void saveAnswerForm(AnswerForm answerForm, long answerFormId, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
@@ -102,17 +103,35 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, AppUser currentUser) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
+    public CreateAnswerFormDTO updateAnswerForm(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException {
+        appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
+        QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
+
+        boolean hasTheUserAlreadyFilledOutTheForm = checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
+        if (!hasTheUserAlreadyFilledOutTheForm) {
+            throw new AnswerFormNotFilledOutException("Can not update an answerform that hasn't been filled out before");
+        }
+        AnswerForm answerForm = questionForm.getAnswerForms()
+                .stream()
+                .filter(a -> a.getId() == answerFormId)
+                .findFirst().orElse(null);
+
+        CreateAnswerFormDTO createAnswerFormDTO =  new CreateAnswerFormDTO(questionFormId, appUserId, answerFormId, questionForm.getQuestions(), answerForm.getAnswers());
+        return createAnswerFormDTO;
+    }
+
+    @Override
+    public boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
         QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
         return
                 questionForm
                         .getAnswerForms()
                         .stream()
                         .filter(form -> form.getAppUser() != null)
-                        .anyMatch(form -> form.getAppUser().getId() == currentUser.getId());
+                        .anyMatch(form -> form.getAppUser().getId() == appUserId);
     }
 
-    public boolean findAnswerFormBelongingToQuestionFormById(long answerFormId, QuestionForm questionForm) {
+    private boolean findAnswerFormBelongingToQuestionFormById(long answerFormId, QuestionForm questionForm) {
         for (AnswerForm answerform : questionForm.getAnswerForms()) {
             if (answerform.getId() == answerFormId) {
                 return true;

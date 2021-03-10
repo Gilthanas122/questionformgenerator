@@ -14,6 +14,7 @@ public class AnswerForm {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private QuestionForm questionForm;
@@ -70,6 +71,14 @@ public class AnswerForm {
 
   public void setAppUser(AppUser appUser) {
     this.appUser = appUser;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 }
 

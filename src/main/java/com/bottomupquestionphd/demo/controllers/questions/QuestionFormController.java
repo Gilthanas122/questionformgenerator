@@ -79,8 +79,8 @@ public class QuestionFormController {
     try {
       model.addAttribute("questionFormId", questionFormId);
       questionFormService.finishQuestionForm(questionFormId);
-      model.addAttribute("successMessage", "Question Form succesfully created");
-      return "redirect:/app-user/landing-page";
+      model.addAttribute("successMessage", "Question Form successfully created");
+      return "app-user/landing-page";
 
     } catch (MissingUserException e) {
       model.addAttribute("error", e.getMessage());

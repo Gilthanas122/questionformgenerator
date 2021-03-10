@@ -3,17 +3,16 @@ package com.bottomupquestionphd.demo.services.questions;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,11 +24,14 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     private final QuestionFormRepository questionFormRepository;
     private final AppUserService appUserService;
     private final QuestionConversionService questionConversionService;
+    private final QueryService queryService;
 
-    public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService) {
+
+    public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService, QueryService queryService) {
         this.questionFormRepository = questionFormRepository;
         this.appUserService = appUserService;
         this.questionConversionService = questionConversionService;
+        this.queryService = queryService;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     private void checkIfQuestionFormExists(long questionFormid) throws QuestionFormNotFoundException {
-        if (!questionFormRepository.existsById(questionFormid)){
+        if (!questionFormRepository.existsById(questionFormid)) {
             throw new QuestionFormNotFoundException("Question form doesn't exist with the provided id");
         }
     }
@@ -136,8 +138,9 @@ public class QuestionFormServiceImpl implements QuestionFormService {
 
     @Override
     public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
-       checkIfQuestionFormExists(questionFormId);
+        checkIfQuestionFormExists(questionFormId);
         questionFormRepository.deleteQuestionFormById(questionFormId);
+        queryService.deleteQuestionsBelongingToQuestionForm(questionFormId);
     }
 
 }

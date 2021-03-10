@@ -27,4 +27,6 @@ public interface QuestionFormRepository extends JpaRepository<QuestionForm, Long
   @Transactional
   @Query("UPDATE QuestionForm q SET q.deleted = 1 where q.id = ?1 ")
     void deleteQuestionFormById(long questionFormId);
+
 }
+

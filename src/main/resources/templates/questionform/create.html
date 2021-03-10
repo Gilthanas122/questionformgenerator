@@ -9,7 +9,7 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 
-<div th:replace="fragments/error.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error" ></div>
 
 <h1>Start creating your own question form</h1>
 <form th:action="@{/question-form/create}" method="post" th:object="${questionForm}">

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("answer-form")
 public class AnswerFormController {
-    private AnswerFormService answerFormService;
+    private final AnswerFormService answerFormService;
 
     public AnswerFormController(AnswerFormService answerFormService) {
         this.answerFormService = answerFormService;

@@ -7,12 +7,8 @@
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"> </header>
-<div th:replace="fragments/error.html :: error" ></div>
-
-<h1 th:text="${successMessage != null} ? ${successMessage}: 'Hello there!'">
-</h1>
-
-
+<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: success" ></div>
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

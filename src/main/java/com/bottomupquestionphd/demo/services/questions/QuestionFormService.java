@@ -38,4 +38,6 @@ public interface QuestionFormService {
   QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException;
 
     List<AppUsersQuestionFormsDTO> findQuestionFormsByAppUserId(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException;
+
+    void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException;
 }

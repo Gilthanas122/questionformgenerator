@@ -20,7 +20,7 @@ import java.util.List;
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("admin")
 public class AdminController {
-  private AdminAppUserService adminAppUserService;
+  private final AdminAppUserService adminAppUserService;
 
   public AdminController(AdminAppUserService adminAppUserService) {
     this.adminAppUserService = adminAppUserService;

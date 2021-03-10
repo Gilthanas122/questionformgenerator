@@ -9,7 +9,7 @@
 <body>
 
 <header th:replace="fragments/navbar.html :: navbar"> </header>
-<div th:replace="fragments/error.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error" ></div>
 
 <h1>Question forms created by you</h1>
 <table class="table table-hover">
@@ -33,6 +33,7 @@
         <td><a type="button" th:href="@{|/question-form/update/*{id}|}">EDIT QUESTION FORM</a></td>
         <td><a type="button" th:href="@{|/question/create/*{id}|}">ADD Question</a></td>
         <td><a type="button" th:href="@{|/question-form/list-questions/*{id}|}">List Questions</a></td>
+        <td><a type="button" th:href="@{|/question-form/delete/*{id}|}">DELETE Question Form</a></td>
 
     </tr>
     </tbody>

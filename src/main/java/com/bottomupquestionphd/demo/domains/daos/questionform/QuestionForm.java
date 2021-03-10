@@ -18,6 +18,7 @@ public class QuestionForm {
   private String name;
   private String description;
   private boolean finished;
+  private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private AppUser appUser;
@@ -98,5 +99,13 @@ public class QuestionForm {
 
   public void addAnswerForm(AnswerForm answerForm) {
     this.answerForms.add(answerForm);
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 }

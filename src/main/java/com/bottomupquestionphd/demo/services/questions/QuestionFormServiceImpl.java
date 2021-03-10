@@ -139,4 +139,12 @@ public class QuestionFormServiceImpl implements QuestionFormService {
         return questionFormRepository.findAllbyAppUserIdSelectTitleAndId(appUserId);
     }
 
+    @Override
+    public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
+        if (!questionFormRepository.existsById(questionFormId)){
+            throw  new QuestionFormNotFoundException("No such questionform in database by id " + questionFormId);
+        }
+        questionFormRepository.deleteQuestionFormById(questionFormId);
+    }
+
 }

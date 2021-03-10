@@ -10,5 +10,9 @@
     <p th:text="${error}"></p>
 </div>
 
+<div id="successMessage" th:fragment="success" th:if="${succesMessage} != null">
+    <h2 th:text="${successMessage}"></h2>
+</div>
+
 </body>
 </html>

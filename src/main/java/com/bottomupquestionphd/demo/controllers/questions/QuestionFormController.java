@@ -113,4 +113,17 @@ public class QuestionFormController {
     }
     return "questionform/list";
   }
+
+  @GetMapping("delete/{questionFormId}")
+  public String deleteQuestionForm(@PathVariable long questionFormId, Model model){
+    try {
+      questionFormService.deleteQuestionForm(questionFormId);
+      model.addAttribute("success", "Question Form with " + questionFormId + "successfully deleted");
+    }catch (QuestionFormNotFoundException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      model.addAttribute("error", e.getMessage());
+    }
+    return "redirect:/question-form/list";
+  }
 }

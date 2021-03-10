@@ -10,7 +10,7 @@
 <header th:insert="fragments/navbar.html :: navbar"> </header>
 <h2>Login your user here!</h2>
 
-<div th:replace="fragments/error.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error" ></div>
 <form action="login" method="post">
     <div>
         <label for="username">Enter your username</label>

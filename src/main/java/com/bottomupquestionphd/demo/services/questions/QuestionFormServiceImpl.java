@@ -48,12 +48,19 @@ public class QuestionFormServiceImpl implements QuestionFormService {
 
     @Override
     public QuestionForm findById(long id) throws QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
-        QuestionForm questionForm = questionFormRepository.findById(id).orElseThrow(() -> new QuestionFormNotFoundException("Question form doesn't exist with the provided id"));
+        checkIfQuestionFormExists(id);
+        QuestionForm questionForm = questionFormRepository.findById(id);
         if (questionForm.getAppUser() == null) {
             throw new MissingUserException("No user belonging to the question form");
         }
         appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
         return questionForm;
+    }
+
+    private void checkIfQuestionFormExists(long questionFormid) throws QuestionFormNotFoundException {
+        if (!questionFormRepository.existsById(questionFormid)){
+            throw new QuestionFormNotFoundException("Question form doesn't exist with the provided id");
+        }
     }
 
     @Override
@@ -64,11 +71,6 @@ public class QuestionFormServiceImpl implements QuestionFormService {
             throw new NoQuestionFormsInDatabaseException("No question form belonging to the user.");
         }
         return questionForms;
-    }
-
-    @Override
-    public void updateQuestionForm(QuestionForm questionForm) {
-        questionFormRepository.save(questionForm);
     }
 
     @Override
@@ -124,8 +126,8 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException {
-        QuestionForm questionForm = questionFormRepository.findById(questionFormId).orElseThrow(() -> new QuestionFormNotFoundException("Question form doesn't exist with the provided id"));
+    public QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException, BelongToAnotherUserException {
+        QuestionForm questionForm = findById(questionFormId);
         if (questionForm.getAppUser() == null) {
             throw new MissingUserException("No user belonging to the question form");
         }
@@ -133,17 +135,8 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public List<AppUsersQuestionFormsDTO> findQuestionFormsByAppUserId(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException {
-        AppUser appUser = appUserService.findById(appUserId);
-        appUserService.checkIfCurrentUserMatchesUserIdInPath(appUser.getId());
-        return questionFormRepository.findAllbyAppUserIdSelectTitleAndId(appUserId);
-    }
-
-    @Override
     public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
-        if (!questionFormRepository.existsById(questionFormId)){
-            throw  new QuestionFormNotFoundException("No such questionform in database by id " + questionFormId);
-        }
+       checkIfQuestionFormExists(questionFormId);
         questionFormRepository.deleteQuestionFormById(questionFormId);
     }
 

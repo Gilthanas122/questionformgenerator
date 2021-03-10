@@ -1,11 +1,9 @@
 package com.bottomupquestionphd.demo.services.questions;
 
-import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
-import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
@@ -25,8 +23,6 @@ public interface QuestionFormService {
 
   List<QuestionForm> findAll() throws NoQuestionFormsInDatabaseException;
 
-  void updateQuestionForm(QuestionForm questionForm) throws QuestionFormNotFoundException, BelongToAnotherUserException;
-
   void finishQuestionForm(long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NotEnoughQuestionsToCreateFormException;
 
   List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
@@ -35,9 +31,7 @@ public interface QuestionFormService {
 
   void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
 
-  QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException;
-
-    List<AppUsersQuestionFormsDTO> findQuestionFormsByAppUserId(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException;
+  QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException, BelongToAnotherUserException;
 
     void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException;
 }

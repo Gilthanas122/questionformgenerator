@@ -18,6 +18,7 @@ public class Question implements Comparable<Question> {
   private long id;
   private String questionText;
   private Integer listPosition;
+  private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private QuestionForm questionForm;
@@ -89,5 +90,13 @@ public class Question implements Comparable<Question> {
 
   public void setAnswers(List<Answer> answers) {
     this.answers = answers;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 }

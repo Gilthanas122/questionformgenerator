@@ -35,14 +35,13 @@ public class AppUserContentServiceImpl implements AppUserContentService {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
         if (ids == null || ids.isEmpty()){
             return namedParameterJdbcTemplate.query(
-                    "SELECT id, name FROM questionforms ", parameters,
+                    "SELECT id, name FROM questionforms WHERE deleted = 0", parameters,
                     (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"))
             );
         }
 
-
         return namedParameterJdbcTemplate.query(
-                "SELECT id, name FROM questionforms where id NOT IN (:ids)", parameters,
+                "SELECT id, name FROM questionforms where id NOT IN (:ids) AND deleted=0", parameters,
                 (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"))
         );
     }

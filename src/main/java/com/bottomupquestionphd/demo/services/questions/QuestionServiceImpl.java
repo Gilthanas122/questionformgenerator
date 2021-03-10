@@ -52,14 +52,22 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundByIdException("No question with the given id"));
+        checkIfQuestionExistsById(questionId);
+        Question question = questionRepository.findById(questionId);
         appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
         return questionConversionService.convertFromQuestionToQuestionWithDType(question);
     }
 
+    private void checkIfQuestionExistsById(long questionId) throws QuestionNotFoundByIdException {
+        if (!questionRepository.existsById(questionId)){
+            throw new QuestionNotFoundByIdException("No question with the given id");
+        }
+    }
+
     @Override
-    public Question findById(long questionIq) throws QuestionNotFoundByIdException {
-        return questionRepository.findById(questionIq).orElseThrow(() -> new QuestionNotFoundByIdException("Couldn't find question with the given id"));
+    public Question findById(long questionId) throws QuestionNotFoundByIdException {
+        checkIfQuestionExistsById(questionId);
+        return questionRepository.findById(questionId);
     }
 
     @Override
@@ -93,6 +101,7 @@ public class QuestionServiceImpl implements QuestionService {
     public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
         Question question = findById(questionId);
         long formId = question.getQuestionForm().getId();
+
         appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
         questionRepository.delete(question);
         questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());

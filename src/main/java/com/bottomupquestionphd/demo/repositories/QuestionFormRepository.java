@@ -14,10 +14,13 @@ import java.util.List;
 public interface QuestionFormRepository extends JpaRepository<QuestionForm, Long> {
   boolean existsByName(String name);
 
+  @Query("SELECT q from QuestionForm q WHERE q.id= ?1 AND q.deleted = 0")
+  QuestionForm findById(long questionFormId);
+
   @Query("SELECT q from QuestionForm q where q.appUser.id = :id AND q.deleted =0")
   List<QuestionForm> findAllByAppUserId(long id);
 
-  @Query("SELECT q.name, q.id from QuestionForm q where q.appUser.id = ?1")
+  @Query("SELECT q.name, q.id from QuestionForm q where q.appUser.id = ?1 AND q.deleted =0")
   List<AppUsersQuestionFormsDTO> findAllbyAppUserIdSelectTitleAndId(long id);
 
   @Modifying

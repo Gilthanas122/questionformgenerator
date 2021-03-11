@@ -11,23 +11,24 @@
 <div th:replace="fragments/messages.html :: error"></div>
 <form >
     <tr th:each="question, itemStat : ${answerForm.questions}">
-        <p th:text="${question.questionText}"></p>
+        <p th:text="|QuestionText: ${question.questionText}|"></p>
         <div>
             <th:block th:switch="${question.getDiscriminatorValue()}">
+
                 <div th:case="'CheckBoxQuestion'">
-                    <p th:text="${question.questionText}"></p>
-                    <span th:each="answer, list : ${answerForm.answers[__${itemStat.index}__]}">
-                        <label th:text="${question.answerPossibilities[__${itemStat.index}__].answerText}"></label>
+                        <span th:each="answerPossibility, list: ${question.answerPossibilities}">
+                            <label th:text="${answerPossibility.answerText}"></label>
                    <input type="checkbox" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText">
-                    </span>
+                        </span>
                 </div>
+
                 <div th:case="'RadioButtonQuestion'">
-                    <script th:inline="javascript">
-                        /*<![CDATA[*/
-                        renderCheckBoxOrRadioButtonQuestion("radio", "answers", /*[[${iter.index}]], [[*{getAnswerPossibilitiesTexts()}]]*/)
-                        /*]]>*/
-                    </script>
+                        <span th:each="answerPossibility, list: ${question.answerPossibilities}">
+                            <label th:text="${answerPossibility.answerText}"></label>
+                   <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText">
+                        </span>
                 </div>
+
                 <div th:case="'ScaleQuestion'">
                     <script th:inline="javascript">
                         /*<![CDATA[*/
@@ -35,6 +36,7 @@
                         /*]]>*/
                     </script>
                 </div>
+
                 <div th:case="'TextQuestion'">
                     <script th:inline="javascript">
                         /*<![CDATA[*/

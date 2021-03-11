@@ -28,14 +28,16 @@ public class QueryServiceImpl implements QueryService {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
         if (ids == null || ids.isEmpty()) {
             return namedParameterJdbcTemplate.query(
-                    "SELECT id, name FROM questionforms WHERE deleted = 0", parameters,
-                    (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"))
+                    "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id  " +
+                            "WHERE qf.deleted = 0 GROUP BY qf.id", parameters,
+                    (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
             );
         }
 
         return namedParameterJdbcTemplate.query(
-                "SELECT id, name FROM questionforms where id NOT IN (:ids) AND deleted=0", parameters,
-                (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"))
+                "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id  " +
+                        "WHERE qf.id NOT IN (:ids) AND qf.deleted = 0 GROUP BY qf.id", parameters,
+                (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
         );
     }
 

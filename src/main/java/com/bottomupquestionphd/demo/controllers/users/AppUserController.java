@@ -63,10 +63,7 @@ public class AppUserController {
     @GetMapping("/question-form/list-not-filled-out/{appUserId}")
     public String returnQuestionFormsNotFilledOutByUser(@PathVariable long appUserId, Model model) {
         try {
-            if (appUserId == 0) {
-                appUserId = appUserContentService.findCurrentlyLoggedInUsersId();
-            }
-            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser(appUserId));
+            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser());
             return "app-user/list-not-filled-out-question-forms";
         } catch (BelongToAnotherUserException e) {
             model.addAttribute("error", e.getMessage());
@@ -79,8 +76,7 @@ public class AppUserController {
     @GetMapping("/question-form/list-not-filled-out")
     public String returnQuestionFormsNotFilledOutByUserFromNavbar(Model model) {
         try {
-            long appUserId = appUserContentService.findCurrentlyLoggedInUsersId();
-            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser(appUserId));
+            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser());
             return "app-user/list-not-filled-out-question-forms";
         } catch (BelongToAnotherUserException e) {
             model.addAttribute("error", e.getMessage());

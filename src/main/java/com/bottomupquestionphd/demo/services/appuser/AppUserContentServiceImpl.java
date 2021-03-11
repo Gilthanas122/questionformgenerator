@@ -29,7 +29,8 @@ public class AppUserContentServiceImpl implements AppUserContentService {
     }
 
     @Override
-    public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormsNotFilledOutByUser(long appUserId) throws BelongToAnotherUserException {
+    public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormsNotFilledOutByUser() throws BelongToAnotherUserException {
+        long appUserId = appUserService.findCurrentlyLoggedInUser().getId();
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         List<Long> ids = answerFormService.findQuestionFormIdsFilledOutByUser(appUserId);
         return queryService.findAllQuestionFormNotFilledOutByUser(ids);

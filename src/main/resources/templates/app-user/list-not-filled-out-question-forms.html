@@ -18,10 +18,11 @@
         <tr>
             <th>Question Form Name</th>
             <th>Fill it out</th>
+            <th>Number of questions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="questionForm : ${questionForms}" th:object="${questionForm}">
+        <tr th:each="questionForm, iter : ${questionForms}" th:object="${questionForm}">
             <td th:text="*{name}"></td>
             <td>
                 <a class="button" th:href="@{|/answer-form/create/*{questionFormId}|}">

@@ -14,7 +14,7 @@ import java.util.List;
 public interface AppUserContentService {
     List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByUser(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException;
 
-    List<QuestionFormNotFilledOutByUserDTO>  findAllQuestionFormsNotFilledOutByUser(long appUserId) throws BelongToAnotherUserException;
+    List<QuestionFormNotFilledOutByUserDTO>  findAllQuestionFormsNotFilledOutByUser() throws BelongToAnotherUserException;
 
     long findCurrentlyLoggedInUsersId();
 }

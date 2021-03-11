@@ -9,54 +9,60 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<form >
+<form>
     <tr th:each="question, itemStat : ${answerForm.questions}">
-        <p th:text="|QuestionText: ${question.questionText}|"></p>
+        <p th:text="${question.questionText}"></p>
         <div>
             <th:block th:switch="${question.getDiscriminatorValue()}">
 
                 <div th:case="'CheckBoxQuestion'">
                         <span th:each="answerPossibility, list: ${question.answerPossibilities}">
                             <label th:text="${answerPossibility.answerText}"></label>
-                   <input type="checkbox" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText">
+                   <input type="checkbox"
+                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                          th:value="${answerPossibility.answerText}">
                         </span>
                 </div>
 
                 <div th:case="'RadioButtonQuestion'">
                         <span th:each="answerPossibility, list: ${question.answerPossibilities}">
                             <label th:text="${answerPossibility.answerText}"></label>
-                   <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText">
+                   <input type="radio"
+                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                          th:value="${answerPossibility.answerText}">
                         </span>
                 </div>
 
                 <div th:case="'ScaleQuestion'">
-                   <input type="range" th:id="|rangeInput${itemStat.index}|"
-                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText" th:max="${question.scale}"
-                          onchange="updateTextInput(this.value, this.id);">
+                    <input type="range" th:id="|rangeInput${itemStat.index}|"
+                           th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText"
+                           th:max="${question.scale}"
+                           th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[0].answerText}"
+                           onchange="updateTextInput(this.value, this.id);">
                     <input type="text" th:id="|rangeOutPut${itemStat.index}|" value="">
                 </div>
 
                 <div th:case="'TextQuestion'">
+                    <span th:each="actualAnswerText, list: ${answerForm.answers[__${itemStat.index}__].actualAnswerTexts}">
+                        <input type="text"
+                               th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                               th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}">
+                    </span>
+
                 </div>
             </th:block>
         </div>
     </tr>
     </table>
-
-    <script>
-        function updateTextInput(val, id) {
-            console.log(id);
-            let lastChar = id.substr(id.length -1);
-            console.log(lastChar);
-            document.getElementById('rangeOutPut' + lastChar).value=val;
-        }
-    </script>
 </form>
-
 
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>
 <script th:replace="fragments/scripts.html :: bootstrap"></script>
+<script type="text/javascript" th:src="@{/js/updateAnswerForm.js}"></script>
+
 </body>
 </html>

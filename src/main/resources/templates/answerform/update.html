@@ -30,24 +30,27 @@
                 </div>
 
                 <div th:case="'ScaleQuestion'">
-                    <script th:inline="javascript">
-                        /*<![CDATA[*/
-                        renderQuestion("scale", "answers", /*[[*{scale}]], [[${iter.index}]]*/)
-                        /*]]>*/
-                    </script>
+                   <input type="range" th:id="|rangeInput${itemStat.index}|"
+                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText" th:max="${question.scale}"
+                          onchange="updateTextInput(this.value, this.id);">
+                    <input type="text" th:id="|rangeOutPut${itemStat.index}|" value="">
                 </div>
 
                 <div th:case="'TextQuestion'">
-                    <script th:inline="javascript">
-                        /*<![CDATA[*/
-                        renderQuestion("text", "answers", null, /*[[${iter.index}]]*/)
-                        /*]]>*/
-                    </script>
                 </div>
             </th:block>
         </div>
     </tr>
     </table>
+
+    <script>
+        function updateTextInput(val, id) {
+            console.log(id);
+            let lastChar = id.substr(id.length -1);
+            console.log(lastChar);
+            document.getElementById('rangeOutPut' + lastChar).value=val;
+        }
+    </script>
 </form>
 
 

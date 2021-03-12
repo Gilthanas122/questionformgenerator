@@ -9,7 +9,7 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<form th:action="@{|/answer-form/update/${answerForm.appUserId}/${answerForm.answerFormId}|}" method="post">
+<form th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.appUserId}|}" method="post">
     <tr th:each="question, itemStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
         <div>
@@ -53,8 +53,10 @@
                     </span>
                     <span th:each="otherUsersAnswer : ${answerForm.otherUsersAnswers}" >
                         <span th:if="${otherUsersAnswer.question.id == question.id}">
-                            <span th:each="actualAnswerText : ${otherUsersAnswer.actualAnswerTexts}">
+                            <span th:each="actualAnswerText, list : ${otherUsersAnswer.actualAnswerTexts}">
                                 <p th:text="${actualAnswerText.answerText}"></p>
+                                <label>1</label>
+                                <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="1">
                             </span>
                         </span>
                     </span>

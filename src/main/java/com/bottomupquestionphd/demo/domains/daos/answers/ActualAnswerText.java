@@ -3,6 +3,8 @@ package com.bottomupquestionphd.demo.domains.daos.answers;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "actualanswertexts")
@@ -14,8 +16,11 @@ public class ActualAnswerText {
   private String answerText;
   private boolean deleted;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
   private Answer answer;
+
+  @OneToMany(mappedBy = "actualAnswerText", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  private List<TextAnswerVote> textAnswerVotes = new ArrayList<>();
 
   public ActualAnswerText() {
   }
@@ -58,5 +63,13 @@ public class ActualAnswerText {
 
   public boolean actualAnswerTextIsNullOrEmpty(){
     return this.getAnswerText() == null || this.getAnswerText().isEmpty();
+  }
+
+  public List<TextAnswerVote> getTextAnswerVotes() {
+    return textAnswerVotes;
+  }
+
+  public void setTextAnswerVotes(List<TextAnswerVote> textAnswerVotes) {
+    this.textAnswerVotes = textAnswerVotes;
   }
 }

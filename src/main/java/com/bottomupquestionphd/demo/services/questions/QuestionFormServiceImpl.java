@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionFormServiceImpl implements QuestionFormService {
@@ -128,8 +129,11 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public QuestionForm findByIdForAnswerForm(long questionFormId) {
+    public QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException {
         QuestionForm questionForm = questionFormRepository.findById(questionFormId);
+        if (questionForm == null){
+            throw new QuestionFormNotFoundException("Couldn't find questionform with the given id");
+        }
         return questionForm;
     }
 
@@ -138,6 +142,18 @@ public class QuestionFormServiceImpl implements QuestionFormService {
         checkIfQuestionFormExists(questionFormId);
         questionFormRepository.deleteQuestionFormById(questionFormId);
         queryService.deleteQuestionsBelongingToQuestionForm(questionFormId);
+    }
+
+    @Override
+    public List<Long> getAllTextQuestionIdsFromQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
+        QuestionForm questionForm = findByIdForAnswerForm(questionFormId);
+        List<Long> textQuestionIds = questionForm
+                .getQuestions()
+                .stream()
+                .filter(q -> q.getDiscriminatorValue().equals("TextQuestion"))
+                .map(Question::getId)
+                .collect(Collectors.toList());
+        return textQuestionIds;
     }
 
 }

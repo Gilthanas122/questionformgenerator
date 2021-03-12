@@ -71,17 +71,6 @@ public class Question implements Comparable<Question> {
     this.listPosition = listPosition;
   }
 
-  @Override
-  public int compareTo(Question o) {
-    return this.getListPosition().compareTo(o.getListPosition());
-  }
-
-
-  @Transient
-  public String getDiscriminatorValue() {
-    return this.getClass().getAnnotation(DiscriminatorValue.class).value();
-  }
-
   public List<String> getAnswerPossibilitiesTexts(){
     return null;
   }
@@ -100,5 +89,15 @@ public class Question implements Comparable<Question> {
 
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
+  }
+
+  @Override
+  public int compareTo(Question o) {
+    return this.getListPosition().compareTo(o.getListPosition());
+  }
+
+  @Transient
+  public String getDiscriminatorValue() {
+    return this.getClass().getAnnotation(DiscriminatorValue.class).value();
   }
 }

@@ -21,4 +21,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("SELECT a.id FROM Answer a WHERE a.answerForm.id = ?1")
     List<Long> findAllAnswerToBeDeleted(long appUserId);
 
+    @Query("SELECT a.actualAnswerTexts from Answer a WHERE a.question.id = ?1")
+    List<ActualAnswerText> findAllAnswerBelongingToAQuestion(long questionId);
 }

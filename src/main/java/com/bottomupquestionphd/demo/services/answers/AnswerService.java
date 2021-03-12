@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.answers;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
@@ -21,4 +22,6 @@ public interface AnswerService {
     void setActualAnswersToDeleted(long appUserId, long questionFormId);
 
     List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originAnswerFormsAnswers);
+
+    List<ActualAnswerText> findAllAnswerTextsBelongingToAQuestion(List<Long> questionId);
 }

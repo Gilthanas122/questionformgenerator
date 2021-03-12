@@ -4,13 +4,12 @@ import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerRepository;
 import com.bottomupquestionphd.demo.services.actualanswertexts.ActualAnswerTextService;
+import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +20,13 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionFormService questionFormService;
     private final ActualAnswerTextService actualAnswerTextService;
+    private final QueryService queryService;
 
-    public AnswerServiceImpl(AnswerRepository answerRepository, QuestionFormService questionFormService, ActualAnswerTextService actualAnswerTextService) {
+    public AnswerServiceImpl(AnswerRepository answerRepository, QuestionFormService questionFormService, ActualAnswerTextService actualAnswerTextService, QueryService queryService) {
         this.answerRepository = answerRepository;
         this.questionFormService = questionFormService;
         this.actualAnswerTextService = actualAnswerTextService;
+        this.queryService = queryService;
     }
 
     @Override
@@ -66,6 +67,13 @@ public class AnswerServiceImpl implements AnswerService {
         }
         answers = actualAnswerTextService.setActualAnwerTextsToAnswer(answers, originalAnswerFormsAnswers);
         return answers;
+    }
+
+    @Override
+    public List<ActualAnswerText> findAllAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
+        List<ActualAnswerText> actualAnswerTexts =
+                queryService.findAllActualAnswersBelongingToQuestions(questionIds);
+        return actualAnswerTexts;
     }
 
 }

@@ -10,7 +10,6 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDT
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFoundException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 public class AnswerFormServiceImpl implements AnswerFormService {
@@ -110,8 +108,9 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         if (answerForm == null) {
             throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it");
         }
+       List<Long> textQuestionIds =  questionFormService.getAllTextQuestionIdsFromQuestionForm(questionFormId);
 
-        CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers());
+        CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers(), getAllActualAnswerTextsBelongingToAQuestion(textQuestionIds));
         return createAnswerFormDTO;
     }
 
@@ -175,12 +174,17 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         return false;
     }
 
-    private AnswerForm findAnswerFormBelongingToUserByAGivenQuestionForm(QuestionForm questionForm, AppUser currentUser) throws AnswerFormNotFoundException {
+   /* private AnswerForm findAnswerFormBelongingToUserByAGivenQuestionForm(QuestionForm questionForm, AppUser currentUser) throws AnswerFormNotFoundException {
         return currentUser
                 .getAnswerForms()
                 .stream()
                 .filter(form -> findAnswerFormBelongingToQuestionFormById(form.getId(), questionForm))
                 .findFirst()
                 .orElseThrow(() -> new AnswerFormNotFoundException("Couldn't find answerform with the given id"));
+    }*/
+
+    public List<ActualAnswerText> getAllActualAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
+        List<ActualAnswerText> answersBelongingToAQuestion = answerService.findAllAnswerTextsBelongingToAQuestion(questionIds);
+        return answersBelongingToAQuestion;
     }
 }

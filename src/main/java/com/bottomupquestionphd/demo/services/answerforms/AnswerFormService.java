@@ -1,6 +1,9 @@
 package com.bottomupquestionphd.demo.services.answerforms;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
+import com.bottomupquestionphd.demo.domains.daos.answers.TextAnswerVote;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
@@ -32,4 +35,5 @@ public interface AnswerFormService {
     CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException;
 
     void saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, NoSuchUserByIdException;
+
 }

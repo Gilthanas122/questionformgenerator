@@ -1,6 +1,5 @@
 package com.bottomupquestionphd.demo.domains.dtos.answerform;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 
@@ -14,18 +13,18 @@ public class CreateAnswerFormDTO {
   private long appUserId;
   private List<Question> questions = new ArrayList<>();
   private List<Answer> answers = new ArrayList<>();
-  private List<ActualAnswerText> otherActualAnswerTexts = new ArrayList<>();
+  private List<Answer> otherUsersAnswers = new ArrayList<>();
 
   public CreateAnswerFormDTO() {
   }
 
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long appUserId, List<Question> questions, List<Answer> answers, List<ActualAnswerText> actualAnswerTexts) {
+  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long appUserId, List<Question> questions, List<Answer> answers, List<Answer> otherUsersAnswers) {
     this.questionFormId = questionFormId;
     this.appUserId = appUserId;
     this.answerFormId = answerFormId;
     this.questions = questions;
     this.answers = answers;
-    this.otherActualAnswerTexts = actualAnswerTexts;
+    this.otherUsersAnswers = otherUsersAnswers;
   }
 
 
@@ -76,11 +75,11 @@ public class CreateAnswerFormDTO {
     this.answers = answers;
   }
 
-  public List<ActualAnswerText> getOtherActualAnswerTexts() {
-    return otherActualAnswerTexts;
+  public List<Answer> getOtherUsersAnswers() {
+    return otherUsersAnswers;
   }
 
-  public void setOtherActualAnswerTexts(List<ActualAnswerText> otherActualAnswerTexts) {
-    this.otherActualAnswerTexts = otherActualAnswerTexts;
+  public void setOtherUsersAnswers(List<Answer> otherUsersAnswers) {
+    this.otherUsersAnswers = otherUsersAnswers;
   }
 }

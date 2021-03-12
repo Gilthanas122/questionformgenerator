@@ -110,7 +110,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         }
        List<Long> textQuestionIds =  questionFormService.getAllTextQuestionIdsFromQuestionForm(questionFormId);
 
-        CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers(), getAllActualAnswerTextsBelongingToAQuestion(textQuestionIds));
+        List<Answer> filteredAnswerRemovedOwn = answerService.removeOwnAATextsFromAATToBeVoted(appUserId, getAllActualAnswerTextsBelongingToAQuestion(textQuestionIds));
+        CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers(), filteredAnswerRemovedOwn);
         return createAnswerFormDTO;
     }
 
@@ -165,26 +166,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         return hasUserFilledOutGivenAnswerForm;
     }
 
-    private boolean findAnswerFormBelongingToQuestionFormById(long answerFormId, QuestionForm questionForm) {
-        for (AnswerForm answerform : questionForm.getAnswerForms()) {
-            if (answerform.getId() == answerFormId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-   /* private AnswerForm findAnswerFormBelongingToUserByAGivenQuestionForm(QuestionForm questionForm, AppUser currentUser) throws AnswerFormNotFoundException {
-        return currentUser
-                .getAnswerForms()
-                .stream()
-                .filter(form -> findAnswerFormBelongingToQuestionFormById(form.getId(), questionForm))
-                .findFirst()
-                .orElseThrow(() -> new AnswerFormNotFoundException("Couldn't find answerform with the given id"));
-    }*/
-
-    public List<ActualAnswerText> getAllActualAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
-        List<ActualAnswerText> answersBelongingToAQuestion = answerService.findAllAnswerTextsBelongingToAQuestion(questionIds);
+    public List<Answer> getAllActualAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
+        List<Answer> answersBelongingToAQuestion = answerService.findAllAnswerTextsBelongingToAQuestion(questionIds);
         return answersBelongingToAQuestion;
     }
 }

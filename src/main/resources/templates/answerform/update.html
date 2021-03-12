@@ -45,10 +45,18 @@
                 </div>
 
                 <div th:case="'TextQuestion'">
+
                     <span th:each="actualAnswerText, list: ${answerForm.answers[__${itemStat.index}__].actualAnswerTexts}">
                         <input type="text"
                                th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
                                th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}">
+                    </span>
+                    <span th:each="otherUsersAnswer : ${answerForm.otherUsersAnswers}" >
+                        <span th:if="${otherUsersAnswer.question.id == question.id}">
+                            <span th:each="actualAnswerText : ${otherUsersAnswer.actualAnswerTexts}">
+                                <p th:text="${actualAnswerText.answerText}"></p>
+                            </span>
+                        </span>
                     </span>
 
                 </div>

@@ -37,6 +37,13 @@ public class Answer {
         this.actualAnswerTexts.add(actualAnswerText);
     }
 
+    public Answer(long id, List<ActualAnswerText> actualAnswerTexts, AnswerForm answerForm, Question question) {
+        this.id = id;
+        this.actualAnswerTexts = actualAnswerTexts;
+        this.answerForm = answerForm;
+        this.question = question;
+    }
+
     public long getId() {
         return id;
     }

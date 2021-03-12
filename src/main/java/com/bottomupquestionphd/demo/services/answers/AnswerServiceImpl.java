@@ -13,20 +13,20 @@ import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionFormService questionFormService;
     private final ActualAnswerTextService actualAnswerTextService;
-    private final QueryService queryService;
 
-    public AnswerServiceImpl(AnswerRepository answerRepository, QuestionFormService questionFormService, ActualAnswerTextService actualAnswerTextService, QueryService queryService) {
+    public AnswerServiceImpl(AnswerRepository answerRepository, QuestionFormService questionFormService, ActualAnswerTextService actualAnswerTextService) {
         this.answerRepository = answerRepository;
         this.questionFormService = questionFormService;
         this.actualAnswerTextService = actualAnswerTextService;
-        this.queryService = queryService;
     }
 
     @Override
@@ -70,10 +70,18 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<ActualAnswerText> findAllAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
-        List<ActualAnswerText> actualAnswerTexts =
-                queryService.findAllActualAnswersBelongingToQuestions(questionIds);
-        return actualAnswerTexts;
+    public List<Answer> findAllAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
+        return answerRepository.findAllByQuestionIds(questionIds);
+
+    }
+
+    @Override
+    public List<Answer> removeOwnAATextsFromAATToBeVoted(long appUserId, List<Answer> allActualAnswerTextsBelongingToAQuestion) {
+        return
+                allActualAnswerTextsBelongingToAQuestion
+                    .stream()
+                    .filter(a -> a.getAnswerForm().getAppUser().getId() != appUserId)
+                    .collect(Collectors.toList());
     }
 
 }

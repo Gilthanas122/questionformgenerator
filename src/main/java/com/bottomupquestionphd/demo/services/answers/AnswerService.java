@@ -23,5 +23,7 @@ public interface AnswerService {
 
     List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originAnswerFormsAnswers);
 
-    List<ActualAnswerText> findAllAnswerTextsBelongingToAQuestion(List<Long> questionId);
+    List<Answer> findAllAnswerTextsBelongingToAQuestion(List<Long> questionId);
+
+    List<Answer> removeOwnAATextsFromAATToBeVoted(long appUserId, List<Answer> allActualAnswerTextsBelongingToAQuestion);
 }

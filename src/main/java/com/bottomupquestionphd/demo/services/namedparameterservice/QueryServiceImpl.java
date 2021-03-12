@@ -1,8 +1,9 @@
 package com.bottomupquestionphd.demo.services.namedparameterservice;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -52,14 +53,4 @@ public class QueryServiceImpl implements QueryService {
                 .executeUpdate();
     }
 
-    @Override
-    public List<ActualAnswerText> findAllActualAnswersBelongingToQuestions(List<Long> questionIds) {
-        SqlParameterSource parameters = new MapSqlParameterSource("ids", questionIds);
-        if (questionIds == null || questionIds.size() < 1) {
-            return new ArrayList<ActualAnswerText>();
-        }
-        return namedParameterJdbcTemplate.query(
-                "SELECT aat.id as id, aat.answer_text as answer_text FROM actualanswertexts aat JOIN answers a ON aat.answer_id =  a.id WHERE a.question_id IN (:ids)", parameters,
-                (rs, rownum) -> new ActualAnswerText(rs.getLong("id"), rs.getString("answer_text")));
-    }
 }

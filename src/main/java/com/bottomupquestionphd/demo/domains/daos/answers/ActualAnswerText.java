@@ -1,9 +1,12 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "actualanswertexts")
+@Where(clause="deleted=0")
 public class ActualAnswerText {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,5 +54,9 @@ public class ActualAnswerText {
 
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
+  }
+
+  public boolean actualAnswerTextIsNullOrEmpty(){
+    return this.getAnswerText() == null || this.getAnswerText().isEmpty();
   }
 }

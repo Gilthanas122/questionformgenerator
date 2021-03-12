@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Table(name = "questions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "Question_Type")
+@Where(clause="deleted=0")
 public class Question implements Comparable<Question> {
 
   @Id

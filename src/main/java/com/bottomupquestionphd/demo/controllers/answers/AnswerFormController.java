@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
+import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -71,7 +72,7 @@ public class AnswerFormController {
     @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
     public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
         try {
-            model.addAttribute("answerForm", answerFormService.updateAnswerForm(questionFormId, answerFormId, appUserId));
+            model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId));
             return "answerform/update";
         } catch (BelongToAnotherUserException e) {
             model.addAttribute("error", e.getMessage());
@@ -82,6 +83,23 @@ public class AnswerFormController {
         } catch (AnswerFormNotFilledOutException e) {
             model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "app-user/landing-page";
+    }
+
+    @PostMapping("/update/{appUserId}/{answerFormId}")
+    public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId, @ModelAttribute AnswerForm answerForm, Model model){
+        try {
+            answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
+            model.addAttribute("successMessage", "AnswerForm successfully updated");
+        }catch (NoSuchAnswerformById e){
+            model.addAttribute("error", e.getMessage());
+        }catch (BelongToAnotherUserException e){
+            model.addAttribute("error", e.getMessage());
+        }catch (NoSuchUserByIdException e){
+            model.addAttribute("error", e.getMessage());
+        }catch (Exception e){
             model.addAttribute("error", e.getMessage());
         }
         return "app-user/landing-page";

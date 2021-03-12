@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.services.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -31,7 +32,7 @@ public class AnswerServiceImpl implements AnswerService {
     public void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
         QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
 
-        for (int i = 0; i <questionForm.getQuestions().size() ; i++) {
+        for (int i = 0; i < questionForm.getQuestions().size(); i++) {
             answers.get(i).setQuestion(questionForm.getQuestions().get(i));
             answerRepository.saveAndFlush(answers.get(i));
         }
@@ -39,9 +40,9 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void connectAnswersToActualAnswers(List<Answer> answers) {
-        for (int i = 0; i <answers.size() ; i++) {
+        for (int i = 0; i < answers.size(); i++) {
             Answer currentAnswer = answers.get(i);
-            for (int j = 0; j <answers.get(i).getActualAnswerTexts().size() ; j++) {
+            for (int j = 0; j < answers.get(i).getActualAnswerTexts().size(); j++) {
                 ActualAnswerText currentActualAnswer = currentAnswer.getActualAnswerTexts().get(j);
                 currentActualAnswer.setAnswer(currentAnswer);
                 actualAnswerTextService.saveActualAnswer(currentActualAnswer);
@@ -54,6 +55,17 @@ public class AnswerServiceImpl implements AnswerService {
         List<Long> answerIdsToBeDeleted = answerRepository.findAllAnswerToBeDeleted(appUserId);
         answerRepository.setAnswerToDeletedByQuestionFormId(questionFormId);
         actualAnswerTextService.setToDeleted(answerIdsToBeDeleted);
+    }
+
+    @Override
+    public List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originalAnswerFormsAnswers) {
+        for (int i = 0; i < answers.size(); i++) {
+            answers.get(i).setAnswerForm(answerForm);
+            answers.get(i).setQuestion(originalAnswerFormsAnswers.get(i).getQuestion());
+            answers.get(i).setId(originalAnswerFormsAnswers.get(i).getId());
+        }
+        answers = actualAnswerTextService.setActualAnwerTextsToAnswer(answers, originalAnswerFormsAnswers);
+        return answers;
     }
 
 }

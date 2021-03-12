@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.services.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -19,4 +20,5 @@ public interface AnswerService {
 
     void setActualAnswersToDeleted(long appUserId, long questionFormId);
 
+    List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originAnswerFormsAnswers);
 }

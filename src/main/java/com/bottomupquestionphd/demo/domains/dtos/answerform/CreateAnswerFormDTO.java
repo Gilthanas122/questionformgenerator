@@ -10,25 +10,25 @@ import java.util.List;
 public class CreateAnswerFormDTO {
   private long questionFormId;
   private long answerFormId;
-  private long userId;
+  private long appUserId;
   private List<Question> questions = new ArrayList<>();
   private List<Answer> answers = new ArrayList<>();
 
   public CreateAnswerFormDTO() {
   }
 
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long userId, List<Question> questions, List<Answer> answers) {
+  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long appUserId, List<Question> questions, List<Answer> answers) {
     this.questionFormId = questionFormId;
-    this.userId = userId;
+    this.appUserId = appUserId;
     this.answerFormId = answerFormId;
     this.questions = questions;
     this.answers = answers;
   }
 
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId,  long userId, List<Question> questions) {
+  public CreateAnswerFormDTO(long answerFormId, long questionFormId,  long appUserId, List<Question> questions) {
     this.questionFormId = questionFormId;
     this.answerFormId = answerFormId;
-    this.userId = userId;
+    this.appUserId = appUserId;
     this.questions = questions;
   }
 
@@ -56,12 +56,12 @@ public class CreateAnswerFormDTO {
     this.questions = questions;
   }
 
-  public long getUserId() {
-    return userId;
+  public long getAppUserId() {
+    return appUserId;
   }
 
-  public void setUserId(long userId) {
-    this.userId = userId;
+  public void setAppUserId(long appUserId) {
+    this.appUserId = appUserId;
   }
 
   public List<Answer> getAnswers() {

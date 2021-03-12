@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "answers")
+@Where(clause="deleted=0")
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

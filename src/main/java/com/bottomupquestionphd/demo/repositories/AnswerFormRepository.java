@@ -15,12 +15,13 @@ public interface AnswerFormRepository extends JpaRepository<AnswerForm, Long> {
 
 
     //using projection https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projections
-    @Query("SELECT q.id AS questionFormId, q.name AS name, a.id AS answerFormId, a.appUser.id AS appUserId FROM AnswerForm a JOIN a.questionForm q WHERE a.appUser.id = ?1 AND a.deleted = 0 AND a.questionForm.deleted = 0")
+    @Query("SELECT q.id AS questionFormId, q.name AS name, a.id AS answerFormId, a.appUser.id AS appUserId FROM AnswerForm a JOIN a.questionForm q WHERE a.appUser.id = ?1")
     List<AppUsersQuestionFormsDTO> findAllQuestionFormsFilledOutByUser(long appUserId);
 
-    @Query("SELECT a from AnswerForm  a where a.id = ?1 AND a.deleted = 0")
+    @Query("SELECT a from AnswerForm  a where a.id = ?1")
     Optional<AnswerForm> findById(long answerFormId);
 
-    @Query("SELECT q.id from AnswerForm a JOIN a.questionForm q where a.appUser.id = ?1 AND a.deleted =0 AND a.questionForm.deleted = 0")
+    @Query("SELECT q.id from AnswerForm a JOIN a.questionForm q where a.appUser.id = ?1")
     List<Long> findAllQuestionFormIdsFilledOutByAppUser(long appUserId);
+
 }

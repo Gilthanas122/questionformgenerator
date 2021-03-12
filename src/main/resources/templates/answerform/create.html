@@ -15,7 +15,7 @@
 
 
 
-<form id="answerform" th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.userId}|}" method="post">
+<form id="answerform" th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.appUserId}|}" method="post">
     <table class="table table-hover">
                 <tr th:each="question, iter : ${answerForm.questions}" th:object="${question}">
 

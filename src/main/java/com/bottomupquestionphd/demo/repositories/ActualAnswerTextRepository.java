@@ -14,6 +14,6 @@ public interface ActualAnswerTextRepository extends JpaRepository<ActualAnswerTe
 
     @Modifying
     @Transactional
-    @Query("UPDATE ActualAnswerText m SET m.deleted = 1 WHERE m.answer.id = :answerId")
-    void setElementsToDeleted(@Param("answerId") long answerId);
+    @Query("UPDATE ActualAnswerText m SET m.deleted = 1 WHERE m.answer.id = ?1")
+    void setElementsToDeleted(long answerId);
 }

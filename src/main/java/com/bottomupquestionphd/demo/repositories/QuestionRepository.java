@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    @Query("SELECT q from Question q WHERE q.id = ?1 AND q.deleted = 0")
+    @Query("SELECT q from Question q WHERE q.id = ?1")
     Question findById(long questionId);
 
 }

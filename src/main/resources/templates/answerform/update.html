@@ -9,7 +9,7 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<form>
+<form th:action="@{|/answer-form/update/${answerForm.appUserId}/${answerForm.answerFormId}|}" method="post">
     <tr th:each="question, itemStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
         <div>
@@ -29,8 +29,8 @@
                         <span th:each="answerPossibility, list: ${question.answerPossibilities}">
                             <label th:text="${answerPossibility.answerText}"></label>
                    <input type="radio"
-                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText"
+                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[0].answerText}"
                           th:value="${answerPossibility.answerText}">
                         </span>
                 </div>
@@ -56,6 +56,8 @@
         </div>
     </tr>
     </table>
+    <button type="submit">SUBMIT</button>
+    <button type="reset">RESET</button>
 </form>
 
 

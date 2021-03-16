@@ -145,8 +145,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     }
 
     @Override
-    public List<Long> getAllTextQuestionIdsFromQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
-        QuestionForm questionForm = findByIdForAnswerForm(questionFormId);
+    public List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm){
         List<Long> textQuestionIds = questionForm
                 .getQuestions()
                 .stream()

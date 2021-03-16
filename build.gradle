@@ -20,6 +20,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'junit:junit:4.12'
     compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.4.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -29,6 +30,7 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '4.2.2.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

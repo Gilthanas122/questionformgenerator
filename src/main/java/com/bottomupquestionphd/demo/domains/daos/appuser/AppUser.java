@@ -18,7 +18,6 @@ public class AppUser {
   @Column(nullable = false)
   private String username;
 
-  @Column(nullable = false)
   private String password;
 
   private boolean active = true;

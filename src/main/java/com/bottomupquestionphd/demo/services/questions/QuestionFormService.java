@@ -33,5 +33,5 @@ public interface QuestionFormService {
 
     void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException;
 
-    List<Long> getAllTextQuestionIdsFromQuestionForm(long questionFormId) throws QuestionFormNotFoundException;
+    List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm);
 }

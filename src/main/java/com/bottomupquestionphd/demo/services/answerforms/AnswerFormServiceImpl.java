@@ -21,6 +21,7 @@ import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -98,6 +99,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
+    @Transactional
     public CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException {
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
@@ -108,9 +110,10 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         if (answerForm == null) {
             throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it");
         }
-       List<Long> textQuestionIds =  questionFormService.getAllTextQuestionIdsFromQuestionForm(questionFormId);
+        List<Long> textQuestionIds = questionFormService.getAllTextQuestionIdsFromQuestionForm(questionForm);
 
-        List<Answer> filteredAnswerRemovedOwn = answerService.removeOwnAATextsFromAATToBeVoted(appUserId, getAllActualAnswerTextsBelongingToAQuestion(textQuestionIds));
+        List<Answer> filteredAnswerRemovedOwn = answerService.removeOwnAATextsFromAATToBeVoted(appUserId,
+                getAllAnswersBelongingToAQuestion(textQuestionIds));
         CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers(), filteredAnswerRemovedOwn);
         return createAnswerFormDTO;
     }
@@ -118,7 +121,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     @Override
     public void saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, NoSuchUserByIdException {
         AnswerForm originalAnswerForm1 = findAnswerFormById(answerFormId);
-        if (originalAnswerForm1.getAppUser().getId() != appUserId){
+        if (originalAnswerForm1.getAppUser().getId() != appUserId) {
             throw new BelongToAnotherUserException("This answerForm belongs to another user");
         }
         answerForm.setAppUser(originalAnswerForm1.getAppUser());
@@ -129,22 +132,23 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     private List<Answer> removeNullAnswersFromAnswerForm(List<Answer> answers, AnswerForm answerForm, List<Answer> originalFormsAnswers) {
-        for (Answer answer: answers) {
+        for (Answer answer : answers) {
             Predicate<ActualAnswerText> isNotEmptyOrNull = item -> item.actualAnswerTextIsNullOrEmpty();
             List<ActualAnswerText> answerTextOfAnswer = answer.getActualAnswerTexts();
             List<ActualAnswerText> actualAnswerTextsFiltered = new ArrayList<>();
-                    answer
+            answer
                     .getActualAnswerTexts()
                     .stream()
                     .filter(isNotEmptyOrNull)
-                    .forEach(item ->{
+                    .forEach(item -> {
                         actualAnswerTextsFiltered.add(item);
                     });
-                 answerTextOfAnswer.removeAll(actualAnswerTextsFiltered);
+            answerTextOfAnswer.removeAll(actualAnswerTextsFiltered);
             answer.setActualAnswerTexts(answerTextOfAnswer);
 
         }
-        answers = answerService.setAnswersToAnswerForm(answerForm, answers, originalFormsAnswers);;
+        answers = answerService.setAnswersToAnswerForm(answerForm, answers, originalFormsAnswers);
+        ;
         return answers;
     }
 
@@ -166,7 +170,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
         return hasUserFilledOutGivenAnswerForm;
     }
 
-    public List<Answer> getAllActualAnswerTextsBelongingToAQuestion(List<Long> questionIds) {
+    private List<Answer> getAllAnswersBelongingToAQuestion(List<Long> questionIds) {
         List<Answer> answersBelongingToAQuestion = answerService.findAllAnswerTextsBelongingToAQuestion(questionIds);
         return answersBelongingToAQuestion;
     }

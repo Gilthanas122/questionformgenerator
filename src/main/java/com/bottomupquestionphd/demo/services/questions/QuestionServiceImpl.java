@@ -12,6 +12,7 @@ import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdExce
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
+import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void saveQuestion(String type, QuestionCreateDTO questionDTO, long questionFormId) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
+        ErrorServiceImpl.buildMissingFieldErrorMessage(questionDTO);
         QuestionForm questionForm = questionFormService.findById(questionFormId);
         questionForm.setFinished(false);
         if (type.equals("text")) {

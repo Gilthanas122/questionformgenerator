@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.error;
 
+import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -7,10 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ErrorServiceImpl implements ErrorService {
+public class ErrorServiceImpl  {
 
-  @Override
-  public String buildMissingFieldErrorMessage(Object object) {
+  public static String buildMissingFieldErrorMessage(Object object) throws MissingParamsException {
     if (object == null){
       throw new NullPointerException("Object to be verified for null or empty fields is null");
     }
@@ -20,14 +20,15 @@ public class ErrorServiceImpl implements ErrorService {
     for (String word : missingFields) {
       result += word + ", ";
     }
-    if (result.length() == 0){
-      return null;
+    if (result.length() != 0){
+      errorMessage = result.substring(0, 1).toUpperCase() + result.substring(1, result.length() - 2).concat(" ") + "is required.";
+      throw new MissingParamsException(errorMessage);
     }
-    errorMessage = result.substring(0, 1).toUpperCase() + result.substring(1, result.length() - 2).concat(" ") + "is required.";
+
     return errorMessage;
   }
 
-  private List<String> checkInputNullFields(Object object) {
+  private static List<String> checkInputNullFields(Object object) {
     List<String> missingFields = new ArrayList<>();
     for (Field field : object.getClass().getDeclaredFields()) {
       field.setAccessible(true);

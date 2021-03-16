@@ -1,11 +1,10 @@
 package com.bottomupquestionphd.demo.unittests;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.services.error.ErrorService;
+import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.BeanFactory;
@@ -16,52 +15,40 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @Import(TestConfigurationBeanFactory.class)
 public class ErrorServiceTest {
-  private ErrorService errorService;
-
-
-  @Before
-  public void setup(){
-    errorService = new ErrorServiceImpl();
-  }
 
   @Autowired
   private BeanFactory beanFactory;
 
   @Test
-  public void buildMissingFieldsErrorMessage_withNoNullOrEmptyFields_returnsEmptyString(){
+  public void buildMissingFieldsErrorMessage_withNoNullOrEmptyFields_returnsEmptyString() throws MissingParamsException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
-    String error = errorService.buildMissingFieldErrorMessage(appUser);
+    String error = ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
 
-    Assert.assertEquals(error, null);
+    Assert.assertEquals("", error);
   }
 
-  @Test
-  public void buildMissingFieldsErrorMessage_withOneMissingField_returnsEmptyFieldname(){
+  @Test(expected = MissingParamsException.class)
+  public void buildMissingFieldsErrorMessage_withOneMissingField_throwsMissingParamsException() throws MissingParamsException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword(null);
 
-    String error = errorService.buildMissingFieldErrorMessage(appUser);
-
-    Assert.assertEquals(error, "Password is required");
+    ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
   }
 
-  @Test
-  public void buildMissingFieldsErrorMessage_withTwoMissingField_returnsEmptyFieldsnames(){
+  @Test(expected = MissingParamsException.class)
+  public void buildMissingFieldsErrorMessage_withTwoMissingField_throwsMissingParamsException() throws MissingParamsException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword(null);
     appUser.setUsername("");
 
-    String error = errorService.buildMissingFieldErrorMessage(appUser);
-
-    Assert.assertEquals(error, "Username, password is required");
+    ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
   }
 
   @Test(expected = NullPointerException.class)
-  public void buildMissingFieldsErrorMessage_withNullObject_returnsEmptyFieldsnames(){
+  public void buildMissingFieldsErrorMessage_withNullObject_throwsNullPointerException() throws MissingParamsException {
     AppUser appUser = null;
 
-    String error = errorService.buildMissingFieldErrorMessage(appUser);
+    ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
   }
-
 }

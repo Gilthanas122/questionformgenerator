@@ -9,7 +9,6 @@ import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserServiceImpl;
-import com.bottomupquestionphd.demo.services.error.ErrorService;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
+import static com.bottomupquestionphd.demo.services.error.ErrorServiceImpl.buildMissingFieldErrorMessage;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class AppUserServiceTest {
   private AppUserService appUserService;
   private AppUserRepository appUserRepository;
-  private ErrorService errorService;
+
   @Autowired
   private PasswordEncoder passwordEncoder;
   @Autowired
@@ -51,8 +51,7 @@ public class AppUserServiceTest {
     authentication = Mockito.mock(Authentication.class);
     securityContext = Mockito.mock(SecurityContext.class);
     appUserRepository = Mockito.mock(AppUserRepository.class);
-    errorService = Mockito.mock(ErrorService.class);
-    appUserService = new AppUserServiceImpl(appUserRepository, errorService, passwordEncoder);
+    appUserService = new AppUserServiceImpl(appUserRepository, passwordEncoder);
     myUserDetails = Mockito.mock(MyUserDetails.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
@@ -71,7 +70,6 @@ public class AppUserServiceTest {
   public void saveUser_withNullUserNameOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setUsername(null);
-    when(errorService.buildMissingFieldErrorMessage(appUser)).thenReturn("Null Username");
 
     appUserService.saveUser(appUser);
   }
@@ -80,7 +78,7 @@ public class AppUserServiceTest {
   public void saveUser_withNullPasswordOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword(null);
-    when(errorService.buildMissingFieldErrorMessage(appUser)).thenReturn("Null Password");
+    when(buildMissingFieldErrorMessage(appUser)).thenThrow(new MissingParamsException());
 
     appUserService.saveUser(appUser);
   }
@@ -126,7 +124,7 @@ public class AppUserServiceTest {
   }
 
   @Test
-  public void validateLogin_withValidLoginDTO() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException {
+  public void validateLogin_withValidLoginDTO() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword(passwordEncoder.encode(appUser.get().getPassword()));
@@ -135,26 +133,25 @@ public class AppUserServiceTest {
     appUserService.validateLogin(loginDTO);
   }
 
-  @Test(expected = InvalidLoginException.class)
-  public void validateLogin_withNullUserName_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException {
+  @Test(expected = MissingParamsException.class)
+  public void validateLogin_withNullUserName_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     loginDTO.setUsername(null);
-    when(errorService.buildMissingFieldErrorMessage(loginDTO)).thenReturn("Null UserName");
 
     appUserService.validateLogin(loginDTO);
   }
 
-  @Test(expected = InvalidLoginException.class)
-  public void validateLogin_withNullPassword_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException {
+  @Test(expected = MissingParamsException.class)
+  public void validateLogin_withNullPassword_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     loginDTO.setPassword(null);
-    when(errorService.buildMissingFieldErrorMessage(loginDTO)).thenReturn("Null password");
+    when(buildMissingFieldErrorMessage(loginDTO)).thenReturn("Null password");
 
     appUserService.validateLogin(loginDTO);
   }
 
   @Test(expected = NoSuchUserNameException.class)
-  public void validateLogin_withNoAppUserByGivenUserName_throwsNoSuchUserNameException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException {
+  public void validateLogin_withNoAppUserByGivenUserName_throwsNoSuchUserNameException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword("Helloka++55");
@@ -165,7 +162,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = AppUserPasswordMissMatchException.class)
-  public void validateLogin_withNotMatchingPassword_throwsAppUserPasswordMissmatchException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException {
+  public void validateLogin_withNotMatchingPassword_throwsAppUserPasswordMissmatchException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword("Helloka++55");

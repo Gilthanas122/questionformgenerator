@@ -6,7 +6,7 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
-import com.bottomupquestionphd.demo.services.error.ErrorService;
+import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,21 +20,17 @@ import java.util.regex.Pattern;
 @Service
 public class AppUserServiceImpl implements AppUserService {
   private final AppUserRepository appUserRepository;
-  private final ErrorService errorService;
   private PasswordEncoder passwordEncoder;
 
-  public AppUserServiceImpl(AppUserRepository appUserRepository, ErrorService errorService, PasswordEncoder passwordEncoder) {
+  public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
     this.appUserRepository = appUserRepository;
-    this.errorService = errorService;
     this.passwordEncoder = passwordEncoder;
   }
 
   @Override
   public void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, PasswordNotComplexEnoughException {
-    String errorMessage = errorService.buildMissingFieldErrorMessage(appUser);
-    if (errorMessage != null) {
-      throw new MissingParamsException(errorMessage);
-    } else if (!checkPasswordComplexity(appUser.getPassword())) {
+    ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
+    if (!checkPasswordComplexity(appUser.getPassword())) {
       throw new PasswordNotComplexEnoughException("Password must be at least 8 and max 20 characters long, at least one uppercase letter and one number and special character of the following ones: @#$%^&+-=");
     } else if (appUserRepository.existsByUsername(appUser.getUsername())) {
       throw new UsernameAlreadyTakenException("The username is already taken");
@@ -55,11 +51,8 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException {
-    String errorMessage = errorService.buildMissingFieldErrorMessage(loginDTO);
-    if (errorMessage != null) {
-      throw new InvalidLoginException(errorMessage);
-    }
+  public LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException, MissingParamsException {
+    ErrorServiceImpl.buildMissingFieldErrorMessage(loginDTO);
     Optional<AppUser> appUser = appUserRepository.findByUsername(loginDTO.getUsername());
     if (appUser == null || !appUser.isPresent()) {
       throw new NoSuchUserNameException("No such username in the database");

@@ -23,6 +23,17 @@ public class AnswerPossibility {
     this.answerText = answerText;
   }
 
+  public AnswerPossibility(long id, String answerText) {
+    this.id = id;
+    this.answerText = answerText;
+  }
+
+  public AnswerPossibility(long id, String answerText, MultipleAnswerQuestion multipleAnswerQuestion) {
+    this.id = id;
+    this.answerText = answerText;
+    this.multipleAnswerQuestion = multipleAnswerQuestion;
+  }
+
   public String getAnswerText() {
     return answerText;
   }

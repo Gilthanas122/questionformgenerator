@@ -39,6 +39,12 @@ public class Question implements Comparable<Question> {
     this.questionText = questionText;
   }
 
+  public Question(long id, String questionText, Integer listPosition) {
+    this.id = id;
+    this.questionText = questionText;
+    this.listPosition = listPosition;
+  }
+
   public long getId() {
     return id;
   }

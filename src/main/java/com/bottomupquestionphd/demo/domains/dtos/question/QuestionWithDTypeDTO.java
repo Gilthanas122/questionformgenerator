@@ -21,6 +21,14 @@ public class QuestionWithDTypeDTO {
     this.questionText = questionText;
   }
 
+  public QuestionWithDTypeDTO(long id, long questionFormId, String questionType, String questionText, Integer scale) {
+    this.id = id;
+    this.questionFormId = questionFormId;
+    this.questionType = questionType;
+    this.questionText = questionText;
+    this.scale = scale;
+  }
+
   public long getId() {
     return id;
   }

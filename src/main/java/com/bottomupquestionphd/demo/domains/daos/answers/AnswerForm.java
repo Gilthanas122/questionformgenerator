@@ -29,6 +29,12 @@ public class AnswerForm {
 
   public AnswerForm(){}
 
+  public AnswerForm(long id, QuestionForm questionForm, AppUser appUser) {
+    this.id = id;
+    this.questionForm = questionForm;
+    this.appUser = appUser;
+  }
+
   public AnswerForm(QuestionForm questionForm, List<Answer> answers) {
     this.questionForm = questionForm;
     this.answers = answers;

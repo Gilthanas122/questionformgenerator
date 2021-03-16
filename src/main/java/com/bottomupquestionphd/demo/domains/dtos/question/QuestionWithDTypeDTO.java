@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.domains.dtos.question;
 
-import com.bottomupquestionphd.demo.domains.daos.questions.AnswerPossibility;
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionTextPossibility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class QuestionWithDTypeDTO {
   private long questionFormId;
   private String questionType;
   private String questionText;
-  private List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+  private List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
   private Integer scale;
 
   public QuestionWithDTypeDTO() {
@@ -53,14 +53,6 @@ public class QuestionWithDTypeDTO {
     this.questionText = questionText;
   }
 
-  public List<AnswerPossibility> getAnswerPossibilities() {
-    return answerPossibilities;
-  }
-
-  public void setAnswerPossibilities(List<AnswerPossibility> answerPossibilities) {
-    this.answerPossibilities = answerPossibilities;
-  }
-
   public Integer getScale() {
     return scale;
   }
@@ -75,5 +67,13 @@ public class QuestionWithDTypeDTO {
 
   public void setQuestionFormId(long questionFormId) {
     this.questionFormId = questionFormId;
+  }
+
+  public List<QuestionTextPossibility> getQuestionTextPossibilities() {
+    return questionTextPossibilities;
+  }
+
+  public void setQuestionTextPossibilities(List<QuestionTextPossibility> questionTextPossibilities) {
+    this.questionTextPossibilities = questionTextPossibilities;
   }
 }

@@ -1,7 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -18,12 +18,12 @@ public class ActualAnswerText {
   private String answerText;
   private boolean deleted;
 
-  @JsonIgnore
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @JsonBackReference
   private Answer answer;
 
-  @JsonIgnore
   @OneToMany(mappedBy = "actualAnswerText", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @JsonManagedReference
   private List<TextAnswerVote> textAnswerVotes = new ArrayList<>();
 
   public ActualAnswerText() {

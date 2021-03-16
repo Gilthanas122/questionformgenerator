@@ -11,11 +11,11 @@ public class RadioButtonQuestion extends MultipleAnswerQuestion {
   public RadioButtonQuestion() {
 
   }
-  public RadioButtonQuestion(String questionText, List<AnswerPossibility> answers) {
-    super(questionText, answers);
+  public RadioButtonQuestion(String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
+    super(questionText, questionTextPossibilities);
   }
 
-  public RadioButtonQuestion(long id, String questionText, List<AnswerPossibility> answerPossibilities) {
-    super(id, questionText, answerPossibilities);
+  public RadioButtonQuestion(long id, String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
+    super(id, questionText, questionTextPossibilities);
   }
 }

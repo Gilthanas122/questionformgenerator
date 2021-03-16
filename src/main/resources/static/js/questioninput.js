@@ -26,7 +26,7 @@ function renderElements(buttonId) {
     enableFinishButton(true);
     let container = document.getElementById("typediv");
     let form = document.createElement("FORM");
-    let explanationText = createTextNode("You have choosen " + buttonId + "  answer possibility", "P");
+    let explanationText = createTextNode("You have choosen " + buttonId + " Answer Possibilities", "P");
 
     form.appendChild(explanationText);
 

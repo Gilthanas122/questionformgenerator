@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.domains.daos.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,13 +25,16 @@ public class AppUser {
   private String roles = "ROLE_USER";
   private boolean disabled;
 
-  @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference
   private List<QuestionForm> questionForms = new ArrayList<>();
 
-  @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference
   private List<AnswerForm> answerForms = new ArrayList<>();
 
-  public AppUser(){}
+  public AppUser() {
+  }
 
   public AppUser(String username) {
     this.username = username;
@@ -75,16 +79,16 @@ public class AppUser {
     return roles;
   }
 
-  public void addNewRole(String newRole){
+  public void addNewRole(String newRole) {
     this.roles += "," + newRole;
   }
 
-  public void setRoles(String newRole){
+  public void setRoles(String newRole) {
     this.roles = newRole;
   }
 
-  public List<String> getRoleList(){
-    if (this.roles.length() > 0){
+  public List<String> getRoleList() {
+    if (this.roles.length() > 0) {
       return Arrays.asList(this.roles.split(","));
     }
     return new ArrayList<>();
@@ -122,11 +126,11 @@ public class AppUser {
     this.answerForms = answerForms;
   }
 
-  public void addOneAnswerForm(AnswerForm answerForm){
+  public void addOneAnswerForm(AnswerForm answerForm) {
     this.answerForms.add(answerForm);
   }
 
-  public boolean hasAnswerForm(long answerFormId){
+  public boolean hasAnswerForm(long answerFormId) {
     return answerForms
             .stream()
             .anyMatch(form -> form.getId() == answerFormId);

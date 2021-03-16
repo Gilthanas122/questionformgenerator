@@ -1,5 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -12,50 +14,49 @@ import java.util.List;
 public  abstract class MultipleAnswerQuestion extends Question{
 
   @OneToMany(mappedBy = "multipleAnswerQuestion", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+  @JsonManagedReference
+  private List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
 
 
   public MultipleAnswerQuestion() {
 
   }
 
-  public MultipleAnswerQuestion(String questionText, List<AnswerPossibility> answerPossibilities) {
+  public MultipleAnswerQuestion(String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
     super(questionText);
-    addAnswerToPost(answerPossibilities);
+    addAnswerToPost(questionTextPossibilities);
   }
 
   public MultipleAnswerQuestion(String questionText, long id) {
     super(id, questionText);
   }
 
-  public MultipleAnswerQuestion(long id, String questionText, List<AnswerPossibility> answerPossibilities) {
+  public MultipleAnswerQuestion(long id, String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
     super(id, questionText);
-    this.answerPossibilities = answerPossibilities;
+    this.questionTextPossibilities = questionTextPossibilities;
   }
 
 
-  protected void addAnswerToPost(List<AnswerPossibility> answerPossibilities){
-    for (AnswerPossibility answerPossibility: answerPossibilities) {
-      this.answerPossibilities.add(answerPossibility);
-      answerPossibility.setMultipleAnswerQuestion(this);
+  protected void addAnswerToPost(List<QuestionTextPossibility> questionTextPossibilities){
+    for (QuestionTextPossibility questionTextPossibility : questionTextPossibilities) {
+      this.questionTextPossibilities.add(questionTextPossibility);
+      questionTextPossibility.setMultipleAnswerQuestion(this);
     }
   };
 
-  public List<AnswerPossibility> getAnswerPossibilities() {
-    return answerPossibilities;
+  public List<QuestionTextPossibility> getQuestionTextPossibilities() {
+    return questionTextPossibilities;
   }
 
-  public void setAnswerPossibilities(List<AnswerPossibility> answerPossibilities) {
-    this.answerPossibilities = answerPossibilities;
+  public void setQuestionTextPossibilities(List<QuestionTextPossibility> questionTextPossibilities) {
+    this.questionTextPossibilities = questionTextPossibilities;
   }
 
-  @Override
-  public List<String> getAnswerPossibilitiesTexts(){
-    List<String> answerPossibilitiesText = new ArrayList<>();
-    this.answerPossibilities
+  public List<String> getQuestionTextPossibilitiesTexts(){
+    List<String> questionTextPossibilities = new ArrayList<>();
+    this.questionTextPossibilities
             .stream()
-            .forEach( answerPossibility -> answerPossibilitiesText.add(answerPossibility.getAnswerText()));
-    return answerPossibilitiesText;
+            .forEach( questionTextPossibility -> questionTextPossibilities.add(questionTextPossibility.getAnswerText()));
+    return questionTextPossibilities;
   }
-
 }

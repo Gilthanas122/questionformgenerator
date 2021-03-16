@@ -18,7 +18,7 @@
         <th>Position</th>
         <th>Question Type</th>
         <th>Question Text</th>
-        <th>Multiple Answer Possibility</th>
+        <th>Multiple Q uestionText Possibilities</th>
         <th>Scale value</th>
         <th>Edit question</th>
         <th>Move Forward</th>
@@ -30,14 +30,14 @@
         <td th:text="${iter.index +1}"></td>
         <td th:text="*{questionType}"></td>
         <td th:text="*{questionText}"></td>
-        <td th:if="*{answerPossibilities} != null">
+        <td th:if="*{questionTextPossibilities} != null">
                 <table>
-                    <tr th:each="answerPossibility : *{answerPossibilities}" th:object="${answerPossibility}">
+                    <tr th:each="questionTextPossibility : *{questionTextPossibilities}" th:object="${questionTextPossibility}">
                         <td th:text="*{answerText}"></td>
                     </tr>
                 </table>
             </td>
-        <td th:unless="*{answerPossibilities} != null" >None</td>
+        <td th:unless="*{questionTextPossibilities} != null" >None</td>
         <td th:if="*{scale} != null" th:text="|Max scale value: *{scale}|">
         </td>
         <td th:unless="*{scale} != null">None</td>

@@ -16,22 +16,22 @@
             <th:block th:switch="${question.getDiscriminatorValue()}">
 
                 <div th:case="'CheckBoxQuestion'">
-                        <span th:each="answerPossibility, list: ${question.answerPossibilities}">
-                            <label th:text="${answerPossibility.answerText}"></label>
+                        <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
+                            <label th:text="${questionTextPossibility.answerText}"></label>
                    <input type="checkbox"
                           th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
                           th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
-                          th:value="${answerPossibility.answerText}">
+                          th:value="${questionTextPossibility.answerText}">
                         </span>
                 </div>
 
                 <div th:case="'RadioButtonQuestion'">
-                        <span th:each="answerPossibility, list: ${question.answerPossibilities}">
-                            <label th:text="${answerPossibility.answerText}"></label>
+                        <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
+                            <label th:text="${questionTextPossibility.answerText}"></label>
                    <input type="radio"
                           th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText"
                           th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[0].answerText}"
-                          th:value="${answerPossibility.answerText}">
+                          th:value="${questionTextPossibility.answerText}">
                         </span>
                 </div>
 

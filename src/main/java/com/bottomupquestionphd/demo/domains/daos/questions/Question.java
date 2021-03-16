@@ -2,6 +2,8 @@ package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -23,9 +25,11 @@ public class Question implements Comparable<Question> {
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JsonBackReference
   private QuestionForm questionForm;
 
   @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JsonManagedReference
   private List<Answer> answers = new ArrayList<>();
 
   public Question(){}

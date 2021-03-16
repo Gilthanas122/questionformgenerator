@@ -14,7 +14,7 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
     questionWithDTypeDTO.setQuestionFormId(question.getQuestionForm().getId());
     if (question instanceof MultipleAnswerQuestion){
       MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
-      questionWithDTypeDTO.setAnswerPossibilities(multipleAnswerQuestion.getAnswerPossibilities());
+      questionWithDTypeDTO.setQuestionTextPossibilities(multipleAnswerQuestion.getQuestionTextPossibilities());
       if (question instanceof RadioButtonQuestion){
         questionWithDTypeDTO.setQuestionType("Radio button");
       }else{
@@ -33,11 +33,11 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
   @Override
   public Question convertQuestionWithDTypeToQuestion(QuestionWithDTypeDTO questionWithDType) {
     if (questionWithDType.getQuestionType().equals("Check box")){
-      CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getAnswerPossibilities());
+      CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
       checkBoxQuestion = (CheckBoxQuestion)  setQuestionToAnswerPossibilities(checkBoxQuestion);
       return checkBoxQuestion;
     }else if (questionWithDType.getQuestionType().equals("Radio button")){
-      RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getAnswerPossibilities());
+      RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
       radioButtonQuestion = (RadioButtonQuestion) setQuestionToAnswerPossibilities(radioButtonQuestion);
       return radioButtonQuestion;
     }else if (questionWithDType.getQuestionType().equals("Scale")){
@@ -48,8 +48,8 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
   }
 
   private MultipleAnswerQuestion setQuestionToAnswerPossibilities(MultipleAnswerQuestion multipleAnswerQuestion) {
-    for (AnswerPossibility answerPossibility: multipleAnswerQuestion.getAnswerPossibilities()) {
-      answerPossibility.setMultipleAnswerQuestion(multipleAnswerQuestion);
+    for (QuestionTextPossibility questionTextPossibility : multipleAnswerQuestion.getQuestionTextPossibilities()) {
+      questionTextPossibility.setMultipleAnswerQuestion(multipleAnswerQuestion);
     }
     return multipleAnswerQuestion;
   }

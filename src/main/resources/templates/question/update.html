@@ -21,19 +21,19 @@
     <input th:field="*{questionText}">
     <th:block th:switch="*{questionType}">
         <div id="updateradio"  th:case="'Radio button'">
-            <tr th:each="answerPossibility, iter : *{answerPossibilities}">
+            <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
                 <td>
-                    <input th:field="*{answerPossibilities[__${iter.index}__].answerText}" th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
-                    <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
+                    <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
+                    <input th:value="${questionTextPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
                 </td>
             </tr>
             <button type="button" id="updateradiobutton">Add another input field</button>
         </div>
         <div id="updatecheckbox"  th:case="'Check box'">
-            <tr th:each="answerPossibility, iter : *{answerPossibilities}">
+            <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
                 <td>
-                    <input th:field="*{answerPossibilities[__${iter.index}__].answerText}" th:name="|answerPossibilities[${iter.index}].answerText|" th:placeholder="${answerPossibility.answerText}">
-                    <input th:value="${answerPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
+                    <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
+                    <input th:value="${questionTextPossibility.id}" th:name="|questionTextPossibilities[${iter.index}].id|" hidden>
                 </td>
             </tr>
             <button type="button" id="updatecheckboxbutton">Add another input field</button>

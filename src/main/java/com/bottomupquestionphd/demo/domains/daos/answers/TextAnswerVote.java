@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class TextAnswerVote {
     private boolean deleted;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonBackReference
     private ActualAnswerText actualAnswerText;
 
     public TextAnswerVote() {

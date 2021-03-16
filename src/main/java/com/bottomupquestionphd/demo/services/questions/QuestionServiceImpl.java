@@ -12,7 +12,7 @@ import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdExce
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
-import com.bottomupquestionphd.demo.services.answerpossibilities.AnswerPossibilityService;
+import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +23,14 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuestionFormService questionFormService;
-    private final AnswerPossibilityService answerPossibilityService;
+    private final QuestionTextPossibilityService questionTextPossibilityService;
     private final AppUserService appUserService;
     private final QuestionConversionService questionConversionService;
 
-    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, AnswerPossibilityService answerPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService) {
+    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, QuestionTextPossibilityService questionTextPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService) {
         this.questionRepository = questionRepository;
         this.questionFormService = questionFormService;
-        this.answerPossibilityService = answerPossibilityService;
+        this.questionTextPossibilityService = questionTextPossibilityService;
         this.appUserService = appUserService;
         this.questionConversionService = questionConversionService;
     }
@@ -129,7 +129,7 @@ public class QuestionServiceImpl implements QuestionService {
         if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2) {
             throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
         }
-        RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
+        RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), questionTextPossibilityService.convertStringToQuestionTextPossibility(questionDTO.getAnswers()));
         radioButtonQuestion.setQuestionForm(questionForm);
         radioButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));
         questionRepository.save(radioButtonQuestion);
@@ -139,7 +139,7 @@ public class QuestionServiceImpl implements QuestionService {
         if (questionDTO.getQuestionText() == null || questionDTO.getQuestionText().isEmpty() || questionDTO.getAnswers().size() < 2) {
             throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
         }
-        CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), answerPossibilityService.converStringsToAnswerPossibilities(questionDTO.getAnswers()));
+        CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), questionTextPossibilityService.convertStringToQuestionTextPossibility(questionDTO.getAnswers()));
         checkBoxQuestion.setQuestionForm(questionForm);
         checkBoxQuestion.setListPosition(getListPositionForQuestions(questionForm));
         ;

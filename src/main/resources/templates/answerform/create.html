@@ -25,14 +25,14 @@
                             <div th:case="'CheckBoxQuestion'">
                                 <script th:inline="javascript">
                                     /*<![CDATA[*/
-                                    renderCheckBoxOrRadioButtonQuestion("checkbox", "answers", /*[[${iter.index}]], [[*{getAnswerPossibilitiesTexts()}]]*/)
+                                    renderCheckBoxOrRadioButtonQuestion("checkbox", "answers", /*[[${iter.index}]], [[*{getQuestionTextPossibilitiesTexts()}]]*/)
                                     /*]]>*/
                                 </script>
                             </div>
                             <div th:case="'RadioButtonQuestion'">
                                 <script th:inline="javascript">
                                     /*<![CDATA[*/
-                                    renderCheckBoxOrRadioButtonQuestion("radio", "answers", /*[[${iter.index}]], [[*{getAnswerPossibilitiesTexts()}]]*/)
+                                    renderCheckBoxOrRadioButtonQuestion("radio", "answers", /*[[${iter.index}]], [[*{getQuestionTextPossibilitiesTexts()}]]*/)
                                     /*]]>*/
                                 </script>
                             </div>

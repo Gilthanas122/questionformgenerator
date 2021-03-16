@@ -77,9 +77,9 @@ public class TestConfigurationBeanFactory {
 
     @Bean("answerPossibility")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    AnswerPossibility getAnswerPossibility(){
-        AnswerPossibility answerPossibility = new AnswerPossibility("answerpossibility");
-        return answerPossibility;
+    QuestionTextPossibility getAnswerPossibility(){
+        QuestionTextPossibility questionTextPossibility = new QuestionTextPossibility("answerpossibility");
+        return questionTextPossibility;
     }
 
     @Bean(name = "textQuestionWithDTypeDTO")
@@ -149,24 +149,24 @@ public class TestConfigurationBeanFactory {
         return actualAnswerTexts;
     }
 
-    @Bean(name = "answerPossibilitiesForCheckBox")
+    @Bean(name = "questionTextPossibilitiesForCheckBox")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<AnswerPossibility> returnAnswerPossibilitiesWithCheckBoxQuestion(){
-        List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+    public List<QuestionTextPossibility> returnquestionTextPossibilitiesWithCheckBoxQuestion(){
+        List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
-            answerPossibilities.add(new AnswerPossibility(i, "answerPossibility" + i, getValidCheckBoxQuestion()));
+            questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
         }
-        return answerPossibilities;
+        return questionTextPossibilities;
     }
 
-    @Bean(name = "answerPossibilitiesForCheckBox")
+    @Bean(name = "questionTextPossibilitiesForRadioButton")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<AnswerPossibility> returnAnswerPossibilitiesWithRadioButtonQuestion(){
-        List<AnswerPossibility> answerPossibilities = new ArrayList<>();
+    public List<QuestionTextPossibility> returnQuestionTextPossibilitiesWithRadioButtonQuestion(){
+        List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
-            answerPossibilities.add(new AnswerPossibility(i, "answerPossibility" + i, getValidRadioButtonQuestion()));
+            questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidRadioButtonQuestion()));
         }
-        return answerPossibilities;
+        return questionTextPossibilities;
     }
 
     @Bean

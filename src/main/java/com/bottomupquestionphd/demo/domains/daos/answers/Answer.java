@@ -1,6 +1,8 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -18,12 +20,15 @@ public class Answer {
   private boolean deleted;
 
   @OneToMany(mappedBy = "answer", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference
   private List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
 
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonBackReference
   private AnswerForm answerForm;
 
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonBackReference
   private Question question;
 
   public Answer() {

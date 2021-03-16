@@ -1,6 +1,5 @@
 package com.bottomupquestionphd.demo.services.error;
 
-import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -12,6 +11,9 @@ public class ErrorServiceImpl implements ErrorService {
 
   @Override
   public String buildMissingFieldErrorMessage(Object object) {
+    if (object == null){
+      throw new NullPointerException("Object to be verified for null or empty fields is null");
+    }
     String result = "";
     List<String> missingFields = checkInputNullFields(object);
     String errorMessage = "";
@@ -25,9 +27,7 @@ public class ErrorServiceImpl implements ErrorService {
     return errorMessage;
   }
 
-
-  @Override
-  public List<String> checkInputNullFields(Object object) {
+  private List<String> checkInputNullFields(Object object) {
     List<String> missingFields = new ArrayList<>();
     for (Field field : object.getClass().getDeclaredFields()) {
       field.setAccessible(true);

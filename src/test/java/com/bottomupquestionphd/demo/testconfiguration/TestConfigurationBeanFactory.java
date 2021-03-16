@@ -62,7 +62,7 @@ public class TestConfigurationBeanFactory {
     @Bean(name = "checkboxQuestion")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     CheckBoxQuestion getValidCheckBoxQuestion(){
-        CheckBoxQuestion question = new CheckBoxQuestion(1, "fakeQuestionText", List.of(getAnswerPossibility(), getAnswerPossibility(), getAnswerPossibility()));
+        CheckBoxQuestion question = new CheckBoxQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
         question.setQuestionForm(getQuestionForm());
         return question;
     }
@@ -70,15 +70,15 @@ public class TestConfigurationBeanFactory {
     @Bean(name = "radioButtonQuestion")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     RadioButtonQuestion getValidRadioButtonQuestion(){
-        RadioButtonQuestion question = new RadioButtonQuestion(1, "fakeQuestionText", List.of(getAnswerPossibility(), getAnswerPossibility(), getAnswerPossibility()));
+        RadioButtonQuestion question = new RadioButtonQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
         question.setQuestionForm(getQuestionForm());
         return question;
     }
 
-    @Bean("answerPossibility")
+    @Bean("questionTextPossibility")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionTextPossibility getAnswerPossibility(){
-        QuestionTextPossibility questionTextPossibility = new QuestionTextPossibility("answerpossibility");
+    QuestionTextPossibility getQuestionTextPossibility(){
+        QuestionTextPossibility questionTextPossibility = new QuestionTextPossibility("questionTextPossibility");
         return questionTextPossibility;
     }
 
@@ -100,6 +100,7 @@ public class TestConfigurationBeanFactory {
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     QuestionWithDTypeDTO getCheckBoxQuestionWithDTypeDTO(){
         QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Check box", "CheckboxQuestionText", 5);
+        questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithCheckBoxQuestion());
         return questionWithDTypeDTO;
     }
 
@@ -107,6 +108,7 @@ public class TestConfigurationBeanFactory {
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     QuestionWithDTypeDTO getRadioQuestionWithDTypeDTO(){
         QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Radio button", "RadioQuestionText", 5);
+        questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithRadioButtonQuestion());
         return questionWithDTypeDTO;
     }
 
@@ -151,7 +153,7 @@ public class TestConfigurationBeanFactory {
 
     @Bean(name = "questionTextPossibilitiesForCheckBox")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<QuestionTextPossibility> returnquestionTextPossibilitiesWithCheckBoxQuestion(){
+    public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithCheckBoxQuestion(){
         List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
             questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
@@ -161,7 +163,7 @@ public class TestConfigurationBeanFactory {
 
     @Bean(name = "questionTextPossibilitiesForRadioButton")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<QuestionTextPossibility> returnQuestionTextPossibilitiesWithRadioButtonQuestion(){
+    public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithRadioButtonQuestion(){
         List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
         for (int i = 0; i < 5 ; i++) {
             questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidRadioButtonQuestion()));

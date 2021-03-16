@@ -81,10 +81,6 @@ public class Question implements Comparable<Question> {
     this.listPosition = listPosition;
   }
 
-  public List<String> getAnswerPossibilitiesTexts(){
-    return null;
-  }
-
   public List<Answer> getAnswers() {
     return answers;
   }
@@ -110,4 +106,5 @@ public class Question implements Comparable<Question> {
   public String getDiscriminatorValue() {
     return this.getClass().getAnnotation(DiscriminatorValue.class).value();
   }
+
 }

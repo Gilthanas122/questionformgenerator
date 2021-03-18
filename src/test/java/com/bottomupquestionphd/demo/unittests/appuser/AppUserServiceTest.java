@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.unittests;
+package com.bottomupquestionphd.demo.unittests.appuser;
 
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;

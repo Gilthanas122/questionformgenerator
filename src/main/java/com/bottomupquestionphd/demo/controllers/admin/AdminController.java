@@ -1,20 +1,16 @@
 package com.bottomupquestionphd.demo.controllers.admin;
 
-import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
+import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
-import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -63,6 +59,8 @@ public class AdminController {
       adminAppUserService.removeRole(role, id);
       return "redirect:/admin/change-user-role";
     }catch (NoSuchUserByIdException e){
+      model.addAttribute("error", e.getMessage());
+    }catch (RoleMissMatchException e){
       model.addAttribute("error", e.getMessage());
     }catch (Exception e){
       model.addAttribute("error", e.getMessage());

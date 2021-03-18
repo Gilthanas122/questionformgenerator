@@ -25,12 +25,12 @@ public class QuestionTextPossibilityTest {
   private QuestionTextPossibilityService questionTextPossibilityService;
 
   @Before
-  public void setup(){
+  public void setup() {
     questionTextPossibilityService = new QuestionTextPossibilityServiceImpl(questionTextPossibilityRepository);
   }
 
   @Test
-  public void convertStringToQuestionTextPossibility_withValidString_returnListQuestionTextPossibility(){
+  public void convertStringToQuestionTextPossibility_withValidString_returnListQuestionTextPossibility() {
     List<String> questionTextPossibilitiesStrings = new ArrayList<>();
     questionTextPossibilitiesStrings.add("QuestionText1");
     questionTextPossibilitiesStrings.add("QuestionText2");
@@ -45,12 +45,12 @@ public class QuestionTextPossibilityTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void convertStringToQuestionTextPossibility_withNullStringValue_returnListQuestionTextPossibility(){
+  public void convertStringToQuestionTextPossibility_withNullStringValue_returnListQuestionTextPossibility() {
     List<String> questionTextPossibilitiesStrings = new ArrayList<>();
     questionTextPossibilitiesStrings.add("QuestionText1");
     questionTextPossibilitiesStrings.add("QuestionText2");
     questionTextPossibilitiesStrings.add(null);
 
-    List<QuestionTextPossibility> questionTextPossibilities = questionTextPossibilityService.convertStringToQuestionTextPossibility(questionTextPossibilitiesStrings);
+    questionTextPossibilityService.convertStringToQuestionTextPossibility(questionTextPossibilitiesStrings);
   }
 }

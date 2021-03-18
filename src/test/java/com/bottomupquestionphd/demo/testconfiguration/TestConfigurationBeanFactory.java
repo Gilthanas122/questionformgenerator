@@ -22,189 +22,213 @@ import java.util.List;
 @Configuration
 public class TestConfigurationBeanFactory {
 
-    @Bean(name = {"validUser"})
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    AppUser getAppUser() {
-        AppUser fakePlayer = new AppUser("validUser", "Geeks@portal20", "ROLE_USER");
-        return fakePlayer;
-    }
+  @Bean(name = {"validUser"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AppUser getAppUser() {
+    AppUser fakePlayer = new AppUser("validUser", "Geeks@portal20", "ROLE_USER");
+    return fakePlayer;
+  }
 
-    @Bean(name = "validLoginDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    LoginDTO getValidLoginDTO() {
-        LoginDTO loginDTO = new LoginDTO("validUser", "Geeks@portal20");
-        return loginDTO;
-    }
+  @Bean(name = {"validAdmin"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AppUser getAdmin() {
+    AppUser fakeAdmin = new AppUser("validAdmin", "Geeks@portal20", "ROLE_ADMIN");
+    return fakeAdmin;
+  }
 
-    @Bean(name = "validQuestion")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Question getValidQuestion(){
-        Question question = new Question(1, "fakeQuestionText", 0);
-        question.setQuestionForm(getQuestionForm());
-        question.getQuestionForm().setAppUser(getAppUser());
-        return question;
+  @Bean(name = {"validUsers"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AppUser> getAppUsers() {
+    List<AppUser> appUsers = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      AppUser appUser;
+      if (i == 0) {
+        appUser = getAdmin();
+      } else {
+        appUser = getAppUser();
+      }
+      appUsers.add(appUser);
     }
+    return appUsers;
+  }
 
-    @Bean(name = "scaleQuestion")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Question getScaleQuestion(){
-        ScaleQuestion question = new ScaleQuestion(1, "fakeQuestionText", 6);
-        question.setQuestionForm(getQuestionForm());
-        return question;
-    }
+  @Bean(name = "validLoginDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  LoginDTO getValidLoginDTO() {
+    LoginDTO loginDTO = new LoginDTO("validUser", "Geeks@portal20");
+    return loginDTO;
+  }
 
-    @Bean(name = "textQuestion")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    TextQuestion getValidTextQuestion(){
-        TextQuestion question = new TextQuestion(1, "fakeTextQuestionText");
-        question.setQuestionForm(getQuestionForm());
-        return question;
-    }
+  @Bean(name = "validQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Question getValidQuestion() {
+    Question question = new Question(1, "fakeQuestionText", 0);
+    question.setQuestionForm(getQuestionForm());
+    question.getQuestionForm().setAppUser(getAppUser());
+    return question;
+  }
 
-    @Bean(name = "checkboxQuestion")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    CheckBoxQuestion getValidCheckBoxQuestion(){
-        CheckBoxQuestion question = new CheckBoxQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
-        question.setQuestionForm(getQuestionForm());
-        return question;
-    }
+  @Bean(name = "scaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Question getScaleQuestion() {
+    ScaleQuestion question = new ScaleQuestion(1, "fakeQuestionText", 6);
+    question.setQuestionForm(getQuestionForm());
+    return question;
+  }
 
-    @Bean(name = "radioButtonQuestion")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    RadioButtonQuestion getValidRadioButtonQuestion(){
-        RadioButtonQuestion question = new RadioButtonQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
-        question.setQuestionForm(getQuestionForm());
-        return question;
-    }
+  @Bean(name = "textQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  TextQuestion getValidTextQuestion() {
+    TextQuestion question = new TextQuestion(1, "fakeTextQuestionText");
+    question.setQuestionForm(getQuestionForm());
+    return question;
+  }
 
-    @Bean("questionTextPossibility")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionTextPossibility getQuestionTextPossibility(){
-        QuestionTextPossibility questionTextPossibility = new QuestionTextPossibility("questionTextPossibility");
-        return questionTextPossibility;
-    }
+  @Bean(name = "checkboxQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  CheckBoxQuestion getValidCheckBoxQuestion() {
+    CheckBoxQuestion question = new CheckBoxQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
+    question.setQuestionForm(getQuestionForm());
+    return question;
+  }
 
-    @Bean(name = "textQuestionWithDTypeDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionWithDTypeDTO getTextQuestionWithDTypeDTO(){
-        QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "TextQuestion", "TextQuestionText", null);
-        return questionWithDTypeDTO;
-    }
+  @Bean(name = "radioButtonQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  RadioButtonQuestion getValidRadioButtonQuestion() {
+    RadioButtonQuestion question = new RadioButtonQuestion(1, "fakeQuestionText", List.of(getQuestionTextPossibility(), getQuestionTextPossibility(), getQuestionTextPossibility()));
+    question.setQuestionForm(getQuestionForm());
+    return question;
+  }
 
-    @Bean(name = "scaleQuestionWithDTypeDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionWithDTypeDTO getScaleQuestionWithDTypeDTO(){
-        QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Scale", "ScaleQuestionText", 5);
-        return questionWithDTypeDTO;
-    }
+  @Bean("questionTextPossibility")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionTextPossibility getQuestionTextPossibility() {
+    QuestionTextPossibility questionTextPossibility = new QuestionTextPossibility("questionTextPossibility");
+    return questionTextPossibility;
+  }
 
-    @Bean(name = "checkboxQuestionWithDTypeDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionWithDTypeDTO getCheckBoxQuestionWithDTypeDTO(){
-        QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Check box", "CheckboxQuestionText", 5);
-        questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithCheckBoxQuestion());
-        return questionWithDTypeDTO;
-    }
+  @Bean(name = "textQuestionWithDTypeDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionWithDTypeDTO getTextQuestionWithDTypeDTO() {
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "TextQuestion", "TextQuestionText", null);
+    return questionWithDTypeDTO;
+  }
 
-    @Bean(name = "radioQuestionWithDTypeDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionWithDTypeDTO getRadioQuestionWithDTypeDTO(){
-        QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Radio button", "RadioQuestionText", 5);
-        questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithRadioButtonQuestion());
-        return questionWithDTypeDTO;
-    }
+  @Bean(name = "scaleQuestionWithDTypeDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionWithDTypeDTO getScaleQuestionWithDTypeDTO() {
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Scale", "ScaleQuestionText", 5);
+    return questionWithDTypeDTO;
+  }
 
-    @Bean(name = "questionForm")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    QuestionForm getQuestionForm(){
-        QuestionForm questionForm = new QuestionForm("question form name", "question form description");
-        questionForm.setQuestions(getListQuestions());
-        return questionForm;
-    }
+  @Bean(name = "checkboxQuestionWithDTypeDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionWithDTypeDTO getCheckBoxQuestionWithDTypeDTO() {
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Check box", "CheckboxQuestionText", 5);
+    questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithCheckBoxQuestion());
+    return questionWithDTypeDTO;
+  }
 
-    @Bean(name = "questionForms")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    List<QuestionForm> getQuestionForms(){
-        List<QuestionForm> questionForms = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            QuestionForm questionForm = new QuestionForm("question form name"+i, "question form description"+i);
-            questionForm.setId(i+1);
-            questionForms.add(questionForm);
-        }
-        return questionForms;
-    }
+  @Bean(name = "radioQuestionWithDTypeDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionWithDTypeDTO getRadioQuestionWithDTypeDTO() {
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Radio button", "RadioQuestionText", 5);
+    questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithRadioButtonQuestion());
+    return questionWithDTypeDTO;
+  }
 
-    @Bean(name = "answerForm")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    AnswerForm getAnswerForm(){
-        AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
-        return answerForm;
+  @Bean(name = "questionForm")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionForm() {
+    QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+    questionForm.setQuestions(getListQuestions());
+    return questionForm;
+  }
+
+  @Bean(name = "questionForms")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<QuestionForm> getQuestionForms() {
+    List<QuestionForm> questionForms = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      QuestionForm questionForm = new QuestionForm("question form name" + i, "question form description" + i);
+      questionForm.setId(i + 1);
+      questionForms.add(questionForm);
     }
+    return questionForms;
+  }
+
+  @Bean(name = "answerForm")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AnswerForm getAnswerForm() {
+    AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
+    return answerForm;
+  }
 
 
-    @Bean(name = "checkBoxAnswer")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Answer getCheckBoxAnswer(){
-        Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidCheckBoxQuestion());
-        return answer;
-    }
+  @Bean(name = "checkBoxAnswer")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Answer getCheckBoxAnswer() {
+    Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidCheckBoxQuestion());
+    return answer;
+  }
 
-    @Bean(name = "radioButtonAnswer")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    Answer getRadioButtonAnswer(){
-        Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidRadioButtonQuestion());
-        return answer;
-    }
+  @Bean(name = "radioButtonAnswer")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Answer getRadioButtonAnswer() {
+    Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidRadioButtonQuestion());
+    return answer;
+  }
 
-    @Bean(name = "actualAnswerTexts")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    List<ActualAnswerText> getActualAnswerTexts(){
-        List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
-        for (int i = 0; i <5 ; i++) {
-            actualAnswerTexts.add(new ActualAnswerText(i, "actualanswertext"+i));
-        }
-        return actualAnswerTexts;
+  @Bean(name = "actualAnswerTexts")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<ActualAnswerText> getActualAnswerTexts() {
+    List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      actualAnswerTexts.add(new ActualAnswerText(i, "actualanswertext" + i));
     }
+    return actualAnswerTexts;
+  }
 
-    @Bean(name = "questionTextPossibilitiesForCheckBox")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithCheckBoxQuestion(){
-        List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
-        for (int i = 0; i < 5 ; i++) {
-            questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
-        }
-        return questionTextPossibilities;
+  @Bean(name = "questionTextPossibilitiesForCheckBox")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithCheckBoxQuestion() {
+    List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
     }
+    return questionTextPossibilities;
+  }
 
-    @Bean(name = "questionTextPossibilitiesForRadioButton")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithRadioButtonQuestion(){
-        List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
-        for (int i = 0; i < 5 ; i++) {
-            questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidRadioButtonQuestion()));
-        }
-        return questionTextPossibilities;
+  @Bean(name = "questionTextPossibilitiesForRadioButton")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithRadioButtonQuestion() {
+    List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidRadioButtonQuestion()));
     }
+    return questionTextPossibilities;
+  }
 
-    @Bean(name = "questionCreateDTO")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public QuestionCreateDTO getQuestionCreateDTO(){
-        return new QuestionCreateDTO("What is your name?");
-    }
+  @Bean(name = "questionCreateDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public QuestionCreateDTO getQuestionCreateDTO() {
+    return new QuestionCreateDTO("What is your name?");
+  }
 
-    @Bean(name = "getListQuestions")
-    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public List<Question> getListQuestions(){
-        List<Question> questions = new ArrayList<>();
-        for (int i = 0; i <4 ; i++) {
-            Question question = new Question("helloka"+i);
-            question.setListPosition(i);
-            questions.add(question);
-        }
-        return questions;
+  @Bean(name = "getListQuestions")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Question> getListQuestions() {
+    List<Question> questions = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      Question question = new Question("helloka" + i);
+      question.setListPosition(i);
+      questions.add(question);
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    return questions;
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }

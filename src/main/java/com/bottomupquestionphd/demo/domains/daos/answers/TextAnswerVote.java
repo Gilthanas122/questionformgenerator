@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class TextAnswerVote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private byte value;
     private boolean deleted;
 

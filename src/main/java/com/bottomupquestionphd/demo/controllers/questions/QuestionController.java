@@ -4,12 +4,15 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
+import org.hibernate.TypeMismatchException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,6 +49,8 @@ public class QuestionController {
       model.addAttribute("error", e.getMessage());
     } catch (MissingUserException e) {
       model.addAttribute("error", e.getMessage());
+    } catch (InvalidInputFormatException e) {
+      model.addAttribute("error", e.getMessage());
     } catch (Exception e) {
       model.addAttribute("error", e.getMessage());
     }
@@ -73,8 +78,13 @@ public class QuestionController {
     try {
       questionService.saveQuestionFromQuestionDType(question);
       return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
+    } catch (MissingParamsException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionNotFoundByIdException e) {
+      model.addAttribute("error", e.getMessage());
+    } catch (TypeMismatchException e) {
+      model.addAttribute("error", e.getMessage());
     } catch (Exception e) {
-      e.printStackTrace();
       model.addAttribute("error", e.getMessage());
     }
     return "redirect:/question/update/" + questionId;
@@ -99,15 +109,17 @@ public class QuestionController {
 
   @GetMapping("/delete/{questionId}")
   public String deleteQuestionById(@PathVariable long questionId, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
-   long formId = 0;
-    try{
+    long formId = 0;
+    try {
       formId = questionService.deleteQuestion(questionId);
-      return "redirect:/question-form/list-questions/" +formId;
-    }catch (QuestionNotFoundByIdException e){
+      return "redirect:/question-form/list-questions/" + formId;
+    } catch (QuestionNotFoundByIdException e) {
       redirectAttributes.addAttribute("error", e.getMessage());
-    } catch (BelongToAnotherUserException e){
+    } catch (BelongToAnotherUserException e) {
       redirectAttributes.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (QuestionFormIsNullException e) {
+      redirectAttributes.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
       redirectAttributes.addAttribute("error", e.getMessage());
     }
     return "redirect:/question-form/list/";

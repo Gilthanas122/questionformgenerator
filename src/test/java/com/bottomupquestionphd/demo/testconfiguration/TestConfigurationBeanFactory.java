@@ -7,6 +7,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ public class TestConfigurationBeanFactory {
 
     @Bean(name = {"validUser"})
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    AppUser getPlayerWithValidCredentials() {
+    AppUser getAppUser() {
         AppUser fakePlayer = new AppUser("validUser", "Geeks@portal20", "ROLE_USER");
         return fakePlayer;
     }
@@ -40,6 +41,7 @@ public class TestConfigurationBeanFactory {
     Question getValidQuestion(){
         Question question = new Question(1, "fakeQuestionText", 0);
         question.setQuestionForm(getQuestionForm());
+        question.getQuestionForm().setAppUser(getAppUser());
         return question;
     }
 
@@ -116,13 +118,26 @@ public class TestConfigurationBeanFactory {
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     QuestionForm getQuestionForm(){
         QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+        questionForm.setQuestions(getListQuestions());
         return questionForm;
+    }
+
+    @Bean(name = "questionForms")
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    List<QuestionForm> getQuestionForms(){
+        List<QuestionForm> questionForms = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            QuestionForm questionForm = new QuestionForm("question form name"+i, "question form description"+i);
+            questionForm.setId(i+1);
+            questionForms.add(questionForm);
+        }
+        return questionForms;
     }
 
     @Bean(name = "answerForm")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     AnswerForm getAnswerForm(){
-        AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getPlayerWithValidCredentials());
+        AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
         return answerForm;
     }
 
@@ -134,7 +149,7 @@ public class TestConfigurationBeanFactory {
         return answer;
     }
 
-    @Bean(name = "checkBoxAnswer")
+    @Bean(name = "radioButtonAnswer")
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     Answer getRadioButtonAnswer(){
         Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidRadioButtonQuestion());
@@ -171,6 +186,23 @@ public class TestConfigurationBeanFactory {
         return questionTextPossibilities;
     }
 
+    @Bean(name = "questionCreateDTO")
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public QuestionCreateDTO getQuestionCreateDTO(){
+        return new QuestionCreateDTO("What is your name?");
+    }
+
+    @Bean(name = "getListQuestions")
+    @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public List<Question> getListQuestions(){
+        List<Question> questions = new ArrayList<>();
+        for (int i = 0; i <4 ; i++) {
+            Question question = new Question("helloka"+i);
+            question.setListPosition(i);
+            questions.add(question);
+        }
+        return questions;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

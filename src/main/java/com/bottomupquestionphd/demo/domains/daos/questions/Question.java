@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -20,8 +21,9 @@ public class Question implements Comparable<Question> {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @NotNull
   private String questionText;
-  private Integer listPosition;
+  private int listPosition;
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

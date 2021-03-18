@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -19,7 +20,9 @@ public class QuestionForm {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @NotNull
   private String name;
+  @NotNull
   private String description;
   private boolean finished;
   private boolean deleted;

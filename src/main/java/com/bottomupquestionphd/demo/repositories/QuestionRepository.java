@@ -11,7 +11,11 @@ import javax.transaction.Transactional;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    @Query("SELECT q from Question q WHERE q.id = ?1")
-    Question findById(long questionId);
+  @Query("SELECT q from Question q WHERE q.id = ?1")
+  Question findById(long questionId);
 
+  @Transactional
+  @Modifying
+  @Query("UPDATE Question q SET q.deleted = 1 WHERE q.id = ?1")
+  void setToBeDeleted(long questionId);
 }

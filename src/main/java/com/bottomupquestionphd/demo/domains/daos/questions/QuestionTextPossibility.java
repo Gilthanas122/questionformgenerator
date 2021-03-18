@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class QuestionTextPossibility {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
+  @NotNull
   private String answerText;
   private boolean deleted;
 

@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.domains.daos.appuser;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,12 +17,14 @@ public class AppUser {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(nullable = false)
+  @NotNull
   private String username;
 
+  @NotNull
   private String password;
 
   private boolean active = true;
+  @NotNull
   private String roles = "ROLE_USER";
   private boolean disabled;
 

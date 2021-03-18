@@ -13,6 +13,11 @@ public class QuestionCreateDTO {
     this.questionText = questionText;
   }
 
+  public QuestionCreateDTO(String questionText, List<String> answers) {
+    this.questionText = questionText;
+    this.answers = answers;
+  }
+
   public String getQuestionText() {
     return questionText;
   }

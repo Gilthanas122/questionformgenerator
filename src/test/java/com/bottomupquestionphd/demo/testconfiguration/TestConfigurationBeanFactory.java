@@ -6,9 +6,11 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
+import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,55 @@ public class TestConfigurationBeanFactory {
     AppUser fakePlayer = new AppUser("validUser", "Geeks@portal20", "ROLE_USER");
     return fakePlayer;
   }
+
+  @Bean(name = {"appUsersQuestionFormsDTOs"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AppUsersQuestionFormsDTO> getAppUserQuestionFormsDTOs(){
+    List<AppUsersQuestionFormsDTO> appUsersQuestionFormsDTOS = new ArrayList<>();
+    for (int i = 0; i <4 ; i++) {
+      AppUsersQuestionFormsDTO appUsersQuestionFormsDTO = getAppUsersQuestionFormsDTO();
+      appUsersQuestionFormsDTOS.add(appUsersQuestionFormsDTO);
+    }
+    return appUsersQuestionFormsDTOS;
+  }
+
+  @Bean(name = {"questionFormNotFilledOutByUserDTOs"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<QuestionFormNotFilledOutByUserDTO> getQuestionFormNotFilledOutByUserDTOs(){
+   List<QuestionFormNotFilledOutByUserDTO> questionFormNotFilledOutByUserDTOs = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      QuestionFormNotFilledOutByUserDTO questionFormNotFilledOutByUserDTO = new QuestionFormNotFilledOutByUserDTO(i, "name" +i, i * (int) (Math.random()*3+1));
+      questionFormNotFilledOutByUserDTOs.add(questionFormNotFilledOutByUserDTO);
+    }
+    return questionFormNotFilledOutByUserDTOs;
+  }
+
+  @Bean(name = {"appUsersQuestionFormsDTO"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public AppUsersQuestionFormsDTO getAppUsersQuestionFormsDTO() {
+    return new AppUsersQuestionFormsDTO() {
+      @Override
+      public long getQuestionFormId() {
+        return 1;
+      }
+
+      @Override
+      public String getName() {
+        return "name";
+      }
+
+      @Override
+      public long getAnswerFormId() {
+        return 1;
+      }
+
+      @Override
+      public long getAppUserId() {
+        return 1;
+      }
+    };
+  }
+
 
   @Bean(name = {"validAdmin"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

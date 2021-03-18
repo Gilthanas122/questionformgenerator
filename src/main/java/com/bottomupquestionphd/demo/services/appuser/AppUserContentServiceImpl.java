@@ -1,7 +1,5 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
-import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -30,7 +28,7 @@ public class AppUserContentServiceImpl implements AppUserContentService {
 
     @Override
     public List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormsNotFilledOutByUser() throws BelongToAnotherUserException {
-        long appUserId = appUserService.findCurrentlyLoggedInUser().getId();
+        long appUserId = findCurrentlyLoggedInUsersId();
         appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
         List<Long> ids = answerFormService.findQuestionFormIdsFilledOutByUser(appUserId);
         return queryService.findAllQuestionFormNotFilledOutByUser(ids);

@@ -1,29 +1,29 @@
 package com.bottomupquestionphd.demo.services.answers;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
-import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
+import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.services.answerforms.AnswerFormServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface AnswerService {
-    void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
+    void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException;
 
-    void connectAnswersToActualAnswers(List<Answer> answers);
+    void connectAnswersToActualAnswers(List<Answer> answers) throws MissingParamsException;
 
-    void setActualAnswersToDeleted(long appUserId, long questionFormId);
+    void setActualAnswersToDeleted(long appUserId, long questionFormId) throws MissingParamsException;
 
-    List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originAnswerFormsAnswers);
+    List<Answer> setAnswersToAnswerForm(AnswerForm answerForm, List<Answer> answers, List<Answer> originAnswerFormsAnswers) throws MissingParamsException;
 
-    List<Answer> findAllAnswerTextsBelongingToAQuestion(List<Long> questionId);
+    List<Answer> findAllAnswerTextsBelongingToAQuestion(List<Long> questionId) throws MissingParamsException;
 
-    List<Answer> removeOwnAATextsFromAATToBeVoted(long appUserId, List<Answer> allActualAnswerTextsBelongingToAQuestion);
+    List<Answer> removeOwnAATextsFromAATToBeVoted(long appUserId, List<Answer> allActualAnswerTextsBelongingToAQuestion) throws MissingParamsException;
+
+    List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers, AnswerForm answerForm, List<Answer> originalFormsAnswers, AnswerFormServiceImpl answerFormService) throws MissingParamsException;
 }

@@ -6,6 +6,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -212,6 +213,7 @@ public class TestConfigurationBeanFactory {
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AnswerForm getAnswerForm() {
     AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
+    answerForm.setAnswers(getAnotherListAnswers());
     return answerForm;
   }
 
@@ -238,6 +240,12 @@ public class TestConfigurationBeanFactory {
       actualAnswerTexts.add(new ActualAnswerText(i, "actualanswertext" + i));
     }
     return actualAnswerTexts;
+  }
+
+  @Bean(name = "actualAnswerText")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  ActualAnswerText getActualAnswerText() {
+    return new ActualAnswerText(1l, "AnswerTextTest");
   }
 
   @Bean(name = "questionTextPossibilitiesForCheckBox")
@@ -277,6 +285,36 @@ public class TestConfigurationBeanFactory {
     }
     return questions;
   }
+
+  @Bean(name = "getAnswers")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Answer> getListAnswers() {
+    List<Answer> answers = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      Answer answer = new Answer(i, getActualAnswerTexts(), getAnswerForm(), getScaleQuestion());
+      answers.add(answer);
+    }
+    return answers;
+  }
+
+  @Bean(name = "getAnotherAnswers")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Answer> getAnotherListAnswers() {
+    List<Answer> answers = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      Answer answer = new Answer(i+5, getActualAnswerTexts(), new AnswerForm(), getScaleQuestion());
+      answers.add(answer);
+    }
+    return answers;
+  }
+
+  @Bean(name = "createAnswerFormDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public CreateAnswerFormDTO getCreateAnswerFormDTO(){
+    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(1l, 1l, 1l, getListQuestions(), getListAnswers(), getAnotherListAnswers());
+    return createAnswerFormDTO;
+  }
+
 
   @Bean
   public PasswordEncoder passwordEncoder() {

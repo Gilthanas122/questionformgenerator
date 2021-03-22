@@ -1,6 +1,5 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
-
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;

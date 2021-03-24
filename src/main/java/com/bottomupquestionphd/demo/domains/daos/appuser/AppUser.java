@@ -25,6 +25,9 @@ public class AppUser {
   @NotNull
   private String password;
 
+  @NotNull
+  private String emailId;
+
   private boolean active = true;
   @NotNull
   private String roles = "ROLE_USER";
@@ -38,22 +41,78 @@ public class AppUser {
   @JsonManagedReference
   private List<AnswerForm> answerForms = new ArrayList<>();
 
+  public static class Builder{
+    private long id;
+    private String username;
+    private String password;
+    private String emailId;
+    private boolean active;
+    private String roles = "ROLE_USER";
+    private boolean disabled;
+    private List<QuestionForm> questionForms = new ArrayList<>();
+    private List <AnswerForm> answerForms = new ArrayList<>();
+
+    public Builder id(long id){
+      this.id = id;
+      return this;
+    }
+
+    public Builder username(String username){
+      this.username = username;
+      return this;
+    }
+
+    public Builder password(String password){
+      this.password = password;
+      return this;
+    }
+
+    public Builder emailId(String emailId){
+      this.emailId = emailId;
+      return this;
+    }
+
+    public Builder active(boolean active){
+      this.active = active;
+      return  this;
+    }
+
+    public Builder roles(String roles){
+      this.roles +="," + roles;
+      return this;
+    }
+
+    public Builder disabled(boolean disabled){
+      this.disabled = disabled;
+      return this;
+    }
+
+    public Builder questionForms(List<QuestionForm> questionForms){
+      this.questionForms = questionForms;
+      return this;
+    }
+
+    public Builder answerForms(List<AnswerForm> answerForms){
+      this.answerForms = answerForms;
+      return this;
+    }
+
+    public AppUser build(){
+      AppUser appUser = new AppUser();
+      appUser.setId(this.id);
+      appUser.setUsername(this.username);
+      appUser.setPassword(this.password);
+      appUser.setEmailId(this.emailId);
+      appUser.setActive(this.active);
+      appUser.setRoles(this.roles);
+      appUser.setDisabled(this.disabled);
+      appUser.setQuestionForms(this.questionForms);
+      appUser.setAnswerForms(this.answerForms);
+      return appUser;
+    }
+  }
+
   public AppUser() {
-  }
-
-  public AppUser(String username) {
-    this.username = username;
-  }
-
-  public AppUser(String username, String password, String roles) {
-    this.username = username;
-    this.password = password;
-    this.roles = roles;
-  }
-
-  public AppUser(String username, String password) {
-    this.username = username;
-    this.password = password;
   }
 
   public long getId() {
@@ -139,5 +198,13 @@ public class AppUser {
     return answerForms
             .stream()
             .anyMatch(form -> form.getId() == answerFormId);
+  }
+
+  public String getEmailId() {
+    return emailId;
+  }
+
+  public void setEmailId(String emailId) {
+    this.emailId = emailId;
   }
 }

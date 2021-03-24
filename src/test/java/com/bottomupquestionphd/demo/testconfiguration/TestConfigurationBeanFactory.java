@@ -28,8 +28,31 @@ public class TestConfigurationBeanFactory {
   @Bean(name = {"validUser"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AppUser getAppUser() {
-    AppUser fakePlayer = new AppUser("validUser", "Geeks@portal20", "ROLE_USER");
+    AppUser fakePlayer = new AppUser.Builder().username("validUser").password("Geeks@portal20").emailId("user@user.com").build();
     return fakePlayer;
+  }
+
+  @Bean(name = {"validAdmin"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AppUser getAdmin() {
+    AppUser fakeAdmin = new AppUser.Builder().username("validAdmin").password("Geeks@portal20").emailId("admin@admin.com").roles("ROLE_ADMIN").build();
+    return fakeAdmin;
+  }
+
+  @Bean(name = {"validUsers"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AppUser> getAppUsers() {
+    List<AppUser> appUsers = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      AppUser appUser;
+      if (i == 0) {
+        appUser = getAdmin();
+      } else {
+        appUser = getAppUser();
+      }
+      appUsers.add(appUser);
+    }
+    return appUsers;
   }
 
   @Bean(name = {"appUsersQuestionFormsDTOs"})
@@ -78,30 +101,6 @@ public class TestConfigurationBeanFactory {
         return 1;
       }
     };
-  }
-
-
-  @Bean(name = {"validAdmin"})
-  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  AppUser getAdmin() {
-    AppUser fakeAdmin = new AppUser("validAdmin", "Geeks@portal20", "ROLE_ADMIN");
-    return fakeAdmin;
-  }
-
-  @Bean(name = {"validUsers"})
-  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  List<AppUser> getAppUsers() {
-    List<AppUser> appUsers = new ArrayList<>();
-    for (int i = 0; i < 4; i++) {
-      AppUser appUser;
-      if (i == 0) {
-        appUser = getAdmin();
-      } else {
-        appUser = getAppUser();
-      }
-      appUsers.add(appUser);
-    }
-    return appUsers;
   }
 
   @Bean(name = "validLoginDTO")

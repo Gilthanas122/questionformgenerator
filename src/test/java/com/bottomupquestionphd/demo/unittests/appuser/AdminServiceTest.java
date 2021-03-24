@@ -47,7 +47,7 @@ public class AdminServiceTest {
     List<AppUser> returnedAppUsers = adminAppUserService.findAllUsers();
 
     Mockito.verify(appUserRepository, times(1)).findAll();
-    Assert.assertEquals("ROLE_ADMIN", returnedAppUsers.get(0).getRoles());
+    Assert.assertEquals("ROLE_USER,ROLE_ADMIN", returnedAppUsers.get(0).getRoles());
     Assert.assertEquals("ROLE_USER", returnedAppUsers.get(1).getRoles());
   }
 
@@ -135,6 +135,7 @@ public class AdminServiceTest {
   @Test
   public void deactivateUser_withvalidIdAndActiveUser() throws UserDeactivateException, NoSuchUserByIdException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setActive(true);
 
     Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(java.util.Optional.of(appUser));
 
@@ -164,7 +165,7 @@ public class AdminServiceTest {
   @Test(expected = UserDeactivateException.class)
   public void activateUser_alreadydActiveUser_throwsUserDeactivateException() throws UserDeactivateException, NoSuchUserByIdException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-
+    appUser.setActive(true);
     Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(java.util.Optional.of(appUser));
 
     adminAppUserService.activateUser(appUser.getId());

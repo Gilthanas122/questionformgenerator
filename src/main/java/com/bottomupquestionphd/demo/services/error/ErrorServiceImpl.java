@@ -35,7 +35,6 @@ public class ErrorServiceImpl {
       field.setAccessible(true);
       try {
         if (field.get(object) == null || field.get(object).equals("")) {
-          field.setAccessible(true);
           missingFields.add(field.getName());
         }
       } catch (IllegalAccessException e) {

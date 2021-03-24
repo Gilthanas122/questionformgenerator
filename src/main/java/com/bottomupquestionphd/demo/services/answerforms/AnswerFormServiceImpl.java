@@ -43,7 +43,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   public CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AppUser currentUser = appUserService.findCurrentlyLoggedInUser();
-    checkIfUserHasFilledOutAnswerForm(questionFormId, currentUser.getId());
+    checkIfUserHasFilledOutAnswerForm(questionForm, currentUser.getId());
 
     return new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionForm.getQuestions());
   }
@@ -56,9 +56,9 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     AppUser appUser = appUserService.findById(appUserId);
 
-    checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
-    appUser.addOneAnswerForm(answerForm);
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
+    checkIfUserHasFilledOutAnswerForm(questionForm, appUserId);
+    appUser.addOneAnswerForm(answerForm);
     answerForm.setAppUser(appUser);
     answerForm.setQuestionForm(questionForm);
     checkForEmptyAnswerText(answerForm);
@@ -132,9 +132,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     answerFormRepository.save(answerForm);
   }
 
-  @Override
-  public boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
-    QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
+
+  private void checkIfUserHasFilledOutAnswerForm(QuestionForm questionForm, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
     if (questionForm == null) {
       throw new QuestionFormNotFoundException("Couldn't find question form");
     }
@@ -147,7 +146,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     if (hasUserFilledOutGivenAnswerForm) {
       throw new AnswerFormAlreadyFilledOutByCurrentUserException("You have already filled out this question form, please update the existing one");
     }
-    return hasUserFilledOutGivenAnswerForm;
   }
 
   private List<Answer> getAllAnswersBelongingToAQuestion(List<Long> questionIds) throws MissingParamsException {

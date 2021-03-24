@@ -10,9 +10,6 @@ import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExi
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
 import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -92,35 +88,5 @@ public class PublicController {
       model.addAttribute("error", e.getMessage());
     }
     return "register";
-  }
-
-  @PostMapping("login-here")
-  public String validateLogin(@RequestParam String error, @ModelAttribute AppUser appUser, HttpServletRequest request){
-
-    return "kaki";
-  }
-
-
-  @PostMapping("/login-kaki")
-  public String login(HttpServletRequest request, Model model){
-    try {
-      validateLoginCredentials(request);
-    }catch (BadCredentialsException e){
-      model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
-      model.addAttribute("error", e.getMessage());
-    }
-    return "login";
-  }
-
-  private void validateLoginCredentials(HttpServletRequest request){
-    HttpSession session = request.getSession(false);
-    if (session != null) {
-      AuthenticationException ex = (AuthenticationException) session
-              .getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-      if (ex != null) {
-        throw new BadCredentialsException("Bad username or password thingy");
-      }
-    }
   }
 }

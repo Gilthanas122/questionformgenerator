@@ -84,12 +84,14 @@ public class AnswerFormController {
             model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            e.printStackTrace();
         }
         return "app-user/landing-page";
     }
 
-    @PostMapping("/update/{appUserId}/{answerFormId}")
-    public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId, @ModelAttribute AnswerForm answerForm, Model model){
+    @PostMapping("/update/{answerFormId}/{appUserId}")
+    public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
+                                                 @ModelAttribute AnswerForm answerForm, Model model){
         try {
             answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
             model.addAttribute("successMessage", "AnswerForm successfully updated");

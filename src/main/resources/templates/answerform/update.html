@@ -9,7 +9,7 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<form th:action="@{|/answer-form/create/${answerForm.answerFormId}/${answerForm.questionFormId}/${answerForm.appUserId}|}" method="post">
+<form th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}" method="post">
     <tr th:each="question, itemStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
         <div>

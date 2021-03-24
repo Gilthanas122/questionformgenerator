@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.domains.daos.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.tokens.ConfirmationToken;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
@@ -28,7 +29,7 @@ public class AppUser {
   @NotNull
   private String emailId;
 
-  private boolean active = true;
+  private boolean active;
   @NotNull
   private String roles = "ROLE_USER";
   private boolean disabled;
@@ -41,6 +42,9 @@ public class AppUser {
   @JsonManagedReference
   private List<AnswerForm> answerForms = new ArrayList<>();
 
+  @OneToOne(mappedBy = "appUser",  cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private ConfirmationToken confirmationToken = new ConfirmationToken();
+
   public static class Builder{
     private long id;
     private String username;
@@ -51,6 +55,7 @@ public class AppUser {
     private boolean disabled;
     private List<QuestionForm> questionForms = new ArrayList<>();
     private List <AnswerForm> answerForms = new ArrayList<>();
+    private ConfirmationToken confirmationToken = new ConfirmationToken();
 
     public Builder id(long id){
       this.id = id;
@@ -97,6 +102,11 @@ public class AppUser {
       return this;
     }
 
+    public Builder confirmationToken(ConfirmationToken confirmationToken){
+      this.confirmationToken = confirmationToken;
+      return this;
+    }
+
     public AppUser build(){
       AppUser appUser = new AppUser();
       appUser.setId(this.id);
@@ -108,6 +118,7 @@ public class AppUser {
       appUser.setDisabled(this.disabled);
       appUser.setQuestionForms(this.questionForms);
       appUser.setAnswerForms(this.answerForms);
+      appUser.setConfirmationToken(this.confirmationToken);
       return appUser;
     }
   }
@@ -206,5 +217,13 @@ public class AppUser {
 
   public void setEmailId(String emailId) {
     this.emailId = emailId;
+  }
+
+  public ConfirmationToken getConfirmationToken() {
+    return confirmationToken;
+  }
+
+  public void setConfirmationToken(ConfirmationToken confirmationToken) {
+    this.confirmationToken = confirmationToken;
   }
 }

@@ -33,14 +33,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
-            .antMatchers("/", "/login", "/register").permitAll()
+            .antMatchers("/", "/login", "/register", "/verify-account").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
             .loginPage("/login")
-            .loginProcessingUrl("/login")
+            .loginProcessingUrl("/login-here")
             .defaultSuccessUrl("/app-user/landing-page")
-            .failureUrl("/login?error=Bad username or password")
+            .failureUrl("/login?error=Bad username or password or not activated user by email")
             .and()
             .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
             .and()

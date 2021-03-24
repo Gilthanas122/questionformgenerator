@@ -28,14 +28,26 @@ public class TestConfigurationBeanFactory {
   @Bean(name = {"validUser"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AppUser getAppUser() {
-    AppUser fakePlayer = new AppUser.Builder().username("validUser").password("Geeks@portal20").emailId("user@user.com").build();
+    AppUser fakePlayer = new AppUser
+            .Builder()
+            .username("validUser")
+            .password("Geeks@portal20")
+            .emailId("user@domain.com")
+            .active(true)
+            .build();
     return fakePlayer;
   }
 
   @Bean(name = {"validAdmin"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AppUser getAdmin() {
-    AppUser fakeAdmin = new AppUser.Builder().username("validAdmin").password("Geeks@portal20").emailId("admin@admin.com").roles("ROLE_ADMIN").build();
+    AppUser fakeAdmin = new AppUser
+            .Builder()
+            .username("validAdmin")
+            .password("Geeks@portal20")
+            .emailId("user@domain.com")
+            .roles("ROLE_ADMIN")
+            .build();
     return fakeAdmin;
   }
 

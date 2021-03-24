@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos.tokens;
+package com.bottomupquestionphd.demo.domains.daos.tokens;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 
@@ -26,7 +26,9 @@ public class ConfirmationToken {
   public static class Builder {
     private long id;
     private String confirmationToken;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private AppUser appUser;
 
     public Builder id(long id) {
@@ -59,7 +61,8 @@ public class ConfirmationToken {
     }
   }
 
-  private ConfirmationToken(){}
+  public ConfirmationToken() {
+  }
 
   public long getId() {
     return id;

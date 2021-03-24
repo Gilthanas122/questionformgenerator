@@ -20,4 +20,10 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
   @Modifying
   @Query("UPDATE AppUser a SET a.disabled = 1 WHERE a.id = ?1")
   void setUserToDisabled(long id);
+
+  @Query("SELECT CASE WHEN (COUNT(a)> 0) THEN true ELSE false END FROM AppUser a WHERE a.emailId = ?1")
+  boolean existByEmailId(String emailId);
+
+  @Query("SELECT a FROM AppUser a WHERE a.emailId = ?1")
+  AppUser findByEmailId(String userEmail);
 }

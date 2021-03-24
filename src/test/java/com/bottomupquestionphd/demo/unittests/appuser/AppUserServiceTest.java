@@ -6,9 +6,13 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
+import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
+import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
+import com.bottomupquestionphd.demo.services.appuser.AppUserNotActivatedException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserServiceImpl;
+import com.bottomupquestionphd.demo.services.emailService.EmailService;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,6 +40,7 @@ import static org.mockito.Mockito.when;
 public class AppUserServiceTest {
   private AppUserService appUserService;
   private AppUserRepository appUserRepository;
+  private EmailService emailService = Mockito.mock(EmailService.class);
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -51,23 +56,25 @@ public class AppUserServiceTest {
     authentication = Mockito.mock(Authentication.class);
     securityContext = Mockito.mock(SecurityContext.class);
     appUserRepository = Mockito.mock(AppUserRepository.class);
-    appUserService = new AppUserServiceImpl(appUserRepository, passwordEncoder);
+    appUserService = new AppUserServiceImpl(appUserRepository, passwordEncoder, emailService);
     myUserDetails = Mockito.mock(MyUserDetails.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
     Mockito.when(authentication.getPrincipal()).thenReturn(myUserDetails);
   }
 
-  @Test()
-  public void saveUser_withValidUser() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  @Test
+  public void saveUser_withValidUser() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+
+    Mockito.when(emailService.verifyEmailPattern(appUser.getEmailId())).thenReturn(true);
 
     appUserService.saveUser(appUser);
     Mockito.verify(appUserRepository, times(1)).save(appUser);
   }
 
   @Test(expected = MissingParamsException.class)
-  public void saveUser_withNullUserNameOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveUser_withNullUserNameOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setUsername(null);
 
@@ -75,7 +82,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = MissingParamsException.class)
-  public void saveUser_withNullPasswordOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveUser_withNullPasswordOnAppUser_throwsMissingParamsException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword(null);
     when(buildMissingFieldErrorMessage(appUser)).thenThrow(new MissingParamsException());
@@ -84,7 +91,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = PasswordNotComplexEnoughException.class)
-  public void saveUser_withTooShortPassword_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveUser_withTooShortPassword_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword("V12-a");
 
@@ -92,7 +99,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = PasswordNotComplexEnoughException.class)
-  public void saveUser_withNotExtraCharacterPassword_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveUser_withNotExtraCharacterPassword_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword("Hello12334");
 
@@ -109,14 +116,14 @@ public class AppUserServiceTest {
     }*/
 
   @Test(expected = PasswordNotComplexEnoughException.class)
-  public void saveUser_withNoNumber_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveUser_withNoNumber_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword("ello++HHH");
     appUserService.saveUser(appUser);
   }
 
   @Test(expected = UsernameAlreadyTakenException.class)
-  public void saveAppUser_withUserNameAlreadyTaken_throwsUserNameAlreadyTakenException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+  public void saveAppUser_withUserNameAlreadyTaken_throwsUserNameAlreadyTakenException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     when(appUserRepository.existsByUsername(appUser.getUsername())).thenReturn(true);
 
@@ -124,7 +131,7 @@ public class AppUserServiceTest {
   }
 
   @Test
-  public void validateLogin_withValidLoginDTO() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
+  public void validateLogin_withValidLoginDTO() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException, AppUserNotActivatedException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword(passwordEncoder.encode(appUser.get().getPassword()));
@@ -134,7 +141,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = MissingParamsException.class)
-  public void validateLogin_withNullUserName_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
+  public void validateLogin_withNullUserName_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException, AppUserNotActivatedException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     loginDTO.setUsername(null);
 
@@ -142,7 +149,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = MissingParamsException.class)
-  public void validateLogin_withNullPassword_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
+  public void validateLogin_withNullPassword_throwsInvalidLoginException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException, AppUserNotActivatedException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     loginDTO.setPassword(null);
     when(buildMissingFieldErrorMessage(loginDTO)).thenReturn("Null password");
@@ -151,7 +158,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = NoSuchUserNameException.class)
-  public void validateLogin_withNoAppUserByGivenUserName_throwsNoSuchUserNameException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
+  public void validateLogin_withNoAppUserByGivenUserName_throwsNoSuchUserNameException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException, AppUserNotActivatedException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword("Helloka++55");
@@ -162,7 +169,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = AppUserPasswordMissMatchException.class)
-  public void validateLogin_withNotMatchingPassword_throwsAppUserPasswordMissmatchException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException {
+  public void validateLogin_withNotMatchingPassword_throwsAppUserPasswordMissmatchException() throws NoSuchUserNameException, InvalidLoginException, AppUserPasswordMissMatchException, MissingParamsException, AppUserNotActivatedException {
     LoginDTO loginDTO = (LoginDTO) beanFactory.getBean("validLoginDTO");
     Optional<AppUser> appUser = Optional.of((AppUser) beanFactory.getBean("validUser"));
     appUser.get().setPassword("Helloka++55");

@@ -7,5 +7,6 @@ import java.util.List;
 
 @Service
 public interface QuestionTextPossibilityService {
+
   List<QuestionTextPossibility> convertStringToQuestionTextPossibility(List<String> answers);
 }

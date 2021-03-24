@@ -197,6 +197,16 @@ public class TestConfigurationBeanFactory {
     return questionForm;
   }
 
+  @Bean(name = "questionFormWithAnswerForm")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionFormWithAnswerForm() {
+    QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+    questionForm.setQuestions(getListQuestions());
+    questionForm.setAnswerForms(getAnswerFormsWithoutSettingQuestionForm());
+    questionForm.setAppUser(getAppUser());
+    return questionForm;
+  }
+
   @Bean(name = "questionForms")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   List<QuestionForm> getQuestionForms() {
@@ -205,6 +215,7 @@ public class TestConfigurationBeanFactory {
       QuestionForm questionForm = new QuestionForm("question form name" + i, "question form description" + i);
       questionForm.setId(i + 1);
       questionForms.add(questionForm);
+      questionForm.setAnswerForms(getAnswerFormsWithoutSettingQuestionForm());
     }
     return questionForms;
   }
@@ -217,6 +228,17 @@ public class TestConfigurationBeanFactory {
     return answerForm;
   }
 
+  @Bean(name = "answerFormsWithoutSettingQuestionForm")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AnswerForm> getAnswerFormsWithoutSettingQuestionForm() {
+    List<AnswerForm> answerForms = new ArrayList<>();
+    for (int i = 0; i <4 ; i++) {
+      AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
+      answerForm.setAnswers(getAnotherListAnswers());
+      answerForms.add(answerForm);
+    }
+    return answerForms;
+  }
 
   @Bean(name = "checkBoxAnswer")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

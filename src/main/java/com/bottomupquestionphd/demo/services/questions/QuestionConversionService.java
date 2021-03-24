@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface QuestionConversionService {
 
- QuestionWithDTypeDTO convertFromQuestionToQuestionWithDType(Question question);
+  QuestionWithDTypeDTO convertFromQuestionToQuestionWithDType(Question question);
 
- Question convertQuestionWithDTypeToQuestion(QuestionWithDTypeDTO question);
-  }
+  Question convertQuestionWithDTypeToQuestion(QuestionWithDTypeDTO question);
+}

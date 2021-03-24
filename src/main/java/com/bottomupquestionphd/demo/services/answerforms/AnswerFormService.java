@@ -1,9 +1,6 @@
 package com.bottomupquestionphd.demo.services.answerforms;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
-import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
-import com.bottomupquestionphd.demo.domains.daos.answers.TextAnswerVote;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
@@ -26,14 +23,12 @@ public interface AnswerFormService {
 
     AnswerForm findAnswerFormById(long answerFormId) throws NoSuchAnswerformById;
 
-    boolean checkIfUserHasFilledOutAnswerForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException;
-
     List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByAppUserId(long appUserId) throws BelongToAnotherUserException;
 
     List<Long> findQuestionFormIdsFilledOutByUser(long appUserId);
 
     CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException, MissingParamsException;
 
-    void saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException;
+    void saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, BelongToAnotherUserException;
 
 }

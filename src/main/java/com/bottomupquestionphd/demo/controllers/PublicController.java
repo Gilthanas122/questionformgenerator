@@ -10,6 +10,8 @@ import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExi
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
 import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +19,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.stream.Collectors;
-
 @Controller
 public class PublicController {
-
+  private static final Logger log = LoggerFactory.getLogger(PublicController.class);
   private final AppUserService appUserService;
 
   public PublicController(AppUserService appUserService) {
@@ -31,60 +29,75 @@ public class PublicController {
   }
 
   @GetMapping("/")
-  public String renderIndex(){
+  public String renderIndex() {
+    log.info("GET / started");
+    log.info("GET / finished");
     return "index";
   }
 
   @GetMapping("register")
-  public String renderAppUserCreateForm(Model model){
+  public String renderAppUserCreateForm(Model model) {
+    log.info("GET /register started");
     model.addAttribute("error", null);
     model.addAttribute("appUser", new AppUser());
+    log.info("GET /register finished");
     return "register";
   }
 
   @PostMapping("register")
-  public String saveUser(@ModelAttribute AppUser appUser, Model model){
+  public String saveUser(@ModelAttribute AppUser appUser, Model model) {
+    log.info("POST /register started");
     model.addAttribute("appUser", appUser);
-     try {
-       appUserService.saveUser(appUser);
-       return "redirect:/login";
-     }catch (MissingParamsException e){
-       model.addAttribute("error", e.getMessage());
-     }catch (UsernameAlreadyTakenException e) {
-       model.addAttribute("error", e.getMessage());
-     }catch (PasswordNotComplexEnoughException e){
-       model.addAttribute("error", e.getMessage());
-     } catch (InvalidEmailFormatException e){
-       model.addAttribute("error", e.getMessage());
-     } catch (EmailAlreadyUserException e){
-       model.addAttribute("error", e.getMessage());
-     } catch (Exception e){
-       model.addAttribute("error", e.getMessage());
-     }
+    try {
+      appUserService.saveUser(appUser);
+      log.info("POST /register finished");
+      return "redirect:/login";
+    } catch (MissingParamsException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (UsernameAlreadyTakenException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (PasswordNotComplexEnoughException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (InvalidEmailFormatException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (EmailAlreadyUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
     return "register";
   }
 
   @GetMapping("login")
-  public String renderLogin(Model model, @RequestParam (required = false) String error, HttpServletRequest httpServletRequest) throws IOException {
-    if (error != null){
-      String test =  httpServletRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-      System.out.println();
-    }
+  public String renderLogin(Model model, @RequestParam(required = false) String error) {
+    log.info("GET /login started");
     model.addAttribute("error", error);
     model.addAttribute("loginDTO", new LoginDTO());
+    log.info("GET /login finished");
     return "login";
   }
 
   @GetMapping("verify-account")
-  public String verifyUserAccount(@RequestParam String token, Model model){
+  public String verifyUserAccount(@RequestParam String token, Model model) {
+    log.info("GET /verify-account started");
     try {
       model.addAttribute("successMessage", appUserService.activateUserByEmail(token));
+      log.info("GET /verify-account finished");
       return "redirect:/login";
-    }catch (ConfirmationTokenDoesNotExistException e){
+    } catch (ConfirmationTokenDoesNotExistException e) {
+      log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoSuchUserByEmailException e){
+    } catch (NoSuchUserByEmailException e) {
+      log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
+      log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
     return "register";

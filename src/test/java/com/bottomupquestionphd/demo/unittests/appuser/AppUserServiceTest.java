@@ -9,7 +9,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
 import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
-import com.bottomupquestionphd.demo.services.appuser.AppUserNotActivatedException;
+import com.bottomupquestionphd.demo.exceptions.appuser.AppUserNotActivatedException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserServiceImpl;
 import com.bottomupquestionphd.demo.services.emailService.EmailService;

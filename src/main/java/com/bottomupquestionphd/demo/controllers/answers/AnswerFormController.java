@@ -10,6 +10,8 @@ import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,90 +23,119 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("answer-form")
 @PreAuthorize("isAuthenticated()")
 public class AnswerFormController {
-    private final AnswerFormService answerFormService;
+  private static final Logger log = LoggerFactory.getLogger(AnswerFormController.class);
+  private final AnswerFormService answerFormService;
 
-    public AnswerFormController(AnswerFormService answerFormService) {
-        this.answerFormService = answerFormService;
-    }
+  public AnswerFormController(AnswerFormService answerFormService) {
+    this.answerFormService = answerFormService;
+  }
 
-    @GetMapping("create/{questionFormId}")
-    public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
-        try {
-            model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
-            return "answerform/create";
-        } catch (MissingUserException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (QuestionFormNotFoundException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-        }
-        return "redirect:/app-user/question-form/list";
+  @GetMapping("create/{questionFormId}")
+  public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
+    log.info("GET /create/" + questionFormId + "started");
+    try {
+      model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
+      log.info("GET /create/" + questionFormId + "finished");
+      return "answerform/create";
+    } catch (MissingUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }
+    return "redirect:/app-user/question-form/list";
+  }
 
-    @PostMapping("create/{answerFormId}/{questionFormId}/{appUserId}")
-    public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
-        try {
-            answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
-            model.addAttribute("successMessage", "Question formed successfully filled out");
-            return "redirect:/app-user/landing-page/";
-        } catch (MissingUserException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (NoSuchUserByIdException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (QuestionFormNotFoundException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (BelongToAnotherUserException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (MissingParamsException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        redirectAttributes.addFlashAttribute("answerForm", answerForm);
-        return "redirect:/answer-form/create/" + questionFormId;
+  @PostMapping("create/{answerFormId}/{questionFormId}/{appUserId}")
+  public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
+    log.info("POST /create/" + answerFormId + "/" + questionFormId + "/" + appUserId + " started");
+    try {
+      answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+      model.addAttribute("successMessage", "Question formed successfully filled out");
+      log.info("POST /create/" + answerFormId + "/" + questionFormId + "/" + appUserId + " finished");
+      return "redirect:/app-user/landing-page/";
+    } catch (MissingUserException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (NoSuchUserByIdException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (MissingParamsException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (AnswerFormAlreadyFilledOutByCurrentUserException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      redirectAttributes.addFlashAttribute("error", e.getMessage());
     }
+    redirectAttributes.addFlashAttribute("answerForm", answerForm);
+    return "redirect:/answer-form/create/" + questionFormId;
+  }
 
-    @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
-    public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
-        try {
-            model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId));
-            return "answerform/update";
-        } catch (BelongToAnotherUserException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (QuestionFormNotFoundException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (MissingUserException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (AnswerFormNotFilledOutException e) {
-            model.addAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            e.printStackTrace();
-        }
-        return "app-user/landing-page";
+  @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
+  public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
+    log.info("GET /update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
+    try {
+      model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId));
+      log.info("GET /update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
+      return "answerform/update";
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (MissingUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (AnswerFormNotFilledOutException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+      e.printStackTrace();
     }
+    return "app-user/landing-page";
+  }
 
-    @PostMapping("/update/{answerFormId}/{appUserId}")
-    public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
-                                                 @ModelAttribute AnswerForm answerForm, Model model){
-        try {
-            answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
-            model.addAttribute("successMessage", "AnswerForm successfully updated");
-        }catch (NoSuchAnswerformById e){
-            model.addAttribute("error", e.getMessage());
-        }catch (BelongToAnotherUserException e){
-            model.addAttribute("error", e.getMessage());
-        }catch (NoSuchUserByIdException e){
-            model.addAttribute("error", e.getMessage());
-        }catch (Exception e){
-            model.addAttribute("error", e.getMessage());
-        }
-        return "app-user/landing-page";
+  @PostMapping("/update/{answerFormId}/{appUserId}")
+  public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
+                                               @ModelAttribute AnswerForm answerForm, Model model) {
+    log.info("POST /update/" + answerFormId + "/" + appUserId + " started");
+    try {
+      answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
+      model.addAttribute("successMessage", "AnswerForm successfully updated");
+    } catch (NoSuchAnswerformById e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (NoSuchUserByIdException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }
+    log.info("POST /update/" + answerFormId + "/" + appUserId + " finished");
+    return "app-user/landing-page";
+  }
 
 }

@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.appuser;
+package com.bottomupquestionphd.demo.exceptions.appuser;
 
 public class AppUserNotActivatedException extends Exception {
   public AppUserNotActivatedException() {

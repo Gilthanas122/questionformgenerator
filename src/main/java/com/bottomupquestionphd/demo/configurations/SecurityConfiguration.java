@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .loginPage("/login")
             .loginProcessingUrl("/login-here")
             .defaultSuccessUrl("/app-user/landing-page")
-            .failureUrl("/login?error=Bad username or password or not activated user by email")
+            .failureUrl("/login?validations=Bad username or password or not activated user by email")
             .and()
             .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
             .and()

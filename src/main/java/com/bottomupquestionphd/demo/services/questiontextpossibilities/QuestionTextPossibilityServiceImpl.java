@@ -3,7 +3,7 @@ package com.bottomupquestionphd.demo.services.questiontextpossibilities;
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionTextPossibility;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.repositories.QuestionTextPossibilityRepository;
-import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

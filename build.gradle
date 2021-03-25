@@ -32,6 +32,7 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.7.21'
     testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '4.2.2.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

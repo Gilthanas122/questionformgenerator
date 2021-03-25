@@ -97,11 +97,11 @@ public class AppUserController {
             log.info("GET /question-form/list-not-filled-out/" + appUserId + " finished");
             return "app-user/list-not-filled-out-question-forms";
         } catch (BelongToAnotherUserException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
+            log.validations(e.getMessage());
+            model.addAttribute("validations", e.getMessage());
         } catch (Exception e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
+            log.validations(e.getMessage());
+            model.addAttribute("validations", e.getMessage());
         }
         return "app-user/landing-page";
     }*/

@@ -12,7 +12,5 @@ public interface EmailService {
 
   ConfirmationToken createTokenForAppUser(AppUser appUser);
 
-  boolean verifyEmailPattern(String email);
-
   String findUserByToken(String token) throws ConfirmationTokenDoesNotExistException;
 }

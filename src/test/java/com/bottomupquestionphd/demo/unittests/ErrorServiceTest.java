@@ -2,7 +2,7 @@ package com.bottomupquestionphd.demo.unittests;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
-import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
 import org.junit.Test;

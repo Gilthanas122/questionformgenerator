@@ -6,14 +6,14 @@ import com.bottomupquestionphd.demo.exceptions.appuser.AppUserNotActivatedExcept
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
-import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
+import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface AppUserService {
 
-  void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, PasswordNotComplexEnoughException, InvalidEmailFormatException, EmailAlreadyUserException;
+  void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, PasswordNotComplexEnoughException, InvalidEmailFormatException, EmailAlreadyUsedException, InvalidRegexParameterException;
 
   LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException, MissingParamsException, AppUserNotActivatedException;
 

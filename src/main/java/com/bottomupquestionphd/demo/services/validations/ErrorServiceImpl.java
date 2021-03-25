@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.error;
+package com.bottomupquestionphd.demo.services.validations;
 
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.functionalinterfaces.ThrowingConsumer;

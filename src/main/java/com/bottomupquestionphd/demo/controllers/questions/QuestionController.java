@@ -124,16 +124,16 @@ public class QuestionController {
       return "redirect:/question-form/list-questions/" + questionFormId;
     } catch (InvalidQuestionPositionChangeException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (InvalidQuestionPositionException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     }
     return "app-user/landing-page";
   }
@@ -147,16 +147,16 @@ public class QuestionController {
       return "redirect:/question-form/list-questions/" + formId;
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (QuestionFormIsNullException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
     }
     return "redirect:/question-form/list/";
   }

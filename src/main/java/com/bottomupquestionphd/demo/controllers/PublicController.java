@@ -3,12 +3,11 @@ package com.bottomupquestionphd.demo.controllers;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.InvalidRegexParameterException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByEmailException;
-import com.bottomupquestionphd.demo.exceptions.appuser.PasswordNotComplexEnoughException;
 import com.bottomupquestionphd.demo.exceptions.appuser.UsernameAlreadyTakenException;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
-import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUserException;
-import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
+import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,13 +57,10 @@ public class PublicController {
     } catch (UsernameAlreadyTakenException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (PasswordNotComplexEnoughException e) {
+    } catch (InvalidRegexParameterException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (InvalidEmailFormatException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
-    } catch (EmailAlreadyUserException e) {
+    } catch (EmailAlreadyUsedException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     } catch (Exception e) {

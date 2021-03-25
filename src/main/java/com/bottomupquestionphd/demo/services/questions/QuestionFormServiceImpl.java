@@ -12,7 +12,7 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionE
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import com.bottomupquestionphd.demo.services.error.ErrorServiceImpl;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import org.springframework.stereotype.Service;
 

@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -47,15 +45,6 @@ public class EmailServiceImpl implements EmailService {
             .createdDate(new Date())
             .build();
     return confirmationToken;
-  }
-
-  @Override
-  public boolean verifyEmailPattern(String emailId) {
-    String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-    CharSequence chr = emailId;
-    Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-    Matcher matcher = pattern.matcher(chr);
-    return  matcher.matches();
   }
 
   @Override

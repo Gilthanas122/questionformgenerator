@@ -21,15 +21,15 @@ public class AnswerForm {
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonBackReference
+  @JsonBackReference(value = "anwerFormsAnswers")
   private QuestionForm questionForm;
 
   @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonManagedReference
+  @JsonManagedReference(value = "answerFormsAnswers")
   private List<Answer> answers = new ArrayList<>();
 
   @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonBackReference
+  @JsonBackReference(value = "answerFormsAppUser")
   private AppUser appUser;
 
   public AnswerForm(){}

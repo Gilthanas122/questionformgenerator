@@ -2,7 +2,7 @@ package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
@@ -37,7 +37,7 @@ public class AppUserServiceImpl implements AppUserService {
   public void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, EmailAlreadyUsedException, InvalidRegexParameterException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
     RegexServiceImpl.checkRegex(appUser.getPassword(), "password");
-    RegexServiceImpl.checkRegex(appUser.getPassword(), "email");
+    RegexServiceImpl.checkRegex(appUser.getEmailId(), "email");
     if (appUserRepository.existsByUsername(appUser.getUsername())) {
       throw new UsernameAlreadyTakenException("The username is already taken");
     }else if (appUserRepository.existByEmailId(appUser.getEmailId())){
@@ -52,7 +52,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
   @Override
-  public LoginDTO validateLogin(LoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException, MissingParamsException, AppUserNotActivatedException {
+  public AppUserLoginDTO validateLogin(AppUserLoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException, MissingParamsException, AppUserNotActivatedException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(loginDTO);
     Optional<AppUser> appUser = appUserRepository.findByUsername(loginDTO.getUsername());
     if (appUser == null || !appUser.isPresent()) {

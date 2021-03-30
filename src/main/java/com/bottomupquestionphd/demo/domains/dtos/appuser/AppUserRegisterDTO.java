@@ -1,14 +1,17 @@
 package com.bottomupquestionphd.demo.domains.dtos.appuser;
 
-public class LoginDTO {
-  private String username;
-  private String password;
+public class AppUserRegisterDTO {
+  public String username;
+  public String password;
+  public String email;
 
-  public LoginDTO(){}
+  public AppUserRegisterDTO() {
+  }
 
-  public LoginDTO(String username, String password) {
+  public AppUserRegisterDTO(String username, String password, String email) {
     this.username = username;
     this.password = password;
+    this.email = email;
   }
 
   public String getUsername() {
@@ -25,5 +28,13 @@ public class LoginDTO {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 }

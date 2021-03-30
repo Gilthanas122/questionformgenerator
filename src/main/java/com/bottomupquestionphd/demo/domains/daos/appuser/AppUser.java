@@ -35,11 +35,11 @@ public class AppUser {
   private boolean disabled;
 
   @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  @JsonManagedReference
+  @JsonManagedReference(value = "appUsersquestionForms")
   private List<QuestionForm> questionForms = new ArrayList<>();
 
   @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  @JsonManagedReference
+  @JsonManagedReference("appUsersAnswerForms")
   private List<AnswerForm> answerForms = new ArrayList<>();
 
   @OneToOne(mappedBy = "appUser",  cascade = {CascadeType.MERGE, CascadeType.PERSIST})

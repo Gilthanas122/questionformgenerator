@@ -1,7 +1,7 @@
 package com.bottomupquestionphd.demo.controllers;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.InvalidRegexParameterException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByEmailException;
@@ -74,7 +74,7 @@ public class PublicController {
   public String renderLogin(Model model, @RequestParam(required = false) String error) {
     log.info("GET /login started");
     model.addAttribute("error", error);
-    model.addAttribute("loginDTO", new LoginDTO());
+    model.addAttribute("loginDTO", new AppUserLoginDTO());
     log.info("GET /login finished");
     return "login";
   }

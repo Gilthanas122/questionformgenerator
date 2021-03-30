@@ -8,7 +8,7 @@ import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.LoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
@@ -117,8 +117,8 @@ public class TestConfigurationBeanFactory {
 
   @Bean(name = "validLoginDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  LoginDTO getValidLoginDTO() {
-    LoginDTO loginDTO = new LoginDTO("validUser", "Geeks@portal20");
+  AppUserLoginDTO getValidLoginDTO() {
+    AppUserLoginDTO loginDTO = new AppUserLoginDTO("validUser", "Geeks@portal20");
     return loginDTO;
   }
 

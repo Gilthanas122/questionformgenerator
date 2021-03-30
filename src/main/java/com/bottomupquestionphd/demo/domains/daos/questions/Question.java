@@ -27,11 +27,11 @@ public class Question implements Comparable<Question> {
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonBackReference
+  @JsonBackReference(value = "questionsQuestionForm")
   private QuestionForm questionForm;
 
   @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonManagedReference
+  @JsonManagedReference("questionsAnswers")
   private List<Answer> answers = new ArrayList<>();
 
   public Question(){}

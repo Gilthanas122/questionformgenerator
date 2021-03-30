@@ -18,7 +18,7 @@ public class QuestionTextPossibility {
   private boolean deleted;
 
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  @JsonBackReference
+  @JsonBackReference(value = "questionTextPossibilitysMultipleAnswerQuestion")
   private MultipleAnswerQuestion multipleAnswerQuestion;
 
   public QuestionTextPossibility(){}

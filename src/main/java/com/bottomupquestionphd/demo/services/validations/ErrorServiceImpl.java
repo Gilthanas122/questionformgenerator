@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.validations;
 
+import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.functionalinterfaces.ThrowingConsumer;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,13 @@ public class ErrorServiceImpl {
         }
       }
     };
+  }
+
+  public static ErrorMessageDTO defaultExceptionResponse(Exception exception) {
+    ErrorMessageDTO error = new ErrorMessageDTO();
+    error.setStatus("error");
+    error.setMessage(exception.getMessage());
+    return error;
   }
 }
 

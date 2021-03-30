@@ -122,14 +122,12 @@ public class AppUserServiceTest {
     appUserService.saveUser(appUser);
   }
 
-/* NOT CHECKING FOR UPPERCASE
- @Test(expected = PasswordNotComplexEnoughException.class)
-    public void saveUser_withNoUpperCaseLetter_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException {
+ @Test(expected = InvalidRegexParameterException.class)
+    public void saveUser_withNoUpperCaseLetter_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidRegexParameterException, EmailAlreadyUsedException, InvalidEmailFormatException {
         AppUser appUser = (AppUser) beanFactory.getBean("validUser");
         appUser.setPassword("hh++12334");
-
         appUserService.saveUser(appUser);
-    }*/
+    }
 
   @Test(expected = InvalidRegexParameterException.class)
   public void saveUser_withNoNumber_throwsPasswordNotComplexEnoughException() throws PasswordNotComplexEnoughException, UsernameAlreadyTakenException, MissingParamsException, InvalidEmailFormatException, EmailAlreadyUsedException, InvalidRegexParameterException {

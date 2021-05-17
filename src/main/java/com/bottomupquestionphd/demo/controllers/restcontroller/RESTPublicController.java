@@ -33,7 +33,7 @@ public class RESTPublicController {
   public ResponseEntity<?> renderAppUserCreateForm(){
     log.info("GET /rest/register started");
     log.info("GET /rest/register finished");
-    return new ResponseEntity<>(new AppUser(), HttpStatus.OK);
+    return new ResponseEntity<>(new AppUser.Builder().build(), HttpStatus.OK);
   }
 
   @PostMapping("register")

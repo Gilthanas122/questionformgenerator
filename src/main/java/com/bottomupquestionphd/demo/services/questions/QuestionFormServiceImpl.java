@@ -41,7 +41,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     if (questionForm == null) {
       throw new NullPointerException("Can not save a null question form");
     }
-    questionForm.setAppUser(new AppUser()); //so that the next line doesn't throw an exception for non existing appuser
+    questionForm.setAppUser(new AppUser.Builder().build()); //so that the next line doesn't throw an exception for non existing appuser
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionForm);
     if (questionFormRepository.existsByName(questionForm.getName())) {
       throw new QuestionFormNameAlreadyExistsException("There is a question form with the provided name");

@@ -1,24 +1,25 @@
 package com.bottomupquestionphd.demo.services.emailService;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.daos.tokens.ConfirmationToken;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
-import com.bottomupquestionphd.demo.repositories.ConfirmationTokenRepository;
+import com.bottomupquestionphd.demo.repositories.AppUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class EmailServiceImpl implements EmailService {
+  @Autowired
+  @Qualifier("gmail")
   private JavaMailSender javaMailSender;
-  private final ConfirmationTokenRepository confirmationTokenRepository;
+  private final AppUserRepository appUserRepository;
 
-  public EmailServiceImpl(JavaMailSender javaMailSender, ConfirmationTokenRepository confirmationTokenRepository) {
+  public EmailServiceImpl(JavaMailSender javaMailSender, AppUserRepository appUserRepository) {
     this.javaMailSender = javaMailSender;
-    this.confirmationTokenRepository = confirmationTokenRepository;
+    this.appUserRepository = appUserRepository;
   }
 
   @Async
@@ -30,30 +31,17 @@ public class EmailServiceImpl implements EmailService {
     message.setSubject("Complete the Registration");
     message.setFrom(System.getenv("EMAIL_USERNAME"));
     message.setText("To confirm the account please click here http://localhost:8080/verify-account" +
-            "?token=" + appUser.getConfirmationToken().getConfirmationToken());
+            "?token=" + appUser.getConfirmationToken());
     javaMailSender.send(message);
-
-    confirmationTokenRepository.save(appUser.getConfirmationToken());
-  }
-
-  @Override
-  public ConfirmationToken createTokenForAppUser(AppUser appUser) {
-    ConfirmationToken confirmationToken = new ConfirmationToken
-            .Builder()
-            .appUser(appUser)
-            .confirmationToken()
-            .createdDate(new Date())
-            .build();
-    return confirmationToken;
   }
 
   @Override
   public String findUserByToken(String token) throws ConfirmationTokenDoesNotExistException {
-    ConfirmationToken confirmationToken = confirmationTokenRepository.findByConfirmationToken(token);
-    if (confirmationToken == null){
-      throw new ConfirmationTokenDoesNotExistException("Give confirmation token does not exist");
+    AppUser appUser = appUserRepository.findByConfirmationToken(token);
+    if (appUser == null){
+      throw new ConfirmationTokenDoesNotExistException("Given confirmation token does not exist");
     }
-    return confirmationToken.getAppUser().getEmailId();
+    return appUser.getEmailId();
   }
 
 }

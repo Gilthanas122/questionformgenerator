@@ -1,6 +1,5 @@
 package com.bottomupquestionphd.demo.domains.daos.appuser;
 
-import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,14 +9,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MyUserDetails implements UserDetails {
+public class SpecificUserDetails implements UserDetails {
 
   private String userName;
   private String password;
   private boolean active;
   private List<GrantedAuthority> authorities;
 
-  public MyUserDetails(AppUser user) {
+  public SpecificUserDetails(AppUser user) {
     this.userName = user.getUsername();
     this.password = user.getPassword();
     this.active = user.isActive();

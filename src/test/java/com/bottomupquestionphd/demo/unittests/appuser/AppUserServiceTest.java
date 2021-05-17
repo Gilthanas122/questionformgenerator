@@ -2,7 +2,7 @@ package com.bottomupquestionphd.demo.unittests.appuser;
 
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
+import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
@@ -47,7 +47,7 @@ public class AppUserServiceTest {
 
   private Authentication authentication;
   private SecurityContext securityContext;
-  private MyUserDetails myUserDetails;
+  private SpecificUserDetails specificUserDetails;
 
   @Before
   public void setup() {
@@ -55,10 +55,10 @@ public class AppUserServiceTest {
     securityContext = Mockito.mock(SecurityContext.class);
     appUserRepository = Mockito.mock(AppUserRepository.class);
     appUserService = new AppUserServiceImpl(appUserRepository, passwordEncoder, emailService);
-    myUserDetails = Mockito.mock(MyUserDetails.class);
+    specificUserDetails = Mockito.mock(SpecificUserDetails.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
-    Mockito.when(authentication.getPrincipal()).thenReturn(myUserDetails);
+    Mockito.when(authentication.getPrincipal()).thenReturn(specificUserDetails);
   }
 
   @Test
@@ -216,14 +216,14 @@ public class AppUserServiceTest {
     Authentication authentication = Mockito.mock(Authentication.class);
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-    MyUserDetails myUserDetails = Mockito.mock(MyUserDetails.class);
+    SpecificUserDetails specificUserDetails = Mockito.mock(SpecificUserDetails.class);
 
     SecurityContextHolder.setContext(securityContext);
 
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser));
-    Mockito.when(authentication.getPrincipal()).thenReturn(myUserDetails);
-    Mockito.when(myUserDetails.getUsername()).thenReturn(appUser.getUsername());
+    Mockito.when(authentication.getPrincipal()).thenReturn(specificUserDetails);
+    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUser.getId());
     Mockito.verify(appUserRepository, times(1)).findByUsername(appUser.getUsername());
   }
@@ -234,7 +234,7 @@ public class AppUserServiceTest {
     AppUser appUser1 = (AppUser) beanFactory.getBean("validUser");
     appUser1.setId(2);
     Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser1));
-    Mockito.when(myUserDetails.getUsername()).thenReturn(appUser.getUsername());
+    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(0);
   }
@@ -243,8 +243,8 @@ public class AppUserServiceTest {
   public void checkIfCurrentUserMatchesUserIdInPath_withInvalidUserName_throwsUserNameNotFound() throws BelongToAnotherUserException {
 
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-    Mockito.when(authentication.getPrincipal()).thenReturn(myUserDetails);
-    Mockito.when(myUserDetails.getUsername()).thenReturn(appUser.getUsername());
+    Mockito.when(authentication.getPrincipal()).thenReturn(specificUserDetails);
+    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(0);
   }
@@ -252,7 +252,7 @@ public class AppUserServiceTest {
   @Test
   public void findCurrentlyLoggedInUser_withValidUser_returnsAppuser() throws BelongToAnotherUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-    Mockito.when(myUserDetails.getUsername()).thenReturn(appUser.getUsername());
+    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
     Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser));
 
     AppUser appUser1 = appUserService.findCurrentlyLoggedInUser();
@@ -263,7 +263,7 @@ public class AppUserServiceTest {
   @Test(expected = UsernameNotFoundException.class)
   public void findCurrentlyLoggedInUser_withInValidUser_throwsUserNameNotFound() throws BelongToAnotherUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-    Mockito.when(myUserDetails.getUsername()).thenReturn(appUser.getUsername());
+    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
 
     appUserService.findCurrentlyLoggedInUser();
   }

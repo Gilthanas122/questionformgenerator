@@ -1,7 +1,7 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
+import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
@@ -44,7 +44,6 @@ public class AppUserServiceImpl implements AppUserService {
       throw new EmailAlreadyUsedException("There is a registration with this email already");
     }
     appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-    appUser.setConfirmationToken(emailService.createTokenForAppUser(appUser));
     this.appUserRepository.save(appUser);
     emailService.sendEmail(appUser);
   }
@@ -67,8 +66,8 @@ public class AppUserServiceImpl implements AppUserService {
 
   public AppUser findCurrentlyLoggedInUser() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
-    AppUser appUser = appUserRepository.findByUsername(myUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
+    SpecificUserDetails specificUserDetails = (SpecificUserDetails) auth.getPrincipal();
+    AppUser appUser = appUserRepository.findByUsername(specificUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
     return appUser;
   }
 
@@ -80,8 +79,8 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    MyUserDetails myUserDetails = (MyUserDetails) auth.getPrincipal();
-    AppUser appUser = appUserRepository.findByUsername(myUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
+    SpecificUserDetails specificUserDetails = (SpecificUserDetails) auth.getPrincipal();
+    AppUser appUser = appUserRepository.findByUsername(specificUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
     if (appUser.getId() != appUserId) {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }

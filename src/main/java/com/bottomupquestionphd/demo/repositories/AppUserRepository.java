@@ -26,4 +26,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
   @Query("SELECT a FROM AppUser a WHERE a.emailId = ?1")
   AppUser findByEmailId(String userEmail);
+
+  @Query("SELECT a from AppUser a WHERE a.confirmationToken = ?1")
+  AppUser findByConfirmationToken(String token);
 }

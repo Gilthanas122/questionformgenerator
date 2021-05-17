@@ -1,7 +1,7 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.daos.appuser.MyUserDetails;
+import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +25,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
     user.orElseThrow(() -> new UsernameNotFoundException("Not found: " + userName));
 
-    return user.map(MyUserDetails::new).get();
+    return user.map(SpecificUserDetails::new).get();
   }
 }

@@ -38,7 +38,7 @@ public class PublicController {
   public String renderAppUserCreateForm(Model model) {
     log.info("GET /register started");
     model.addAttribute("error", null);
-    model.addAttribute("appUser", new AppUser());
+    model.addAttribute("appUser", new AppUser.Builder().build());
     log.info("GET /register finished");
     return "register";
   }
@@ -96,6 +96,6 @@ public class PublicController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return "register";
+    return "/login";
   }
 }

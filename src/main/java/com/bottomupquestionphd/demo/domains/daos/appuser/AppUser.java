@@ -2,7 +2,6 @@ package com.bottomupquestionphd.demo.domains.daos.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
-import com.bottomupquestionphd.demo.domains.daos.tokens.ConfirmationToken;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
@@ -11,8 +10,10 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
+@Table(name = "appusers")
 @Where(clause="disabled=0")
 public class AppUser {
 
@@ -42,8 +43,7 @@ public class AppUser {
   @JsonManagedReference("appUsersAnswerForms")
   private List<AnswerForm> answerForms = new ArrayList<>();
 
-  @OneToOne(mappedBy = "appUser",  cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private ConfirmationToken confirmationToken = new ConfirmationToken();
+  private String confirmationToken;
 
   public static class Builder{
     private long id;
@@ -55,9 +55,9 @@ public class AppUser {
     private boolean disabled;
     private List<QuestionForm> questionForms = new ArrayList<>();
     private List <AnswerForm> answerForms = new ArrayList<>();
-    private ConfirmationToken confirmationToken = new ConfirmationToken();
+    private String confirmationToken;
 
-    public Builder id(long id){
+    private Builder id(long id){
       this.id = id;
       return this;
     }
@@ -102,11 +102,6 @@ public class AppUser {
       return this;
     }
 
-    public Builder confirmationToken(ConfirmationToken confirmationToken){
-      this.confirmationToken = confirmationToken;
-      return this;
-    }
-
     public AppUser build(){
       AppUser appUser = new AppUser();
       appUser.setId(this.id);
@@ -118,12 +113,20 @@ public class AppUser {
       appUser.setDisabled(this.disabled);
       appUser.setQuestionForms(this.questionForms);
       appUser.setAnswerForms(this.answerForms);
-      appUser.setConfirmationToken(this.confirmationToken);
+      appUser.setConfirmationToken(generateRandomToken());
       return appUser;
     }
   }
 
-  public AppUser() {
+  private AppUser() {
+    this.confirmationToken = generateRandomTokenNotSstatic();
+  }
+  private static String generateRandomToken() {
+    return UUID.randomUUID().toString();
+  }
+
+  public String generateRandomTokenNotSstatic() {
+    return UUID.randomUUID().toString();
   }
 
   public long getId() {
@@ -219,11 +222,11 @@ public class AppUser {
     this.emailId = emailId;
   }
 
-  public ConfirmationToken getConfirmationToken() {
+  public String getConfirmationToken() {
     return confirmationToken;
   }
 
-  public void setConfirmationToken(ConfirmationToken confirmationToken) {
+  public void setConfirmationToken(String confirmationToken) {
     this.confirmationToken = confirmationToken;
   }
 }

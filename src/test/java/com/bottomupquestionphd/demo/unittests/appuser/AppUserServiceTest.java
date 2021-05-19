@@ -267,4 +267,27 @@ public class AppUserServiceTest {
 
     appUserService.findCurrentlyLoggedInUser();
   }
+
+  @Test
+  public void activateUserByEmail_withValidToken_returnSuccessMesssage() throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+    AppUser appUser = (AppUser) beanFactory.getBean("inactiveUser");
+    Mockito.when(appUserRepository.findByConfirmationToken(appUser.getConfirmationToken())).thenReturn(appUser);
+
+    Assert.assertEquals("You have successfully registered with the email " + appUser.getEmailId(),appUserService.activateUserByEmail(appUser.getConfirmationToken()));
+    Mockito.verify(appUserRepository, times(1)).save(appUser);
+  }
+
+  @Test(expected = AppUserIsAlreadyActivatedException.class)
+  public void activateUserByEmail_withAlreadyActivatedUser_throwAppUserIsAlreadyActivatedException() throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    Mockito.when(appUserRepository.findByConfirmationToken(appUser.getConfirmationToken())).thenReturn(appUser);
+    appUserService.activateUserByEmail(appUser.getConfirmationToken());
+  }
+
+  @Test(expected = NoSuchUserByEmailException.class)
+  public void activateUserByEmail_withInvalidToken_throwNoSuchUserByEmailException() throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+    String token = "token";
+    Mockito.when(appUserRepository.findByConfirmationToken(token)).thenReturn(null);
+    appUserService.activateUserByEmail(token);
+  }
 }

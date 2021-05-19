@@ -3,10 +3,10 @@ package com.bottomupquestionphd.demo.controllers;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.appuser.AppUserIsAlreadyActivatedException;
 import com.bottomupquestionphd.demo.exceptions.appuser.InvalidRegexParameterException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByEmailException;
 import com.bottomupquestionphd.demo.exceptions.appuser.UsernameAlreadyTakenException;
-import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.slf4j.Logger;
@@ -86,10 +86,10 @@ public class PublicController {
       model.addAttribute("successMessage", appUserService.activateUserByEmail(token));
       log.info("GET /verify-account finished");
       return "redirect:/login";
-    } catch (ConfirmationTokenDoesNotExistException e) {
+    } catch (NoSuchUserByEmailException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (NoSuchUserByEmailException e) {
+    } catch (AppUserIsAlreadyActivatedException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     } catch (Exception e) {

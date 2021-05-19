@@ -28,10 +28,10 @@ public class AdminController {
 
   @GetMapping("change-user-role")
   public String renderChangeUserRoleHTML(Model model) {
-    log.info("change-user-role started");
+    log.info("GET change-user-role started");
     try {
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
-      log.info("change-user-role finished");
+      log.info("GET change-user-role finished");
       return "admin/change-user-role";
     }catch (NoUsersInDatabaseException e){
       log.error(e.getMessage());
@@ -46,11 +46,11 @@ public class AdminController {
 
   @GetMapping("/add-user-role/{role}/{id}")
   public String addUserRole(Model model, @PathVariable String role, @PathVariable long id){
-    log.info("add-user-role/" + role + "/" + id + "started");
+    log.info("GET add-user-role/" + role + "/" + id + "started");
       try{
-        model.addAttribute("allUsers", adminAppUserService.findAllUsers());
         adminAppUserService.addNewRole(role, id);
-        log.info("add-user-role/" + role + "/" + id + "finished");
+        model.addAttribute("allUsers", adminAppUserService.findAllUsers());
+        log.info("GET add-user-role/" + role + "/" + id + "finished");
         return "redirect:/admin/change-user-role";
       }catch (NoSuchUserByIdException e){
         log.error(e.getMessage());
@@ -65,11 +65,11 @@ public class AdminController {
 
   @GetMapping("/remove-user-role/{role}/{id}")
   public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id){
-    log.info("/remove-user-role/" + role + "/" + id + " started");
+    log.info("GET /remove-user-role/" + role + "/" + id + " started");
     try{
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.removeRole(role, id);
-      log.info("/remove-user-role/" + role + "/" + id + " finished");
+      log.info("GET /remove-user-role/" + role + "/" + id + " finished");
       return "redirect:/admin/change-user-role";
     }catch (NoSuchUserByIdException e){
       log.error(e.getMessage());

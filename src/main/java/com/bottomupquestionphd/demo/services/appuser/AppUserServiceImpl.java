@@ -5,7 +5,6 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
-import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.emailService.EmailService;
@@ -51,7 +50,7 @@ public class AppUserServiceImpl implements AppUserService {
 
 
   @Override
-  public AppUserLoginDTO validateLogin(AppUserLoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, InvalidLoginException, MissingParamsException, AppUserNotActivatedException {
+  public AppUserLoginDTO validateLogin(AppUserLoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, MissingParamsException, AppUserNotActivatedException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(loginDTO);
     Optional<AppUser> appUser = appUserRepository.findByUsername(loginDTO.getUsername());
     if (appUser == null || !appUser.isPresent()) {
@@ -87,15 +86,16 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public String activateUserByEmail(String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException {
-    String userEmail = emailService.findUserByToken(token);
-    AppUser appUser = appUserRepository.findByEmailId(userEmail);
+  public String activateUserByEmail(String token) throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+    AppUser appUser = appUserRepository.findByConfirmationToken(token);
     if (appUser == null){
       throw new NoSuchUserByEmailException("No user with the given email");
+    }else if (appUser.isActive()){
+      throw new AppUserIsAlreadyActivatedException("Appuser has been already activated");
     }
     appUser.setActive(true);
     appUserRepository.save(appUser);
 
-    return "You have successfully registered with the email " + userEmail;
+    return "You have successfully registered with the email " + appUser.getEmailId();
   }
 }

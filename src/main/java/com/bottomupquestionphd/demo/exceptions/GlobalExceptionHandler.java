@@ -95,4 +95,11 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  @ExceptionHandler(AppUserIsAlreadyActivatedException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleAppUserIsAlreadyActivatedException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
 }

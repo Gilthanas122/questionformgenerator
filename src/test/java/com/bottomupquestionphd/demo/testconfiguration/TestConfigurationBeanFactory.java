@@ -38,6 +38,20 @@ public class TestConfigurationBeanFactory {
     return fakePlayer;
   }
 
+
+  @Bean(name = {"inactiveUser"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  AppUser getInActiveAppUser() {
+    AppUser fakePlayer = new AppUser
+            .Builder()
+            .username("validUser")
+            .password("Geeks@portal20")
+            .emailId("user@domain.com")
+            .active(false)
+            .build();
+    return fakePlayer;
+  }
+
   @Bean(name = {"validAdmin"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AppUser getAdmin() {

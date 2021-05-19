@@ -61,7 +61,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("verify-account")
-  public ResponseEntity<?> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException {
+  public ResponseEntity<?> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
     log.info("/GET verify-account started");
     String message = appUserService.activateUserByEmail(token);
     log.info("/GET verify-account finished");

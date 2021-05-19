@@ -71,10 +71,10 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
       StringBuilder newRoles = new StringBuilder();
       for (String r: appUser.getRoles().split(",")) {
         if (!r.equals(roleConverted)){
-          newRoles.append(r);
+          newRoles.append(r + ",");
         }
       }
-      appUser.setRoles(newRoles.toString()+ ",");
+      appUser.setRoles(newRoles.substring(0, newRoles.length()-1));
       appUserRepository.save(appUser);
     }
   }

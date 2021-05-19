@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class GlobalExceptionHandler {
   private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+  //User Controller
   @ExceptionHandler(EmailAlreadyUsedException.class)
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public @ResponseBody
@@ -95,10 +96,43 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  //Admin Controller
+  @ExceptionHandler(NoUsersInDatabaseException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleNoUsersInDatabaseException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   @ExceptionHandler(AppUserIsAlreadyActivatedException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleAppUserIsAlreadyActivatedException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(RoleMissMatchException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleRoleMissMatchException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NoSuchUserByIdException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleNoSuchUserByIdException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(UserDeactivateException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleUserDeactivateException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

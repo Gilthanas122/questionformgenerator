@@ -25,7 +25,7 @@ public class AdminController {
     this.adminAppUserService = adminAppUserService;
   }
 
-
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("change-user-role")
   public String renderChangeUserRoleHTML(Model model) {
     log.info("GET change-user-role started");
@@ -43,7 +43,7 @@ public class AdminController {
     return "admin/change-user-role";
   }
 
-
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/add-user-role/{role}/{id}")
   public String addUserRole(Model model, @PathVariable String role, @PathVariable long id){
     log.info("GET add-user-role/" + role + "/" + id + "started");
@@ -63,6 +63,7 @@ public class AdminController {
   }
 
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/remove-user-role/{role}/{id}")
   public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id){
     log.info("GET /remove-user-role/" + role + "/" + id + " started");
@@ -87,11 +88,11 @@ public class AdminController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("deactivate-user/{id}")
   public String deactivateUser(@PathVariable long id, Model model) {
-    log.info("/deactivate-user/" + id + " started");
+    log.info("GET /deactivate-user/" + id + " started");
     try{
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.deactivateUser(id);
-      log.info("/deactivate-user/" + id + " finished");
+      log.info("GET /deactivate-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
     }catch (UserDeactivateException e){
       log.error(e.getMessage());
@@ -112,11 +113,11 @@ public class AdminController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("activate-user/{id}")
   public String activateUser(@PathVariable long id, Model model) {
-    log.info("/activate-user/" + id + " started");
+    log.info("GET /activate-user/" + id + " started");
     try{
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.activateUser(id);
-      log.info("/activate-user/" + id + " finished");
+      log.info("GET /activate-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
     }catch (UserDeactivateException e){
       log.error(e.getMessage());
@@ -137,11 +138,11 @@ public class AdminController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("delete-user/{id}")
   public String deleteUser(@PathVariable long id, Model model){
-    log.info("/delete-user/" + id + " started");
+    log.info("GET /delete-user/" + id + " started");
     try{
-      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.deleteUser(id);
-      log.info("/delete-user/" + id + " finished");
+      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
+      log.info("GET /delete-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
     }catch (NoUsersInDatabaseException e){
       log.error(e.getMessage());

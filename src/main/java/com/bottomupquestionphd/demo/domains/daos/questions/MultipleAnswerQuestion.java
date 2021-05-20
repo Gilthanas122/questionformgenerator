@@ -17,9 +17,7 @@ public  abstract class MultipleAnswerQuestion extends Question{
   @JsonManagedReference
   private List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
 
-
   public MultipleAnswerQuestion() {
-
   }
 
   public MultipleAnswerQuestion(String questionText, List<QuestionTextPossibility> questionTextPossibilities) {

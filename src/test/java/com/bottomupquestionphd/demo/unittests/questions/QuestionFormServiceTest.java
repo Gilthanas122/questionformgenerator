@@ -6,6 +6,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
+import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
@@ -56,33 +57,32 @@ public class QuestionFormServiceTest {
 
   @Test
   public void save_withValidQuestionForm_returnsQuestionFormId() throws NoSuchUserNameException, QuestionFormNameAlreadyExistsException, MissingParamsException {
-    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
-    questionForm.setId(3);
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
-    Mockito.when(questionFormRepository.existsByName(questionForm.getName())).thenReturn(false);
+    Mockito.when(questionFormRepository.existsByName(questionFormCreateDTO.getName())).thenReturn(false);
     Mockito.when(appUserService.findCurrentlyLoggedInUser()).thenReturn(appUser);
 
-    long questionFormId = questionFormService.save(questionForm);
+    long questionFormId = questionFormService.save(questionFormCreateDTO);
 
-    Assert.assertEquals(3, questionFormId);
-    Mockito.verify(questionFormRepository, times(1)).existsByName(questionForm.getName());
+    Assert.assertEquals(0, questionFormId);
+    Mockito.verify(questionFormRepository, times(1)).existsByName(questionFormCreateDTO.getName());
   }
 
   @Test(expected = NullPointerException.class)
   public void save_withNullQuestionForm_throwsNullPointerException() throws NoSuchUserNameException, QuestionFormNameAlreadyExistsException, MissingParamsException {
-    QuestionForm questionForm = null;
+    QuestionFormCreateDTO questionFormCreateDTO = null;
 
-    questionFormService.save(questionForm);
+    questionFormService.save(questionFormCreateDTO);
   }
 
   @Test(expected = QuestionFormNameAlreadyExistsException.class)
   public void save_withQuestionFormsNameAlreadyTaken_throwsQuestionFormNameAlreadyExistsException() throws NoSuchUserNameException, QuestionFormNameAlreadyExistsException, MissingParamsException {
-    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
 
-    Mockito.when(questionFormRepository.existsByName(questionForm.getName())).thenReturn(true);
+    Mockito.when(questionFormRepository.existsByName(questionFormCreateDTO.getName())).thenReturn(true);
 
-    questionFormService.save(questionForm);
+    questionFormService.save(questionFormCreateDTO);
   }
 
   @Test

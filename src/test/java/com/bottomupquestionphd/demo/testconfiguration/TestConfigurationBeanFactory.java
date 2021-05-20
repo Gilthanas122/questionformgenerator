@@ -11,6 +11,7 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDT
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
+import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -366,5 +367,12 @@ public class TestConfigurationBeanFactory {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean(name = "questionFormCreateDTO")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public QuestionFormCreateDTO getQuestionFormCreateDTO(){
+    QuestionFormCreateDTO questionFormCreateDTO = new QuestionFormCreateDTO("test questionFormCreateDTO name", "test questionFormCreateDTO description");
+    return questionFormCreateDTO;
   }
 }

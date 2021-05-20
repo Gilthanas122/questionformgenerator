@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
+import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
@@ -37,10 +38,11 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   }
 
   @Override
-  public long save(QuestionForm questionForm) throws MissingParamsException, QuestionFormNameAlreadyExistsException, NoSuchUserNameException {
-    if (questionForm == null) {
+  public long save(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException, NoSuchUserNameException {
+    if (questionFormCreateDTO == null) {
       throw new NullPointerException("Can not save a null question form");
     }
+    QuestionForm questionForm = new QuestionForm(questionFormCreateDTO.getName(), questionFormCreateDTO.getDescription());
     questionForm.setAppUser(new AppUser.Builder().build()); //so that the next line doesn't throw an exception for non existing appuser
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionForm);
     if (questionFormRepository.existsByName(questionForm.getName())) {

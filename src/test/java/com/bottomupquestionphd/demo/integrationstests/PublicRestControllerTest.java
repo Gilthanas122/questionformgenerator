@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Sql(value = {"/db/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/db/clear-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class PublicRestControllerTest {
 
   @Autowired
@@ -47,7 +48,6 @@ public class PublicRestControllerTest {
             .andExpect(jsonPath("$.emailId", is(nullValue())));
   }
 
-  // PROBLEM WITH SENDING EMAILS
   @Test
   public void registerUser_withValidUser_shouldReturnSuccessMessage() throws Exception {
     mockMvc.perform(post("/rest/register")

@@ -50,6 +50,12 @@ public class QuestionForm {
     this.description = description;
   }
 
+  public QuestionForm(String name, String description, AppUser appUser) {
+    this.name = name;
+    this.description = description;
+    this.appUser = appUser;
+  }
+
   public long getId() {
     return id;
   }
@@ -118,5 +124,4 @@ public class QuestionForm {
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
   }
-
 }

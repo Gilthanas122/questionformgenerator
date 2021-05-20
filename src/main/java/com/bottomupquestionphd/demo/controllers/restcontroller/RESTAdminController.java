@@ -26,8 +26,8 @@ public class RESTAdminController {
 
   @GetMapping("change-user-role")
   public ResponseEntity<?> renderChangeUserRoleHTMLRest() throws NoUsersInDatabaseException {
-    log.info("REST GET change-user-role started");
-    log.info("REST GET change-user-role finished");
+    log.info("REST GET admin/change-user-role started");
+    log.info("REST GET admin/change-user-role finished");
 
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }
@@ -35,35 +35,36 @@ public class RESTAdminController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/remove-user-role/{role}/{id}")
   public ResponseEntity<?> removeUserRoleRest(@PathVariable String role, @PathVariable long id) throws NoSuchUserByIdException, RoleMissMatchException, NoUsersInDatabaseException {
-    log.info("REST GET /remove-user-role/" + role + "/" + id + " started");
+    log.info("REST GET admin/remove-user-role/" + role + "/" + id + " started");
     adminAppUserService.removeRole(role, id);
-    log.info("REST GET/remove-user-role/" + role + "/" + id + " finished");
+    log.info("REST GET admin/remove-user-role/" + role + "/" + id + " finished");
 
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }
 
   @GetMapping("deactivate-user/{id}")
   public ResponseEntity<?> deactivateUserRest(@PathVariable long id) throws UserDeactivateException, NoSuchUserByIdException, NoUsersInDatabaseException {
-    log.info("REST GET/deactivate-user/" + id + " started");
+    log.info("REST GET admin/deactivate-user/" + id + " started");
     adminAppUserService.deactivateUser(id);
-    log.info("REST GET /deactivate-user/" + id + " finished");
+    log.info("REST GET admin/deactivate-user/" + id + " finished");
 
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }
 
   @GetMapping("activate-user/{id}")
   public ResponseEntity<?> activateUser_rest(@PathVariable long id) throws UserDeactivateException, NoSuchUserByIdException, NoUsersInDatabaseException {
-    log.info("REST GET /activate-user/" + id + " started");
+    log.info("REST GET admin/activate-user/" + id + " started");
     adminAppUserService.activateUser(id);
-    log.info("REST GET/activate-user/" + id + " finished");
+    log.info("REST GET admin/activate-user/" + id + " finished");
+
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }
 
   @DeleteMapping("delete-user/{id}")
   public ResponseEntity<?> deleteUserREST(@PathVariable long id) throws NoSuchUserByIdException, NoUsersInDatabaseException {
-    log.info("REST DELETE /delete-user/" + id + " started");
+    log.info("REST DELETE admin/delete-user/" + id + " started");
     adminAppUserService.deleteUser(id);
-    log.info("REST DELETE/delete-user/" + id + " finished");
+    log.info("REST DELETE admin/delete-user/" + id + " finished");
 
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }

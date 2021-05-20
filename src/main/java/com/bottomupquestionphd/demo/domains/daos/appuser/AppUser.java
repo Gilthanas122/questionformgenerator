@@ -45,6 +45,10 @@ public class AppUser {
 
   private String confirmationToken;
 
+  private AppUser() {
+    this.confirmationToken = generateRandomTokenNotSstatic();
+  }
+
   public static class Builder{
     private long id;
     private String username;
@@ -118,9 +122,7 @@ public class AppUser {
     }
   }
 
-  private AppUser() {
-    this.confirmationToken = generateRandomTokenNotSstatic();
-  }
+
   private static String generateRandomToken() {
     return UUID.randomUUID().toString();
   }

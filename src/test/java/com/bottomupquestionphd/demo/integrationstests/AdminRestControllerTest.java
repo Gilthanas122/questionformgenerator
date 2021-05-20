@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Sql(value = {"/db/data.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/db/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/db/clear-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @WithMockUser(username="admin",roles={"ADMIN"})
 public class AdminRestControllerTest {
   @Autowired
@@ -40,14 +40,6 @@ public class AdminRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(4)));
-  }
-
-  @Test
-  @Order(1)
-  public void restChangeUserRole_withoutUserInDB_shouldThrowNoUsersInDBException() throws Exception {
-    mockMvc.perform(get("/rest/admin/change-user-role")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
   }
 
   //THROWS ACCESS DENIED BUT SOMEHOW CAN NOT TEST IT

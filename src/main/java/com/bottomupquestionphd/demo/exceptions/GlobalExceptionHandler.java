@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
+import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +134,56 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleUserDeactivateException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  //Question Form Controller
+
+  @ExceptionHandler(QuestionFormNameAlreadyExistsException.class)
+  @ResponseStatus(value = HttpStatus.CONFLICT)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionFormNameAlreadyExistsException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NoQuestionFormsInDatabaseException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleNoQuestionFormsInDatabaseException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(QuestionFormNotFoundException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionFormNotFoundException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(BelongToAnotherUserException.class)
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  public @ResponseBody
+  ErrorMessageDTO handleBelongToAnotherUserException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(MissingUserException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleMissingUserException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NotEnoughQuestionsToCreateFormException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleNotEnoughQuestionsToCreateFormException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

@@ -30,6 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 
 import static com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl.buildMissingFieldErrorMessage;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -221,11 +222,11 @@ public class AppUserServiceTest {
     SecurityContextHolder.setContext(securityContext);
 
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-    Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser));
+    Mockito.when(appUserRepository.findByUsername(any())).thenReturn(Optional.of(appUser));
     Mockito.when(authentication.getPrincipal()).thenReturn(specificUserDetails);
     Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUser.getId());
-    Mockito.verify(appUserRepository, times(1)).findByUsername(appUser.getUsername());
+    Mockito.verify(appUserRepository, times(1)).findByUsername(any());
   }
 
   @Test(expected = BelongToAnotherUserException.class)
@@ -233,7 +234,7 @@ public class AppUserServiceTest {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     AppUser appUser1 = (AppUser) beanFactory.getBean("validUser");
     appUser1.setId(2);
-    Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser1));
+    Mockito.when(appUserRepository.findByUsername(any())).thenReturn(Optional.of(appUser1));
     Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(0);
@@ -252,8 +253,7 @@ public class AppUserServiceTest {
   @Test
   public void findCurrentlyLoggedInUser_withValidUser_returnsAppuser() throws BelongToAnotherUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-    Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());
-    Mockito.when(appUserRepository.findByUsername(appUser.getUsername())).thenReturn(Optional.of(appUser));
+    Mockito.when(appUserRepository.findByUsername(any())).thenReturn(Optional.of(appUser));
 
     AppUser appUser1 = appUserService.findCurrentlyLoggedInUser();
     Assert.assertEquals(appUser.getPassword(), appUser1.getPassword());

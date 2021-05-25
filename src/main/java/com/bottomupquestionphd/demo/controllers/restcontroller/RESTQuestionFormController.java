@@ -8,12 +8,8 @@ import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreate
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserNameException;
-import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.NotEnoughQuestionsToCreateFormException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNameAlreadyExistsException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -42,7 +38,7 @@ public class RESTQuestionFormController {
     return new ResponseEntity<>(new QuestionForm(), HttpStatus.OK);
   }
 
-  @PostMapping( "create")
+  @PostMapping("create")
   public ResponseEntity<?> saveQuestionForm(@RequestBody QuestionFormCreateDTO questionFormCreateDTO) throws NoSuchUserNameException, MissingParamsException, QuestionFormNameAlreadyExistsException {
     log.info("REST POST question-form/create started");
     long questionFormId = questionFormService.save(questionFormCreateDTO);
@@ -51,9 +47,8 @@ public class RESTQuestionFormController {
     return new ResponseEntity<>(questionFormId, HttpStatus.OK);
   }
 
-  @SneakyThrows
   @GetMapping("list")
-  public ResponseEntity<?> listTeachersQuestionForms() {
+  public ResponseEntity<?> listTeachersQuestionForms() throws NoQuestionFormsInDatabaseException {
     log.info("REST GET question-form/list started");
     List<QuestionForm> questionForms = questionFormService.findAll();
     log.info("REST GET question-form/list finished");
@@ -67,6 +62,15 @@ public class RESTQuestionFormController {
     log.info("REST GET question-form/update" + id + " finished");
 
     return new ResponseEntity<>(questionForm, HttpStatus.OK);
+  }
+
+  @PutMapping("update/{id}")
+  public ResponseEntity<?> modifyQuestionFormPut(@PathVariable long id, @RequestBody QuestionFormCreateDTO questionFormCreateDTO) throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException {
+    log.info("REST PUT question-form/update" + id + " started");
+    questionFormService.updateQuestionForm(questionFormCreateDTO, id);
+    log.info("REST PUT question-form/update" + id + " finished");
+
+    return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @PutMapping("/finish/{questionFormId}")
@@ -88,11 +92,11 @@ public class RESTQuestionFormController {
   }
 
   @DeleteMapping("delete/{questionFormId}")
-  public ResponseEntity<?> deleteQuestionForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException {
+  public ResponseEntity<?> deleteQuestionForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     log.info("REST DELETE question-form/delete/" + questionFormId + " started");
     questionFormService.deleteQuestionForm(questionFormId);
     log.info("REST DELETE question-form/delete/" + questionFormId + " finished");
 
-    return new ResponseEntity<>(new SuccessMessageDTO("deleted", "Question Form with " + questionFormId + "successfully deleted"), HttpStatus.OK);
+    return new ResponseEntity<>(new SuccessMessageDTO("deleted", "Question Form with id " + questionFormId + " successfully deleted"), HttpStatus.OK);
   }
 }

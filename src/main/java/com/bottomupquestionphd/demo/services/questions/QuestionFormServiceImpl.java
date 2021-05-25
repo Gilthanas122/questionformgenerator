@@ -148,8 +148,10 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   }
 
   @Override
-  public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException {
+  public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     checkIfQuestionFormExists(questionFormId);
+    QuestionForm questionForm = questionFormRepository.findById(questionFormId);
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
     questionFormRepository.deleteQuestionFormById(questionFormId);
     queryService.deleteQuestionsBelongingToQuestionForm(questionFormId);
   }
@@ -163,5 +165,18 @@ public class QuestionFormServiceImpl implements QuestionFormService {
             .map(Question::getId)
             .collect(Collectors.toList());
     return textQuestionIds;
+  }
+
+  @Override
+  public void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException {
+      ErrorServiceImpl.buildMissingFieldErrorMessage(questionFormCreateDTO);
+      if (!questionFormRepository.existsById(id)){
+        throw new QuestionFormNotFoundException("No question form with the given id in the database, can not update it");
+      }
+      QuestionForm questionForm = questionFormRepository.findById(id);
+      appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
+      questionForm.setName(questionFormCreateDTO.getName());
+      questionForm.setDescription(questionFormCreateDTO.getDescription());
+      questionFormRepository.save(questionForm);
   }
 }

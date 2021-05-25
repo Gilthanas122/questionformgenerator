@@ -1,7 +1,6 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
@@ -10,13 +9,13 @@ import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.emailService.EmailService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.validations.RegexServiceImpl;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -64,9 +63,8 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   public AppUser findCurrentlyLoggedInUser() {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    SpecificUserDetails specificUserDetails = (SpecificUserDetails) auth.getPrincipal();
-    AppUser appUser = appUserRepository.findByUsername(specificUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
+    Principal auth = SecurityContextHolder.getContext().getAuthentication();
+    AppUser appUser = appUserRepository.findByUsername(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
     return appUser;
   }
 
@@ -77,9 +75,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    SpecificUserDetails specificUserDetails = (SpecificUserDetails) auth.getPrincipal();
-    AppUser appUser = appUserRepository.findByUsername(specificUserDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
+    AppUser appUser = findCurrentlyLoggedInUser();
     if (appUser.getId() != appUserId) {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }

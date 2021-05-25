@@ -34,7 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @Import(TestConfigurationBeanFactory.class)
@@ -294,7 +295,7 @@ public class QuestionFormServiceTest {
   }
 
   @Test
-  public void deleteQuestionForm_withValidQuestionFormId() throws QuestionFormNotFoundException {
+  public void deleteQuestionForm_withValidQuestionFormId() throws QuestionFormNotFoundException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
 
     Mockito.when(questionFormRepository.existsById(questionForm.getId())).thenReturn(true);
@@ -340,6 +341,61 @@ public class QuestionFormServiceTest {
     List<Long> textQuestionIds = questionFormService.getAllTextQuestionIdsFromQuestionForm(questionForm);
 
     Assert.assertTrue(textQuestionIds.isEmpty());
+  }
+
+  @Test
+  public void updateQuestionForm_withValidData() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException {
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+
+    Mockito.when(questionFormRepository.existsById(anyLong())).thenReturn(true);
+    Mockito.when(questionFormRepository.findById(anyLong())).thenReturn(questionForm);
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
+
+    questionFormService.updateQuestionForm(questionFormCreateDTO, 2L);
+
+    Mockito.verify(questionFormRepository, times(1)).save(questionForm);
+  }
+
+  @Test(expected = MissingParamsException.class)
+  public void updateQuestionForm_withMissingParam_shouldThrowMissingParamsException() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException {
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    questionFormCreateDTO.setDescription(null);
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+
+    questionFormService.updateQuestionForm(questionFormCreateDTO, 2L);
+  }
+
+  @Test(expected = QuestionFormNotFoundException.class)
+  public void updateQuestionForm_withNonExistentId_shouldThrowQuestionFormNotFoundException() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException {
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+
+    Mockito.when(questionFormRepository.existsById(anyLong())).thenReturn(false);
+    questionFormService.updateQuestionForm(questionFormCreateDTO, 2L);
+
+  }
+
+  @Test(expected = BelongToAnotherUserException.class)
+  public void updateQuestionForm_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException {
+    QuestionFormCreateDTO questionFormCreateDTO = (QuestionFormCreateDTO) beanFactory.getBean("questionFormCreateDTO");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+
+    Mockito.when(questionFormRepository.existsById(anyLong())).thenReturn(true);
+    Mockito.when(questionFormRepository.findById(anyLong())).thenReturn(questionForm);
+    doThrow(BelongToAnotherUserException.class)
+            .when(appUserService)
+            .checkIfCurrentUserMatchesUserIdInPath(anyLong());
+
+    questionFormService.updateQuestionForm(questionFormCreateDTO, 2L);
   }
 
 }

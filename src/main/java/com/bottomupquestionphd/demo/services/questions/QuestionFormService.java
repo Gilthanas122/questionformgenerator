@@ -32,7 +32,9 @@ public interface QuestionFormService {
 
     QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException, BelongToAnotherUserException;
 
-    void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException;
+    void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException;
 
     List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm);
+
+    void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException;
 }

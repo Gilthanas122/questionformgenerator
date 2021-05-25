@@ -125,10 +125,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   }
 
   @Override
-  public void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm) throws QuestionFormIsNullException {
-    if (questionForm == null) {
-      throw new QuestionFormIsNullException("QuestionForm is null");
-    }
+  public void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm){
     for (int i = 0; i < questionForm.getQuestions().size() - 1; i++) {
       if (questionForm.getQuestions().get(i).isDeleted()) {
         questionForm.getQuestions().remove(i);

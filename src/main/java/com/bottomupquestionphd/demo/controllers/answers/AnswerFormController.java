@@ -18,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("answer-form")
 @PreAuthorize("isAuthenticated()")
@@ -137,5 +136,4 @@ public class AnswerFormController {
     log.info("POST /update/" + answerFormId + "/" + appUserId + " finished");
     return "app-user/landing-page";
   }
-
 }

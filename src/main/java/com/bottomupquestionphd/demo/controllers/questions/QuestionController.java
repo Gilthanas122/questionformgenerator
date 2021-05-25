@@ -34,19 +34,19 @@ public class QuestionController {
 
   @GetMapping("/create/{questionFormId}")
   public String renderCreateQuestion(@PathVariable long questionFormId, Model model) {
-    log.info("GET /create/" + questionFormId + " started");
+    log.info("GET question/create/" + questionFormId + " started");
     model.addAttribute("questionFormId", questionFormId);
-    log.info("GET /create/" + questionFormId + " finished");
+    log.info("GET question/create/" + questionFormId + " finished");
     return "question/create";
   }
 
   @PostMapping("/create/{type}/{questionFormId}")
   public String saveQuestion(Model model, @ModelAttribute QuestionCreateDTO questionDTO, @PathVariable String type, @PathVariable long questionFormId) {
-    log.info("POST /create/" + type + "/" + questionFormId + " started");
+    log.info("POST question/create/" + type + "/" + questionFormId + " started");
     model.addAttribute("questionDTO", questionDTO);
     try {
       questionService.saveQuestion(type, questionDTO, questionFormId);
-      log.info("POST /create/" + type + "/" + questionFormId + " finished");
+      log.info("POST question/create/" + type + "/" + questionFormId + " finished");
       return "redirect:/question/create/" + questionFormId;
     } catch (MissingParamsException e) {
       log.error(e.getMessage());
@@ -72,11 +72,11 @@ public class QuestionController {
 
   @GetMapping("update/{questionId}")
   public String renderQuestionUpdate(@PathVariable long questionId, Model model) {
-    log.info("GET /update/" + questionId+ "/" + " started");
+    log.info("GET question/update/" + questionId+ "/" + " started");
     try {
       QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
       model.addAttribute("question", question);
-      log.info("GET /update/" + questionId+ "/" + " finished");
+      log.info("GET question/update/" + questionId+ "/" + " finished");
       return "question/update";
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
@@ -93,10 +93,10 @@ public class QuestionController {
 
   @PostMapping("update/{questionId}")
   public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
-    log.info("POST /update/" + questionId+ "/" + " started");
+    log.info("POST question/update/" + questionId+ "/" + " started");
     try {
       questionService.saveQuestionFromQuestionDType(question);
-      log.info("POST /update/" + questionId+ "/" + " finished");
+      log.info("POST question/update/" + questionId+ "/" + " finished");
       return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
     } catch (MissingParamsException e) {
       log.error(e.getMessage());
@@ -116,11 +116,11 @@ public class QuestionController {
 
   @GetMapping("/update-position/{change}/{questionId}")
   public String updateListPosition(@PathVariable String change, @PathVariable long questionId, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
-    log.info("GET /update-position/" + change+ "/" + questionId + " started");
+    log.info("GET question/update-position/" + change+ "/" + questionId + " started");
     try {
       long questionFormId = questionService.findQuestionFormIdBelongingToQuestion(questionId);
       questionService.changeOrderOfQuestion(change, questionId);
-      log.info("GET /update-position/" + change+ "/" + questionId + " finished");
+      log.info("GET question/update-position/" + change+ "/" + questionId + " finished");
       return "redirect:/question-form/list-questions/" + questionFormId;
     } catch (InvalidQuestionPositionChangeException e) {
       log.error(e.getMessage());
@@ -140,18 +140,15 @@ public class QuestionController {
 
   @GetMapping("/delete/{questionId}")
   public String deleteQuestionById(@PathVariable long questionId, RedirectAttributes redirectAttributes) {
-    log.info("GET /delete" + "/" + questionId + " started");
+    log.info("GET question/delete" + "/" + questionId + " started");
     try {
       long formId = questionService.deleteQuestion(questionId);
-      log.info("GET /delete" + "/" + questionId + " finished");
+      log.info("GET question/delete" + "/" + questionId + " finished");
       return "redirect:/question-form/list-questions/" + formId;
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (BelongToAnotherUserException e) {
-      log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
-    } catch (QuestionFormIsNullException e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("validations", e.getMessage());
     } catch (Exception e) {

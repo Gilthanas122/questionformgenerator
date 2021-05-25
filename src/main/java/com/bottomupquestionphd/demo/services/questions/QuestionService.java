@@ -3,7 +3,6 @@ package com.bottomupquestionphd.demo.services.questions;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
-import com.bottomupquestionphd.demo.domains.dtos.question.TextQuestionDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
@@ -11,8 +10,8 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionC
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,9 +24,9 @@ public interface QuestionService {
 
   Question findById(long questionIq) throws QuestionNotFoundByIdException;
 
-  void saveQuestionFromQuestionDType(QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException;
+  Question saveQuestionFromQuestionDType(QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException, TypeMismatchException, BelongToAnotherUserException;
 
-  void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
+  Question changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException;
 
-  long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException;
+  long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException;
 }

@@ -25,17 +25,20 @@ VALUES(3, 0, 'test questionform for another teacher', 1, 'test questionform belo
 INSERT INTO questionforms (id, deleted, description, finished, name, app_user_id)
 VALUES(4, 0, 'test questionform with missing user', 1, 'test questionform with missing user', null);
 
-INSERT INTO questions (question_type, id, deleted, list_position, scale, question_form_id)
-VALUES('CheckBoxQuestion', 1, 0, 0, 0, 1);
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('CheckBoxQuestion', 1, 0, 0, 0, 'checkbox question text', 1);
 
-INSERT INTO questions (question_type, id, deleted, list_position, scale, question_form_id)
-VALUES('RadioButtonQuestion', 2, 0, 1, 0, 1);
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('RadioButtonQuestion', 2, 0, 1, 0, 'radio question text',1);
 
-INSERT INTO questions (question_type, id, deleted, list_position, scale, question_form_id)
-VALUES('ScaleQuestion', 3, 0, 2, 5, 1);
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('ScaleQuestion', 3, 0, 2, 5, 'scale question text', 1);
 
-INSERT INTO questions (question_type, id, deleted, list_position, scale, question_form_id)
-VALUES('TextQuestion', 4, 0, 3, 0, 1);
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('TextQuestion', 4, 0, 3, 0, 'text question text', 1);
+
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('ScaleQuestion', 5, 0, 4, 0, 'scale question text belonging to another user', 3);
 
 INSERT INTO questiontextpossibilities(id, deleted, answer_text, multiple_answer_question_id)
 VALUES (1, 0, 'Radio', 2);

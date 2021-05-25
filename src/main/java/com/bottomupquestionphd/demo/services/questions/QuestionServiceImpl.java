@@ -11,12 +11,11 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionC
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;
 
@@ -78,45 +77,48 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public void saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException, MissingParamsException {
+  public Question saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionWithDTypeDTO);
     Question question = findById(questionWithDTypeDTO.getId());
     Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
-    if (!question.getDiscriminatorValue().equals(converted.getDiscriminatorValue())){
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
+    if (!question.getDiscriminatorValue().equals(converted.getDiscriminatorValue())) {
       throw new TypeMismatchException("The questionstypes do not match");
     }
     converted.setId(question.getId());
     converted.setListPosition(question.getListPosition());
     converted.setQuestionForm(question.getQuestionForm());
     questionRepository.save(converted);
+    return converted;
   }
 
   @Override
-  public void changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
+  public Question changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException {
     Question question = findById(questionId);
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     if (!change.equals("up") && !change.equals("down")) {
       throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
     } else if (change.equals("up") && question.getListPosition() == 0) {
-      throw new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element");
+      throw new InvalidQuestionPositionException("Not possible to move element more forward. It's the first element");
     } else if (change.equals("down") && question.getQuestionForm().getQuestions().size() - 1 <= question.getListPosition()) {
-      throw new InvalidQuestionPositionException("Not possible to move element more backward, is the last element");
+      throw new InvalidQuestionPositionException("Not possible to move element more backward, it's the last element");
     }
     int currentPosition = question.getListPosition();
     Question questionToBeSwitchedWith = questionFormService.findQuestionToSwitchPositionWith(question.getQuestionForm(), currentPosition, change);
     question.setListPosition(questionToBeSwitchedWith.getListPosition());
     questionToBeSwitchedWith.setListPosition(currentPosition);
     questionRepository.saveAll(List.of(question, questionToBeSwitchedWith));
+    return question;
   }
 
   @Override
-  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException {
+  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
     Question question = findById(questionId);
-    long formId = question.getQuestionForm().getId();
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     questionRepository.setToBeDeleted(questionId);
     questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());
-    return formId;
+    return question.getQuestionForm().getId();
   }
 
   @Override
@@ -141,7 +143,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   private void saveRadioQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getAnswers().size() < 2) {
-      throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
+      throw new MissingParamsException("The provided number of answer possibilities is less than 2");
     }
     RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionDTO.getQuestionText(), questionTextPossibilityService.convertStringToQuestionTextPossibility(questionDTO.getAnswers()));
     radioButtonQuestion.setQuestionForm(questionForm);
@@ -151,7 +153,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   private void saveCheckBoxQuestion(QuestionCreateDTO questionDTO, QuestionForm questionForm) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException {
     if (questionDTO.getAnswers().size() < 2) {
-      throw new MissingParamsException("Following input field is missing: question text or provided number of answers is less than 2");
+      throw new MissingParamsException("The provided number of answer possibilities is less than 2");
     }
     CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionDTO.getQuestionText(), questionTextPossibilityService.convertStringToQuestionTextPossibility(questionDTO.getAnswers()));
     checkBoxQuestion.setQuestionForm(questionForm);

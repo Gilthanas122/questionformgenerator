@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.unittests.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -36,8 +37,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 @RunWith(SpringRunner.class)
@@ -218,25 +219,34 @@ public class QuestionServiceTest {
   }
 
   @Test
-  public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeCheckBoxQuestion() throws QuestionNotFoundByIdException, MissingParamsException {
+  public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeCheckBoxQuestion() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("checkboxQuestionWithDTypeDTO");
+    CheckBoxQuestion checkBoxQuestion = (CheckBoxQuestion) beanFactory.getBean("checkboxQuestion");
+    AppUser appUser = new AppUser.Builder().build();
+    checkBoxQuestion.getQuestionForm().setAppUser(appUser);
 
     Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn((CheckBoxQuestion) beanFactory.getBean("checkboxQuestion"));
     Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
-    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn((CheckBoxQuestion) beanFactory.getBean("checkboxQuestion"));
+    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(checkBoxQuestion);
 
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
     questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
     Mockito.verify(questionRepository, times(1)).save(any());
 
   }
 
   @Test(expected = TypeMismatchException.class)
-  public void saveQuestionFromQuestionDType_withNotMatchingQuestionTypesBetweenDBAndUserInput_throwsTypeMissMatchException() throws QuestionNotFoundByIdException, MissingParamsException {
+  public void saveQuestionFromQuestionDType_withNotMatchingQuestionTypesBetweenDBAndUserInput_throwsTypeMissMatchException() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("checkboxQuestionWithDTypeDTO");
+    CheckBoxQuestion checkBoxQuestion = (CheckBoxQuestion) beanFactory.getBean("checkboxQuestion");
+    AppUser appUser = new AppUser.Builder().build();
+    checkBoxQuestion.getQuestionForm().setAppUser(appUser);
 
     Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn((RadioButtonQuestion) beanFactory.getBean("radioButtonQuestion"));
     Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
-    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn((CheckBoxQuestion) beanFactory.getBean("checkboxQuestion"));
+    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(checkBoxQuestion);
+
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
     Mockito.verify(questionRepository, times(1)).save(any());
@@ -244,16 +254,18 @@ public class QuestionServiceTest {
   }
 
   @Test
-  public void changeOrderOfQuestion_withValidChangeAndQuestionId() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException {
+  public void changeOrderOfQuestion_withValidChangeAndQuestionId() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     Question question = questionForm.getQuestions().get(0);
     question.setQuestionForm(questionForm);
     Question question1ToBeSwitchedWith = questionForm.getQuestions().get(1);
     question1ToBeSwitchedWith.setQuestionForm(questionForm);
+    questionForm.setAppUser(new AppUser.Builder().build());
 
     Mockito.when(questionRepository.existsById(question.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(question.getId())).thenReturn(question);
     Mockito.when(questionFormService.findQuestionToSwitchPositionWith(questionForm, question.getListPosition(), "down")).thenReturn(question1ToBeSwitchedWith);
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionService.changeOrderOfQuestion("down", question.getId());
     assertEquals(Optional.of(1), Optional.of(question.getListPosition()));
@@ -261,35 +273,41 @@ public class QuestionServiceTest {
   }
 
   @Test(expected = InvalidQuestionPositionChangeException.class)
-  public void changeOrderOfQuestion_withInValidChangeValue_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException {
+  public void changeOrderOfQuestion_withInValidChangeValue_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException, BelongToAnotherUserException {
     Question question = (Question) beanFactory.getBean("validQuestion");
+    question.getQuestionForm().setAppUser(new AppUser.Builder().build());
 
     Mockito.when(questionRepository.existsById(question.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(question.getId())).thenReturn(question);
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionService.changeOrderOfQuestion("kaki", 1L);
   }
 
   @Test(expected = InvalidQuestionPositionException.class)
-  public void changeOrderOfQuestion_withInvalidPositionLast_throwsInvalidQuestionPositionException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException {
+  public void changeOrderOfQuestion_withInvalidPositionLast_throwsInvalidQuestionPositionException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     Question question = questionForm.getQuestions().get(3);
     question.setQuestionForm(questionForm);
+    questionForm.setAppUser(new AppUser.Builder().build());
 
     Mockito.when(questionRepository.existsById(question.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(question.getId())).thenReturn(question);
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionService.changeOrderOfQuestion("down", question.getId());
   }
 
   @Test(expected = InvalidQuestionPositionException.class)
-  public void changeOrderOfQuestion_withInvalidPositionFirst_throwsInvalidQuestionPositionException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException {
+  public void changeOrderOfQuestion_withInvalidPositionFirst_throwsInvalidQuestionPositionException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException, QuestionNotFoundByIdException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     Question question = questionForm.getQuestions().get(0);
     question.setQuestionForm(questionForm);
+    questionForm.setAppUser(new AppUser.Builder().build());
 
     Mockito.when(questionRepository.existsById(question.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(question.getId())).thenReturn(question);
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionService.changeOrderOfQuestion("up", question.getId());
   }

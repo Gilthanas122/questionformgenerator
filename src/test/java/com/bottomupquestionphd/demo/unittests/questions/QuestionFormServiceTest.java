@@ -275,13 +275,6 @@ public class QuestionFormServiceTest {
     Mockito.verify(questionFormRepository, times(1)).save(questionForm);
   }
 
-  @Test(expected = QuestionFormIsNullException.class)
-  public void updateQuestionListPositionAfterDeletingQuestion_withNullQuestionForm() throws QuestionFormIsNullException {
-    QuestionForm questionForm = null;
-
-    questionFormService.updateQuestionListPositionAfterDeletingQuestion(questionForm);
-  }
-
   @Test
   public void findByIdForAnswerForm_withValidquestionFormId_returnQuestionForm() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
@@ -297,13 +290,39 @@ public class QuestionFormServiceTest {
   @Test
   public void deleteQuestionForm_withValidQuestionFormId() throws QuestionFormNotFoundException, BelongToAnotherUserException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+    appUser.setId(11);
 
     Mockito.when(questionFormRepository.existsById(questionForm.getId())).thenReturn(true);
+    Mockito.when(questionFormRepository.findById(anyLong())).thenReturn(questionForm);
 
     questionFormService.deleteQuestionForm(questionForm.getId());
 
     Mockito.verify(questionFormRepository, times(1)).deleteQuestionFormById(questionForm.getId());
     Mockito.verify(queryService, times(1)).deleteQuestionsBelongingToQuestionForm(questionForm.getId());
+  }
+
+  @Test(expected = QuestionFormNotFoundException.class)
+  public void deleteQuestionForm_withInValidQuestionFormId_shouldThrowQuestionFormNotFoundException() throws QuestionFormNotFoundException, BelongToAnotherUserException {
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+
+    Mockito.when(questionFormRepository.existsById(questionForm.getId())).thenReturn(false);
+
+    questionFormService.deleteQuestionForm(questionForm.getId());
+  }
+
+  @Test(expected = BelongToAnotherUserException.class)
+  public void deleteQuestionForm_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws QuestionFormNotFoundException, BelongToAnotherUserException {
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    questionForm.setAppUser(appUser);
+
+    Mockito.when(questionFormRepository.existsById(questionForm.getId())).thenReturn(true);
+    Mockito.when(questionFormRepository.findById(anyLong())).thenReturn(questionForm);
+    doThrow(BelongToAnotherUserException.class).when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
+
+    questionFormService.deleteQuestionForm(questionForm.getId());
   }
 
   @Test

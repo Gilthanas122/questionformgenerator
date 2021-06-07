@@ -25,7 +25,6 @@ public class EmailServiceImpl implements EmailService {
   @Async
   @Override
   public void sendEmail(AppUser appUser) {
-
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(appUser.getEmailId());
     message.setSubject("Complete the Registration");
@@ -42,6 +41,17 @@ public class EmailServiceImpl implements EmailService {
       throw new ConfirmationTokenDoesNotExistException("Given confirmation token does not exist");
     }
     return appUser.getEmailId();
+  }
+
+  @Override
+  public void sendEmailToChangePassword(AppUser appUser) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(appUser.getEmailId());
+    message.setSubject("Change password");
+    message.setFrom(System.getenv("EMAIL_USERNAME"));
+    message.setText("To change password the account please click here http://localhost:8080/reset-password/"+ appUser.getId() +
+            "?token=" + appUser.getConfirmationToken());
+    javaMailSender.send(message);
   }
 
 }

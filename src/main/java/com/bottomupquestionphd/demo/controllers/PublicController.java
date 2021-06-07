@@ -1,22 +1,18 @@
 package com.bottomupquestionphd.demo.controllers;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.dtos.SuccessMessageDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
-import com.bottomupquestionphd.demo.exceptions.appuser.AppUserIsAlreadyActivatedException;
-import com.bottomupquestionphd.demo.exceptions.appuser.InvalidRegexParameterException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByEmailException;
-import com.bottomupquestionphd.demo.exceptions.appuser.UsernameAlreadyTakenException;
+import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PublicController {
@@ -96,6 +92,84 @@ public class PublicController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return "/login";
+    return "redirect:/login";
+  }
+
+  @GetMapping("/change-password")
+  public String getChangeUserPassword(){
+    log.info("GET /change-password started");
+    log.info("GET /change-password finished");
+    return "change-password";
+  }
+
+  @PostMapping("/change-password")
+  public String postChangeUserPassword(Model model, @RequestParam String email){
+    log.info("POST /change-password started");
+    try {
+      appUserService.sendEmailToRegeneratePassword(email);
+      log.info("POST /change-password finished");
+      model.addAttribute("successMessage", new SuccessMessageDTO("ok", ""));
+      return "login";
+    }catch (MissingParamsException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (AppUserNotActivatedException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (NoSuchUserByEmailException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (InvalidRegexParameterException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "change-password";
+  }
+
+  @GetMapping("reset-password/{appUserId}")
+  public String getResetPassword(@PathVariable long appUserId, Model model, @RequestParam String token){
+    log.info("GET /reset-password started");
+    try {
+      appUserService.validateChangePassword(appUserId, token);
+      model.addAttribute("appUserId", appUserId);
+      log.info("GET /reset-password finished");
+      return "reset-password";
+    }catch (NoSuchUserByIdException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (InvalidChangePasswordException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "index";
+  }
+
+  @PostMapping("reset-password/{appUserId}")
+  public String postResetPassword(Model model, @ModelAttribute ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId){
+    log.info("POST /reset-password started");
+    try {
+      appUserService.changePassword(changePasswordDTO, appUserId);
+      log.info("POST /reset-password finished");
+      return "login";
+    }catch (NoSuchUserByIdException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (PassWordMissMachException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (InvalidRegexParameterException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "reset-password";
   }
 }

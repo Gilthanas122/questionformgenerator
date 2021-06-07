@@ -10,4 +10,6 @@ public interface EmailService {
   void sendEmail(AppUser appUser);
 
   String findUserByToken(String token) throws ConfirmationTokenDoesNotExistException;
+
+  void sendEmailToChangePassword(AppUser appUser);
 }

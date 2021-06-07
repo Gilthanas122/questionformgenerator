@@ -39,7 +39,7 @@ public class AdminRestControllerTest {
     mockMvc.perform(get("/rest/admin/change-user-role")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(5)));
+            .andExpect(jsonPath("$", hasSize(6)));
   }
 
   //THROWS ACCESS DENIED BUT SOMEHOW CAN NOT TEST IT
@@ -55,7 +55,7 @@ public class AdminRestControllerTest {
     mockMvc.perform(get("/rest/admin/remove-user-role/teacher/2")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(5)))
+            .andExpect(jsonPath("$", hasSize(6)))
             .andExpect(jsonPath("$[1].roles", is("ROLE_USER")));
   }
 
@@ -90,7 +90,7 @@ public class AdminRestControllerTest {
     mockMvc.perform(get("/rest/admin/deactivate-user/2")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(5)))
+            .andExpect(jsonPath("$", hasSize(6)))
             .andExpect(jsonPath("$[1].active", is(false)));
   }
 
@@ -142,7 +142,7 @@ public class AdminRestControllerTest {
     mockMvc.perform(delete("/rest/admin/delete-user/2")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(4)));
+            .andExpect(jsonPath("$", hasSize(5)));
   }
 
   @Test

@@ -19,7 +19,7 @@ public class TextAnswerVote {
     private boolean deleted;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonBackReference(value = "TextAnswerVotesActualAnwertext")
+    @JsonBackReference(value = "actualAnswerTextsTextAnswerVotes")
     private ActualAnswerText actualAnswerText;
 
     public TextAnswerVote() {

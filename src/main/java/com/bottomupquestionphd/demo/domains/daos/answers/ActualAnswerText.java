@@ -20,11 +20,11 @@ public class ActualAnswerText {
   private String answerText;
   private boolean deleted;
 
-  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonBackReference(value = "actualAnswerTextsAnswer")
+  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonBackReference(value = "answersActualAnswerTexts")
   private Answer answer;
 
-  @OneToMany(mappedBy = "actualAnswerText", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+  @OneToMany(mappedBy = "actualAnswerText", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JsonManagedReference(value = "actualAnswerTextsTextAnswerVotes")
   private List<TextAnswerVote> textAnswerVotes = new ArrayList<>();
 

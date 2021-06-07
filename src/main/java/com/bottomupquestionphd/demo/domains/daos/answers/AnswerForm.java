@@ -7,32 +7,34 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "answerForms")
-@Where(clause="deleted=0")
-public class AnswerForm {
+@Table(name = "answerforms")
+@Where(clause = "deleted=0")
+public class AnswerForm implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
   private boolean deleted;
 
-  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonBackReference(value = "anwerFormsAnswers")
+  @ManyToOne(cascade = {CascadeType.MERGE})
+  @JsonBackReference(value = "questionForm")
   private QuestionForm questionForm;
 
-  @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonManagedReference(value = "answerFormsAnswers")
+  @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference(value = "answersAnswerform")
   private List<Answer> answers = new ArrayList<>();
 
-  @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonBackReference(value = "answerFormsAppUser")
+  @ManyToOne(cascade = {CascadeType.MERGE})
+  @JsonBackReference
   private AppUser appUser;
 
-  public AnswerForm(){}
+  public AnswerForm() {
+  }
 
   public AnswerForm(long id, QuestionForm questionForm, AppUser appUser) {
     this.id = id;

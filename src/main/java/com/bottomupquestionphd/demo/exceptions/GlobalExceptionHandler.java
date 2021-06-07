@@ -1,6 +1,9 @@
 package com.bottomupquestionphd.demo.exceptions;
 
 import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
+import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
@@ -14,6 +17,7 @@ import org.hibernate.TypeMismatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,6 +54,14 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.CONFLICT)
   public @ResponseBody
   ErrorMessageDTO handleUsernameAlreadyTakenException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(UsernameNotFoundException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleUsernameNotFoundException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
@@ -233,4 +245,31 @@ public class GlobalExceptionHandler {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
+
+  //AnswerForm Controller
+
+  @ExceptionHandler(AnswerFormAlreadyFilledOutByCurrentUserException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleAnswerFormAlreadyFilledOutByCurrentUserException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(AnswerFormNotFilledOutException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleAnswerFormNotFilledOutException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NoSuchAnswerformById.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleNoSuchAnswerformById(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
 }

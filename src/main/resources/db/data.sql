@@ -8,10 +8,13 @@ INSERT INTO appusers (id, disabled, active, roles, username, password, email_id,
 VALUES(3, 0, 1, 'ROLE_USER', 'user','$2a$10$1k91J0vUcNZRIOfURLs35O1YlDsEeCAHjiiiddyh0mrmaetXykfWi', 'user@user.com', 'user-token');
 
 INSERT INTO appusers (id, disabled, active, roles, username, password, email_id, confirmation_token)
+VALUES(4, 0, 0, 'ROLE_USER', 'usernotactivated','$2a$10$1k91J0vUcNZRIOfURLs35O1YlDsEeCAHjiiiddyh0mrmaetXykfWi', 'usernotactivated@user.com', 'user-not-activated-token');
+
+INSERT INTO appusers (id, disabled, active, roles, username, password, email_id, confirmation_token)
 VALUES(5, 0, 1, 'ROLE_USER,ROLE_TEACHER', 'teacher2','teacherpass2', 'teacher2@teacher.com', 'teacher-token2');
 
 INSERT INTO appusers (id, disabled, active, roles, username, password, email_id, confirmation_token)
-VALUES(4, 0, 0, 'ROLE_USER', 'usernotactivated','$2a$10$1k91J0vUcNZRIOfURLs35O1YlDsEeCAHjiiiddyh0mrmaetXykfWi', 'usernotactivated@user.com', 'user-not-activated-token');
+VALUES(6, 0, 1, 'ROLE_USER', 'anotheruser','$2a$10$1k91J0vUcNZRIOfURLs35O1YlDsEeCAHjiiiddyh0mrmaetXykfWi', 'anotheruser@user.com', '-another-user-token');
 
 INSERT INTO questionforms (id, deleted, description, finished, name, app_user_id)
 VALUES(1, 0, 'test questionform description', 0, 'test questionform', 2);
@@ -57,3 +60,45 @@ VALUES (5, 0, 'Check box 2', 1);
 
 INSERT INTO questiontextpossibilities(id, deleted, answer_text, multiple_answer_question_id)
 VALUES (6, 0, 'Check box 3', 1);
+
+INSERT INTO answerforms(id, deleted, question_form_id, app_user_id)
+VALUES (1, 0, 1, 5);
+
+INSERT INTO answerforms(id, deleted, question_form_id, app_user_id)
+VALUES (2, 0, 2, 3);
+
+INSERT INTO answerforms(id, deleted, question_form_id, app_user_id)
+VALUES (3, 0, 1, 5);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (1, 0, 3, 1);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (2, 0, 3, 2);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (3, 0, 3, 3);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (4, 0, 3, 4);
+
+INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
+VALUES (1, 'test answer 1 text 1', 0, 2);
+
+INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
+VALUES (2, 'test answer 1 text 2', 0, 2);
+
+INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
+VALUES (3, '3', 0, 1);
+
+INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
+VALUES (4, '4', 0, 3);
+
+INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
+VALUES (5, '5', 0, 4);
+
+INSERT INTO textanswervotes (id, deleted, value, actual_answer_text_id)
+VALUES (1, 0, 4, 1);
+
+INSERT INTO textanswervotes (id, deleted, value, actual_answer_text_id)
+VALUES (2, 0, 5, 1);

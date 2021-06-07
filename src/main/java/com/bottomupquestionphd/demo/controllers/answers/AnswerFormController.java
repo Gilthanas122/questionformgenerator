@@ -31,10 +31,10 @@ public class AnswerFormController {
 
   @GetMapping("create/{questionFormId}")
   public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
-    log.info("GET /create/" + questionFormId + "started");
+    log.info("GET answer-form/create/" + questionFormId + "started");
     try {
       model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
-      log.info("GET /create/" + questionFormId + "finished");
+      log.info("GET answer-form/create/" + questionFormId + "finished");
       return "answerform/create";
     } catch (MissingUserException e) {
       log.error(e.getMessage());
@@ -52,13 +52,13 @@ public class AnswerFormController {
     return "redirect:/app-user/question-form/list";
   }
 
-  @PostMapping("create/{answerFormId}/{questionFormId}/{appUserId}")
-  public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long answerFormId, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
-    log.info("POST /create/" + answerFormId + "/" + questionFormId + "/" + appUserId + " started");
+  @PostMapping("create/{questionFormId}/{appUserId}")
+  public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
+    log.info("POST answer-form/create/" + "/" + questionFormId + "/" + appUserId + " started");
     try {
-      answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+      answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
       model.addAttribute("successMessage", "Question formed successfully filled out");
-      log.info("POST /create/" + answerFormId + "/" + questionFormId + "/" + appUserId + " finished");
+      log.info("POST answer-form/create/" + "/" + questionFormId + "/" + appUserId + " finished");
       return "redirect:/app-user/landing-page/";
     } catch (MissingUserException e) {
       log.error(e.getMessage());
@@ -88,10 +88,10 @@ public class AnswerFormController {
 
   @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
   public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
-    log.info("GET /update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
+    log.info("GET answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
     try {
       model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId));
-      log.info("GET /update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
+      log.info("GET answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
       return "answerform/update";
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());

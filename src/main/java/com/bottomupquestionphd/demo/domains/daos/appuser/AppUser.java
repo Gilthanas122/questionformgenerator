@@ -40,12 +40,12 @@ public class AppUser {
   private List<QuestionForm> questionForms = new ArrayList<>();
 
   @OneToMany(mappedBy = "appUser", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  @JsonManagedReference("appUsersAnswerForms")
+  @JsonManagedReference
   private List<AnswerForm> answerForms = new ArrayList<>();
 
   private String confirmationToken;
 
-  private AppUser() {
+  public AppUser() {
     this.confirmationToken = generateRandomTokenNotSstatic();
   }
 

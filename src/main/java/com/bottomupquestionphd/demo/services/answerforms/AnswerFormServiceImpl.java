@@ -49,7 +49,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public void saveAnswerForm(AnswerForm answerForm, long answerFormId, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public AnswerForm saveAnswerForm(AnswerForm answerForm, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, AnswerFormAlreadyFilledOutByCurrentUserException {
     if (answerForm == null) {
       throw new MissingParamsException("Answer Form can not be null");
     }
@@ -67,6 +67,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     answerService.connectQuestionsToAnswers(answerForm.getAnswers(), questionForm.getId());
     connectAnswerFormToAnswers(answerForm);
     answerFormRepository.save(answerForm);
+    return answerForm;
   }
 
   private void connectAnswerFormToAnswers(AnswerForm answerForm) {
@@ -120,7 +121,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public void saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException {
+  public AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException {
     AnswerForm originalAnswerForm1 = findAnswerFormById(answerFormId);
     if (originalAnswerForm1.getAppUser().getId() != appUserId) {
       throw new BelongToAnotherUserException("This answerForm belongs to another user");
@@ -130,6 +131,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     answerForm.setId(originalAnswerForm1.getId());
     answerForm.setAnswers(answerService.removeNullAnswerTextsFromAnswer(answerForm.getAnswers(), answerForm, originalAnswerForm1.getAnswers(), this));
     answerFormRepository.save(answerForm);
+    return answerForm;
   }
 
   private void checkIfUserHasFilledOutAnswerForm(QuestionForm questionForm, long appUserId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {
@@ -143,7 +145,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
                     .filter(form -> form.getAppUser() != null)
                     .anyMatch(form -> form.getAppUser().getId() == appUserId);
     if (hasUserFilledOutGivenAnswerForm) {
-      throw new AnswerFormAlreadyFilledOutByCurrentUserException("You have already filled out this question form, please update the existing one");
+      throw new AnswerFormAlreadyFilledOutByCurrentUserException("You have already filled out this question form, please update the one where you filled it out");
     }
   }
 

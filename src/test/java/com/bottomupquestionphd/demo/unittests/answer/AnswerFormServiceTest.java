@@ -85,14 +85,13 @@ public class AnswerFormServiceTest {
   public void saveAnswerForm_withValidInputData() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException, NoSuchUserByIdException, AnswerFormAlreadyFilledOutByCurrentUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
-    long answerFormId = 1;
     long questionFormId = 1;
     long appUserId = 1;
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
 
     Mockito.when(appUserService.findById(appUserId)).thenReturn(appUser);
     Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
-    answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+    answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
 
     Mockito.verify(answerFormRepository, times(1)).save(answerForm);
     Assert.assertEquals(answerForm.getAnswers().get(0).getAnswerForm(), answerForm);
@@ -101,10 +100,9 @@ public class AnswerFormServiceTest {
   @Test(expected = MissingParamsException.class)
   public void saveAnswerForm_withNullInput_throwsMissingParamsException() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException, NoSuchUserByIdException, AnswerFormAlreadyFilledOutByCurrentUserException {
     AnswerForm answerForm = null;
-    long answerFormId = 1;
     long questionFormId = 1;
     long appUserId = 1;
-    answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+    answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
   }
 
   @Test(expected = MissingParamsException.class)
@@ -112,14 +110,13 @@ public class AnswerFormServiceTest {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     answerForm.getAnswers().get(0).getActualAnswerTexts().get(0).setAnswerText(null);
-    long answerFormId = 1;
     long questionFormId = 1;
     long appUserId = 1;
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
 
     Mockito.when(appUserService.findById(appUserId)).thenReturn(appUser);
     Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
-    answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+    answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
 
     Mockito.verify(answerFormRepository, times(1)).save(answerForm);
     Assert.assertEquals(answerForm.getAnswers().get(0).getAnswerForm(), answerForm);
@@ -129,14 +126,13 @@ public class AnswerFormServiceTest {
   public void saveAnswerForm_withAppUserThatHasAlreadyFilledOutTheAnswerForm_throwsAnswerFormAlreadyFilledOutException() throws QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, MissingUserException, NoSuchUserByIdException, AnswerFormAlreadyFilledOutByCurrentUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
-    long answerFormId = 1;
     long questionFormId = 1;
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerForm");
     long appUserId = questionForm.getAnswerForms().get(0).getAppUser().getId();
 
     Mockito.when(appUserService.findById(appUserId)).thenReturn(appUser);
     Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
-    answerFormService.saveAnswerForm(answerForm, answerFormId, questionFormId, appUserId);
+    answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
 
     Mockito.verify(answerFormRepository, times(1)).save(answerForm);
     Assert.assertEquals(answerForm.getAnswers().get(0).getAnswerForm(), answerForm);

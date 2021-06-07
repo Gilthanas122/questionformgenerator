@@ -37,10 +37,9 @@ public class AnswerServiceImpl implements AnswerService {
       throw new MissingParamsException("Answers can not be null");
     }
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
-
-    for (int i = 0; i < questionForm.getQuestions().size(); i++) {
+    for (int i = 0; i < answers.size(); i++) {
       answers.get(i).setQuestion(questionForm.getQuestions().get(i));
-      answerRepository.saveAndFlush(answers.get(i));
+      questionForm.getQuestions().get(i).addOneAnswer(answers.get(i));
     }
   }
 
@@ -54,7 +53,6 @@ public class AnswerServiceImpl implements AnswerService {
       for (int j = 0; j < answers.get(i).getActualAnswerTexts().size(); j++) {
         ActualAnswerText currentActualAnswer = currentAnswer.getActualAnswerTexts().get(j);
         currentActualAnswer.setAnswer(currentAnswer);
-        actualAnswerTextService.saveActualAnswer(currentActualAnswer);
       }
     }
   }

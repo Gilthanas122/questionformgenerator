@@ -26,12 +26,12 @@ public class Question implements Comparable<Question> {
   private int listPosition;
   private boolean deleted;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToOne(cascade = {CascadeType.MERGE})
   @JsonBackReference(value = "questionsQuestionForm")
   private QuestionForm questionForm;
 
-  @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonManagedReference("questionsAnswers")
+  @OneToMany(mappedBy = "question", cascade = {CascadeType.MERGE})
+  @JsonManagedReference("answersQuestion")
   private List<Answer> answers = new ArrayList<>();
 
   public Question(){}
@@ -79,7 +79,7 @@ public class Question implements Comparable<Question> {
     return listPosition;
   }
 
-  public void setListPosition(Integer listPosition) {
+  public void setListPosition(int listPosition) {
     this.listPosition = listPosition;
   }
 
@@ -109,4 +109,7 @@ public class Question implements Comparable<Question> {
     return this.getClass().getAnnotation(DiscriminatorValue.class).value();
   }
 
+  public void addOneAnswer(Answer answer) {
+    this.answers.add(answer);
+  }
 }

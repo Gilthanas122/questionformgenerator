@@ -47,19 +47,6 @@ public class AnswerServiceTest {
     answerService = new AnswerServiceImpl(answerRepository, questionFormService, actualAnswerTextService);
   }
 
-  @Test
-  public void connectQuestionsToAnswers_withValidInputData() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
-    List<Answer> answers = (List<Answer>) beanFactory.getBean("getAnswers");
-    long questionFormId = 1;
-    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
-
-    Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
-
-    answerService.connectQuestionsToAnswers(answers, questionFormId);
-
-    Mockito.verify(answerRepository, times(answers.size())).saveAndFlush(any(Answer.class));
-  }
-
   @Test(expected = MissingParamsException.class)
   public void connectQuestionsToAnswers_withNullListAnswers_throwsMissingParamsException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
     List<Answer> answers = null;

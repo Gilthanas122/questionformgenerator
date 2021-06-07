@@ -88,4 +88,8 @@ public class Answer {
   public void setDeleted(boolean deleted) {
     this.deleted = deleted;
   }
+
+  public void addOneActualAnswerText(ActualAnswerText actualAnswerText){
+    this.actualAnswerTexts.add(actualAnswerText);
+  }
 }

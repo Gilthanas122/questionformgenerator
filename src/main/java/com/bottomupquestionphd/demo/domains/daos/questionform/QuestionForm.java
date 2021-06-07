@@ -27,16 +27,16 @@ public class QuestionForm {
   private boolean finished;
   private boolean deleted;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonBackReference(value = "questionFormsAppUser")
+  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonBackReference(value = "appUsersquestionForms")
   private AppUser appUser;
 
-  @OneToMany(mappedBy = "questionForm", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonManagedReference(value = "questionFormsQuestions")
+  @OneToMany(mappedBy = "questionForm", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference(value = "questionsQuestionForm")
   private List<Question> questions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "questionForm",cascade = {CascadeType.MERGE,CascadeType.PERSIST})
-  @JsonManagedReference(value = "questionFormsAnswerForms")
+  @OneToMany(mappedBy = "questionForm",cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonManagedReference(value = "questionForm")
   private List<AnswerForm> answerForms = new ArrayList<>();
 
   public QuestionForm(){}

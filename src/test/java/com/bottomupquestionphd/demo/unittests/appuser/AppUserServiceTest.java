@@ -4,9 +4,11 @@ package com.bottomupquestionphd.demo.unittests.appuser;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.appuser.SpecificUserDetails;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
+import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserServiceImpl;
@@ -122,8 +124,8 @@ public class AppUserServiceTest {
     appUserService.saveUser(appUser);
   }
 
-  //somehow doesn't work but should
- /* @Test(expected = InvalidRegexParameterException.class)
+  //Not working with no uppercase letters
+/*  @Test(expected = InvalidRegexParameterException.class)
   public void saveUser_withNoUpperCaseLetter_throwsPasswordNotComplexEnoughException() throws UsernameAlreadyTakenException, MissingParamsException, InvalidRegexParameterException, EmailAlreadyUsedException, InvalidEmailFormatException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     appUser.setPassword("hh++12334");
@@ -273,7 +275,7 @@ public class AppUserServiceTest {
     AppUser appUser = (AppUser) beanFactory.getBean("inactiveUser");
     Mockito.when(appUserRepository.findByConfirmationToken(appUser.getConfirmationToken())).thenReturn(appUser);
 
-    Assert.assertEquals("You have successfully registered with the email " + appUser.getEmailId(),appUserService.activateUserByEmail(appUser.getConfirmationToken()));
+    Assert.assertEquals("You have successfully registered with the email " + appUser.getEmailId(), appUserService.activateUserByEmail(appUser.getConfirmationToken()));
     Mockito.verify(appUserRepository, times(1)).save(appUser);
   }
 
@@ -289,5 +291,96 @@ public class AppUserServiceTest {
     String token = "token";
     Mockito.when(appUserRepository.findByConfirmationToken(token)).thenReturn(null);
     appUserService.activateUserByEmail(token);
+  }
+
+  @Test
+  public void sendEmailToRegeneratePassword_withValidData() throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+
+    Mockito.when(appUserRepository.findByEmailId(any())).thenReturn(appUser);
+
+    appUserService.sendEmailToRegeneratePassword(appUser.getEmailId());
+    Mockito.verify(emailService, times(1)).sendEmailToChangePassword(appUser);
+  }
+
+  @Test(expected = InvalidRegexParameterException.class)
+  public void sendEmailToRegeneratePassword_withInvalidEmail_shouldThrowInvalidRegexparameterException() throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setEmailId("hello.hello.com");
+
+    appUserService.sendEmailToRegeneratePassword(appUser.getEmailId());
+  }
+
+  @Test(expected = AppUserNotActivatedException.class)
+  public void sendEmailToRegeneratePassword_withInactiveUser_shouldThrowAppUserNotActivatedException() throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setActive(false);
+
+    Mockito.when(appUserRepository.findByEmailId(any())).thenReturn(appUser);
+
+    appUserService.sendEmailToRegeneratePassword(appUser.getEmailId());
+  }
+
+  @Test(expected = NoSuchUserByEmailException.class)
+  public void sendEmailToRegeneratePassword_withNonExistenEmail_shouldThrowNoSuchUserByEmailException() throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+
+    Mockito.when(appUserRepository.findByEmailId(any())).thenReturn(null);
+
+    appUserService.sendEmailToRegeneratePassword(appUser.getEmailId());
+  }
+
+  @Test(expected = MissingParamsException.class)
+  public void sendEmailToRegeneratePassword_withMissingEmail_shouldThrowMissingParamsException() throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    appUserService.sendEmailToRegeneratePassword("");
+  }
+
+  @Test
+  public void changePassword_withValidData() throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+    ChangePasswordDTO changePasswordDTO = (ChangePasswordDTO) beanFactory.getBean("validChangePasswordDTO");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+
+    Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(Optional.of(appUser));
+
+    appUserService.changePassword(changePasswordDTO, appUser.getId());
+
+    Mockito.verify(appUserRepository, times(1)).save(any());
+  }
+
+  @Test(expected = PassWordMissMachException.class)
+  public void changePassword_withNonMatchingPassword_shouldThrowPassWordMissMatchException() throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+    ChangePasswordDTO changePasswordDTO = (ChangePasswordDTO) beanFactory.getBean("invalidChangePasswordDTO");
+
+    appUserService.changePassword(changePasswordDTO, 1l);
+  }
+
+  @Test(expected = InvalidRegexParameterException.class)
+  public void changePassword_withNotComplexPassword_shouldThrowsInvalidRegexParameterException() throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+    ChangePasswordDTO changePasswordDTO = (ChangePasswordDTO) beanFactory.getBean("notComplexChangePasswordDTO");
+
+    appUserService.changePassword(changePasswordDTO, 1l);
+  }
+
+  @Test
+  public void validateChangePassword_withValidData() throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(Optional.of(appUser));
+
+    appUserService.validateChangePassword(appUser.getId(), appUser.getConfirmationToken());
+  }
+
+  @Test(expected = InvalidChangePasswordException.class)
+  public void validateChangePassword_withInvalidToken_throwsInvalidChangePasswordException() throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(Optional.of(appUser));
+
+    appUserService.validateChangePassword(appUser.getId(), "validtoken");
+  }
+
+  @Test(expected = MissingParamsException.class)
+  public void validateChangePassword_withMissingToken_throwsMissingParamsException() throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+
+    appUserService.validateChangePassword(appUser.getId(), "");
   }
 }

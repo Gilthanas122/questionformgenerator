@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.integrationstests;
 
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserRegisterDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -208,5 +209,128 @@ public class PublicRestControllerTest {
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message", is("No user with the given email")));
+  }
+
+  @Test
+  public void postChangePassword_withValidData_shouldReturnSuccessMessageDTO() throws Exception {
+    mockMvc.perform(post("/rest/change-password")
+          .contentType(MediaType.APPLICATION_JSON)
+          .param("email", "user@user.com"))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.message", is("Email sent to the provided email address to change password")));
+  }
+
+  @Test
+  public void postChangePassword_withInvalidEmailFormat_shouldThrowInvalidRegexParameterException() throws Exception {
+    mockMvc.perform(post("/rest/change-password")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("email", "user.user.com"))
+            .andExpect(status().isNotAcceptable())
+            .andExpect(jsonPath("$.message", is("Not valid email format")));
+  }
+
+  @Test
+  public void postChangePassword_withBlankEmail_shouldThrowMissingParamsException() throws Exception {
+    mockMvc.perform(post("/rest/change-password")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("email", ""))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", is("Email is required")));
+  }
+
+  @Test
+  public void postChangePassword_withNonExistentEmail_shouldThrowNoSuchUserByEmailException() throws Exception {
+    mockMvc.perform(post("/rest/change-password")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("email", "user44@user.com"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", is("No such user by email. Provide a valid email address")));
+  }
+
+  @Test
+  public void postChangePassword_withEmailBelongingToANonActivatedUser_shouldThrowAppUserNotActivatedException() throws Exception {
+    mockMvc.perform(post("/rest/change-password")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("email", "usernotactivated@user.com"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message", is("You should activate your app user in order to login! Check your email")));
+  }
+
+  @Test
+  public void getResetPassword_withValidData_shouldReturnAppUserId() throws Exception {
+    mockMvc.perform(get("/rest/reset-password/3")
+           .contentType(MediaType.APPLICATION_JSON)
+           .param("token", "user-token"))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$", is(3)));
+  }
+
+  @Test
+  public void getResetPassword_withNoToken_shouldThrowMissingParamsException() throws Exception {
+    mockMvc.perform(get("/rest/reset-password/3")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void getResetPassword_withEmptyToken_shouldReturnAppUserId() throws Exception {
+    mockMvc.perform(get("/rest/reset-password/3")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("token", ""))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", is("Token is required.")));
+  }
+
+  @Test
+  public void getResetPassword_withInvalidId_shouldThrowNoSuchUserByIdException() throws Exception {
+    mockMvc.perform(get("/rest/reset-password/66")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("token", "user-token"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", is("Couldn't find appuser with the given id")));
+  }
+
+  @Test
+  public void getResetPassword_withTokenNotMatchingUsersToken_shouldInvalidChangePasswordException() throws Exception {
+    mockMvc.perform(get("/rest/reset-password/3")
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("token", "user-tokennonvalid"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message", is("The provided confirmation token doesn't belong to the user.")));
+  }
+
+  @Test
+  public void postResetPassword_withValidData_shouldReturnStatusOk() throws Exception {
+    mockMvc.perform(post("/rest/reset-password/3")
+           .contentType(MediaType.APPLICATION_JSON)
+           .content(new ObjectMapper().writeValueAsString(new ChangePasswordDTO("Password++22", "Password++22"))))
+           .andExpect(status().isOk());
+  }
+
+  @Test
+  public void postResetPassword_withInvalidUserId_shouldThrowNoSuchUserByIdException() throws Exception {
+    mockMvc.perform(post("/rest/reset-password/66")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(new ChangePasswordDTO("Password++22", "Password++22"))))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", is("Couldn't find appuser with the given id")));
+  }
+
+  @Test
+  public void postResetPassword_withNonMatchingPasswords_shouldThrowPasswordMissMatchException() throws Exception {
+    mockMvc.perform(post("/rest/reset-password/66")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(new ChangePasswordDTO("Password++23", "Password++22"))))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", is("The two passwords should match")));
+  }
+
+  @Test
+  public void postResetPassword_withNotComplexEnoughPasswor_shouldThrowInvalidRegexParameterException() throws Exception {
+    mockMvc.perform(post("/rest/reset-password/66")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(new ChangePasswordDTO("Password", "Password"))))
+            .andExpect(status().isNotAcceptable())
+            .andExpect(jsonPath("$.message", is("Password must be at least 8 and max 20 characters long, at least one uppercase letter and one number and special character of the following ones: @#$%^&+-=")));
   }
 }

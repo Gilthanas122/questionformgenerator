@@ -27,5 +27,5 @@ public interface AppUserService {
 
   void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException;
 
-  void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException;
+  void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException;
 }

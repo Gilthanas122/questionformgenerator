@@ -9,6 +9,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
@@ -53,6 +54,7 @@ public class TestConfigurationBeanFactory {
     return fakePlayer;
   }
 
+
   @Bean(name = {"validAdmin"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   AppUser getAdmin() {
@@ -80,6 +82,24 @@ public class TestConfigurationBeanFactory {
       appUsers.add(appUser);
     }
     return appUsers;
+  }
+
+  @Bean(name = {"validChangePasswordDTO"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  ChangePasswordDTO getValidChangePasswordDTO(){
+    return new ChangePasswordDTO("Password-11", "Password-11");
+  }
+
+  @Bean(name = {"invalidChangePasswordDTO"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  ChangePasswordDTO getInvalidChangePasswordDTO(){
+    return new ChangePasswordDTO("Password-11", "Password-12");
+  }
+
+  @Bean(name = {"notComplexChangePasswordDTO"})
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  ChangePasswordDTO getNonComplexChangePasswordDTO(){
+    return new ChangePasswordDTO("Password", "Password");
   }
 
   @Bean(name = {"appUsersQuestionFormsDTOs"})

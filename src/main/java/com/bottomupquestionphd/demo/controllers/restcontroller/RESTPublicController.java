@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.dtos.SuccessMessageDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserRegisterDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
@@ -31,40 +32,71 @@ public class RESTPublicController {
 
   @GetMapping("register")
   public ResponseEntity<?> renderAppUserCreateForm(){
-    log.info("GET /rest/register started");
-    log.info("GET /rest/register finished");
+    log.info("REST GET /rest/register started");
+    log.info("REST GET /rest/register finished");
     return new ResponseEntity<>(new AppUser.Builder().build(), HttpStatus.OK);
   }
 
   @PostMapping("register")
   public ResponseEntity<?> saveUser(@RequestBody AppUserRegisterDTO appUserRegisterDTO) throws InvalidRegexParameterException, EmailAlreadyUsedException, MissingParamsException, UsernameAlreadyTakenException {
-    log.info("POST /register started");
+    log.info("REST POST rest/register started");
     AppUser appUser = new AppUser.Builder().username(appUserRegisterDTO.username).password(appUserRegisterDTO.getPassword()).emailId(appUserRegisterDTO.getEmail()).build();
     appUserService.saveUser(appUser);
-    log.info("POST /register finished");
+    log.info("REST POST rest/register finished");
     return new ResponseEntity(new SuccessMessageDTO("created", "App user successfully registered"), HttpStatus.CREATED);
   }
 
   @GetMapping("login")
   public ResponseEntity<?> createLoginDTO(){
-    log.info("GET /rest/login started");
-    log.info("GET /rest/login finished");
+    log.info("REST GET /rest/login started");
+    log.info("REST GET /rest/login finished");
     return new ResponseEntity<>(new AppUserLoginDTO(), HttpStatus.OK);
   }
 
   @PostMapping("login")
   public ResponseEntity<?> checkLogin(@RequestBody AppUserLoginDTO appUserLoginDTO) throws AppUserNotActivatedException, NoSuchUserNameException, InvalidLoginException, MissingParamsException, AppUserPasswordMissMatchException {
-    log.info("POST /login started");
+    log.info("REST POST rest/login started");
     appUserService.validateLogin(appUserLoginDTO);
-    log.info("POST /login finished");
+    log.info("REST POST rest/login finished");
     return new ResponseEntity<>(new SuccessMessageDTO("ok","Successful login"), HttpStatus.OK);
   }
 
   @GetMapping("verify-account")
   public ResponseEntity<?> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
-    log.info("/GET verify-account started");
+    log.info("REST /GET rest/verify-account started");
     String message = appUserService.activateUserByEmail(token);
-    log.info("/GET verify-account finished");
+    log.info("REST /GET rest/verify-account finished");
     return new ResponseEntity<>(new SuccessMessageDTO("ok", message), HttpStatus.OK);
+  }
+
+  @GetMapping("change-password")
+  public ResponseEntity<?> getChangeUserPassword(){
+    log.info("REST GET rest/change-password started");
+    log.info("REST GET /change-password finished");
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PostMapping("change-password")
+  public ResponseEntity<?> postChangeUserPassword(@RequestParam String email) throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+    log.info("REST POST rest /change-password started");
+    appUserService.sendEmailToRegeneratePassword(email);
+    log.info("REST POST rest/change-password finished");
+    return new ResponseEntity<>(new SuccessMessageDTO("ok", "Email sent to the provided email address to change password"), HttpStatus.OK);
+  }
+
+  @GetMapping("reset-password/{appUserId}")
+  public ResponseEntity<?> getResetPassword(@PathVariable long appUserId, @RequestParam String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+    log.info("REST GET rest/reset-password started");
+    appUserService.validateChangePassword(appUserId, token);
+    log.info("REST GET rest/reset-password finished");
+    return new ResponseEntity<>(appUserId, HttpStatus.OK);
+  }
+
+  @PostMapping("reset-password/{appUserId}")
+  public ResponseEntity<?> postResetPassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+    log.info("REST POST rest/reset-password started");
+    appUserService.changePassword(changePasswordDTO, appUserId);
+    log.info("REST POST rest/reset-password finished");
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

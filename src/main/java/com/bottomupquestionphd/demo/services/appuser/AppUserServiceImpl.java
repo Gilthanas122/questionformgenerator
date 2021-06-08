@@ -113,7 +113,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Override
   public void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
-    if (!changePasswordDTO.getPassword1().equals(changePasswordDTO.getPassword2())){
+    if (!changePasswordDTO.getPassword1().equals(changePasswordDTO.getPassword2())) {
       throw new PassWordMissMachException("The two passwords should match");
     }
     RegexServiceImpl.checkRegex(changePasswordDTO.getPassword1(), "password");
@@ -123,10 +123,13 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException {
-      AppUser appUser = findById(appUserId);
-      if (!appUser.getConfirmationToken().equals(token)){
-        throw new InvalidChangePasswordException("The provided confirmation token doesn't belong to the user.");
-      }
+  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+    if (token == null || token.isBlank()){
+      throw new MissingParamsException("Token is required.");
+    }
+    AppUser appUser = findById(appUserId);
+    if (!appUser.getConfirmationToken().equals(token)) {
+      throw new InvalidChangePasswordException("The provided confirmation token doesn't belong to the user.");
+    }
   }
 }

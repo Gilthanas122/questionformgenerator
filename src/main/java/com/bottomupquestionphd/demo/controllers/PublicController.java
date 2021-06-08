@@ -95,20 +95,20 @@ public class PublicController {
     return "redirect:/login";
   }
 
-  @GetMapping("/change-password")
+  @GetMapping("change-password")
   public String getChangeUserPassword(){
     log.info("GET /change-password started");
     log.info("GET /change-password finished");
     return "change-password";
   }
 
-  @PostMapping("/change-password")
+  @PostMapping("change-password")
   public String postChangeUserPassword(Model model, @RequestParam String email){
     log.info("POST /change-password started");
     try {
       appUserService.sendEmailToRegeneratePassword(email);
       log.info("POST /change-password finished");
-      model.addAttribute("successMessage", new SuccessMessageDTO("ok", ""));
+      model.addAttribute("successMessage", new SuccessMessageDTO("ok", "Email sent to the provided email address to change password"));
       return "login";
     }catch (MissingParamsException e){
       log.error(e.getMessage());
@@ -141,6 +141,9 @@ public class PublicController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }catch (InvalidChangePasswordException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (MissingParamsException e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }catch (Exception e){

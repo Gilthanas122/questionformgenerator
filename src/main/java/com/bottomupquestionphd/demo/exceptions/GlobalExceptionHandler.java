@@ -114,6 +114,14 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  @ExceptionHandler(InvalidChangePasswordException.class)
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  public @ResponseBody
+  ErrorMessageDTO handleInvalidChangePasswordException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   //Admin Controller
   @ExceptionHandler(NoUsersInDatabaseException.class)
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
@@ -268,6 +276,14 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public @ResponseBody
   ErrorMessageDTO handleNoSuchAnswerformById(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(PassWordMissMachException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handlePassWordMissMachException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

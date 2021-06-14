@@ -6,8 +6,10 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAnAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
@@ -18,8 +20,8 @@ import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFound
 import com.bottomupquestionphd.demo.repositories.AnswerFormRepository;
 import com.bottomupquestionphd.demo.services.answers.AnswerService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -132,6 +134,21 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     answerForm.setAnswers(answerService.removeNullAnswerTextsFromAnswer(answerForm.getAnswers(), answerForm, originalAnswerForm1.getAnswers(), this));
     answerFormRepository.save(answerForm);
     return answerForm;
+  }
+
+  //NOT TESTED
+  @Override
+  public DisplayAnswersFromAnAnswerFormDTO findAnswerFormByAnswerId(long answerId) throws AnswerNotFoundByIdException, NoSuchAnswerformById, BelongToAnotherUserException {
+    Answer actualAnswer = answerService.findById(answerId);
+    AnswerForm answerForm = findAnswerFormById(actualAnswer.getAnswerForm().getId());
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(answerForm.getAppUser().getId());
+    DisplayAnswersFromAnAnswerFormDTO displayAnswersFromAnAnswerFormDTO = new DisplayAnswersFromAnAnswerFormDTO();
+    for (Answer answer: answerForm.getAnswers()) {
+      displayAnswersFromAnAnswerFormDTO.getAnswers().add(answer);
+      displayAnswersFromAnAnswerFormDTO.getQuestionTypes().add(answer.getQuestion().getDiscriminatorValue());
+      displayAnswersFromAnAnswerFormDTO.getQuestionTexts().add(answer.getQuestion().getQuestionText());
+    }
+    return displayAnswersFromAnAnswerFormDTO;
   }
 
   private void checkIfUserHasFilledOutAnswerForm(QuestionForm questionForm, long appUserId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {

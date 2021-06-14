@@ -37,4 +37,6 @@ public interface QuestionFormService {
     List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm);
 
     void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException;
+
+    void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question);
 }

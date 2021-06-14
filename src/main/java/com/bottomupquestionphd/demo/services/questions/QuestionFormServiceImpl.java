@@ -1,5 +1,7 @@
 package com.bottomupquestionphd.demo.services.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
@@ -13,8 +15,8 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionE
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
-import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
+import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,7 +30,6 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   private final AppUserService appUserService;
   private final QuestionConversionService questionConversionService;
   private final QueryService queryService;
-
 
   public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService, QueryService queryService) {
     this.questionFormRepository = questionFormRepository;
@@ -175,5 +176,19 @@ public class QuestionFormServiceImpl implements QuestionFormService {
       questionForm.setName(questionFormCreateDTO.getName());
       questionForm.setDescription(questionFormCreateDTO.getDescription());
       questionFormRepository.save(questionForm);
+  }
+
+  //NOT TESTED
+  @Override
+  public void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question) {
+    List<AnswerForm> answerForms = questionForm.getAnswerForms();
+    for (int i = 0; i < answerForms.size(); i++) {
+      Answer newAnswer = new Answer();
+      newAnswer.setQuestion(question);
+      newAnswer.setAnswerForm(answerForms.get(i));
+      answerForms.get(i).getAnswers().add(newAnswer);
+    }
+    questionForm.setAnswerForms(answerForms);
+    questionFormRepository.save(questionForm);
   }
 }

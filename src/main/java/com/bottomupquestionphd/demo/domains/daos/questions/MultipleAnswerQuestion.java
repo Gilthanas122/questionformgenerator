@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity(name = "MultipleAnswerQuestion")
 @DiscriminatorValue("MultipleAnswerQuestion")
-public  abstract class MultipleAnswerQuestion extends Question{
+public abstract class MultipleAnswerQuestion extends Question{
 
   @OneToMany(mappedBy = "multipleAnswerQuestion", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JsonManagedReference

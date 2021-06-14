@@ -22,6 +22,9 @@
         <td>Edit Question form</td>
         <td>Add question</td>
         <td>List questions</td>
+        <td>Delete question form</td>
+        <td>Filter answers</td>
+
     </tr>
     </thead>
     <tbody>
@@ -34,6 +37,7 @@
         <td><a type="button" th:href="@{|/question/create/*{id}|}">ADD Question</a></td>
         <td><a type="button" th:href="@{|/question-form/list-questions/*{id}|}">List Questions</a></td>
         <td><a type="button" th:href="@{|/question-form/delete/*{id}|}">DELETE Question Form</a></td>
+        <td><a type="button" th:href="@{|/answer-form/filter/search/*{id}|}">FILTER</a></td>
 
     </tr>
     </tbody>

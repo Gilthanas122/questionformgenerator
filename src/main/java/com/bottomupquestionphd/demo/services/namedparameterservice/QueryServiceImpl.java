@@ -1,9 +1,7 @@
 package com.bottomupquestionphd.demo.services.namedparameterservice;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,9 +45,17 @@ public class QueryServiceImpl implements QueryService {
     @Modifying
     @Transactional
     public void deleteQuestionsBelongingToQuestionForm(long questionFormId) {
-        em.createQuery("UPDATE Question q SET q.deleted = 1 where q.questionForm.id = ?1")
+        em.createQuery("UPDATE Question q SET q.deleted = 1 WHERE q.questionForm.id = ?1")
                 .setParameter(1, questionFormId)
                 .executeUpdate();
+    }
+
+    @Override
+    public List<String> filterActualAnswerTextsForScaleQuestion(long answerId, String operator, String searchTerm) {
+        SqlParameterSource namedParameters = new MapSqlParameterSource();
+        String query = "SELECT a.answer_text FROM actualanswertexts a WHERE a.answer_id = " + answerId + " AND a.answer_text " + operator + " " + searchTerm;
+
+        return namedParameterJdbcTemplate.queryForList(query, namedParameters, String.class);
     }
 
 }

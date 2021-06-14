@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Answer Text</th>
+            <th>Answer Vote Average</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr th:each="answerTexts : ${answerResult.actualAnswerTextSearchTermResultDTOS}">
+        <td th:text="${answerTexts.questionType}"></td>
+        <td>
+            <ul th:each="oneAnswerText: ${answerTexts.actualAnswers}">
+                <li th:text="${oneAnswerText}"></li>
+            </ul>
+        </td>
+        <td th:text="${answerTexts.textAnswerVotesAverage}"></td>
+        <td><a th:href="@{|/answer-form/get/${answerTexts.answerId}|}">See Whole AnswerForm</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+</body>
+</html>

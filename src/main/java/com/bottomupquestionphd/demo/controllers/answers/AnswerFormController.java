@@ -116,7 +116,7 @@ public class AnswerFormController {
   @PostMapping("/update/{answerFormId}/{appUserId}")
   public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
                                                @ModelAttribute AnswerForm answerForm, Model model) {
-    log.info("POST /update/" + answerFormId + "/" + appUserId + " started");
+    log.info("POST answer-form/update/" + answerFormId + "/" + appUserId + " started");
     try {
       answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
       model.addAttribute("successMessage", "AnswerForm successfully updated");
@@ -133,7 +133,24 @@ public class AnswerFormController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    log.info("POST /update/" + answerFormId + "/" + appUserId + " finished");
+    log.info("POST answer-form/update/" + answerFormId + "/" + appUserId + " finished");
     return "app-user/landing-page";
+  }
+
+  //NOT TESTED
+  @GetMapping("/get/{answerId}")
+  public String getAnswerFormBelongingToAnswer(@PathVariable long answerId, Model model){
+    log.info("GET answer-form/get/ " + answerId + " started");
+    try{
+      model.addAttribute("displayAnswers", answerFormService.findAnswerFormByAnswerId(answerId));
+      log.info("GET answer-form/get/ " + answerId + " finished");
+      return "answerform/display-answers";
+    }catch (Exception e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "app-user/landing-page";
+
+
   }
 }

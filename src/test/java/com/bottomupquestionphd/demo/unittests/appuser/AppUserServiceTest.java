@@ -8,7 +8,6 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
-import com.bottomupquestionphd.demo.exceptions.email.InvalidEmailFormatException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserServiceImpl;

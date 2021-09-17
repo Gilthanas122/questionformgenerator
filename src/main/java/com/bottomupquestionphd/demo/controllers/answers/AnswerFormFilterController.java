@@ -2,6 +2,7 @@ package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.SearchTermsForFilteringDTO;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormFilteringException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -50,6 +51,18 @@ public class AnswerFormFilterController {
       log.info("POST answer-form/filter/search finished");
       model.addAttribute("answerResult", answerFormFilterService.filterAnswers(questionFormId, searchTermsForFilteringDTO));
       return "answerform-filter/result";
+    }catch (MissingUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (QuestionFormNotFoundException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (BelongToAnotherUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (QuestionFormFilteringException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }catch (Exception e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());

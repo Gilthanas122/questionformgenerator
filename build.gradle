@@ -29,6 +29,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.5'
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.4.5'

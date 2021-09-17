@@ -2,13 +2,20 @@ package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.SearchTermsForFilteringDTO;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.answerformfilter.AnswerFormFilterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("answer-form/filter")
@@ -38,9 +45,9 @@ public class AnswerFormFilterController {
 
   @PostMapping("search/{questionFormId}")
   public String postFilterAnswers(@PathVariable long questionFormId, @ModelAttribute SearchTermsForFilteringDTO searchTermsForFilteringDTO, Model model){
-    log.info("POST answer-form-filter/search started");
+    log.info("POST answer-form/filter/search started");
     try {
-      log.info("POST answer-form-filter/search finished");
+      log.info("POST answer-form/filter/search finished");
       model.addAttribute("answerResult", answerFormFilterService.filterAnswers(questionFormId, searchTermsForFilteringDTO));
       return "answerform-filter/result";
     }catch (Exception e){
@@ -50,17 +57,27 @@ public class AnswerFormFilterController {
     return "index";
   }
 
-/*  @PostMapping("search/{questionFormId}")
+  @GetMapping("/return-all-answers/{questionFormId}")
   @ResponseBody
-  public AnswerSearchTermResultDTO postFilterAnswers(@PathVariable long questionFormId, @ModelAttribute SearchTermsForFilteringDTO searchTermsForFilteringDTO, Model model){
-    log.info("POST answer-form-filter/search started");
+  public ResponseEntity<?> returnAllAnswers(@PathVariable long questionFormId, Model model, HttpServletResponse response){
+    log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " started");
     try {
-      log.info("POST answer-form-filter/search finished");
-      return answerFormFilterService.filterAnswers(questionFormId, searchTermsForFilteringDTO);
+      log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " finished");
+      answerFormFilterService.returnAllAnswersBelongingToQuestionForm(questionFormId,response);
+      return new ResponseEntity<>(HttpStatus.OK);
+    }catch (MissingUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (BelongToAnotherUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (QuestionFormNotFoundException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }catch (Exception e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return null;
-  }*/
+    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
 }

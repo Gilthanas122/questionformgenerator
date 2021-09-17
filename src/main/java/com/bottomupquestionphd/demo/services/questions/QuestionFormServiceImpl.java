@@ -75,8 +75,11 @@ public class QuestionFormServiceImpl implements QuestionFormService {
 
   @Override
   public List<QuestionForm> findAll() throws NoQuestionFormsInDatabaseException {
-    long id = appUserService.findCurrentlyLoggedInUser().getId();
-    List<QuestionForm> questionForms = questionFormRepository.findAllByAppUserId(id);
+    AppUser appUser = appUserService.findCurrentlyLoggedInUser();
+    if (appUser.getRoles().contains("ROLE_ADMIN")){ ///this line not tested
+      return questionFormRepository.findAll();
+    }
+    List<QuestionForm> questionForms = questionFormRepository.findAllByAppUserId(appUser.getId());
     if (questionForms.size() < 1) {
       throw new NoQuestionFormsInDatabaseException("No question form belonging to the user.");
     }

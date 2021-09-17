@@ -76,7 +76,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     AppUser appUser = findCurrentlyLoggedInUser();
-    if (appUser.getId() != appUserId) {
+  if (appUser.getId() != appUserId && !appUser.getRoles().contains("ROLE_ADMIN")) { // not tested for role admin
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }
   }

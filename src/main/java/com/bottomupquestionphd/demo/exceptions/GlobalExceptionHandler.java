@@ -4,6 +4,8 @@ import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
+import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
@@ -284,6 +286,23 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handlePassWordMissMachException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NoUserFilledOutAnswerFormException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleNoUserFilledOutAnswerFormException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+
+  @ExceptionHandler(QuestionTypesAndQuestionTextsSizeMissMatchException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionTypesAndQuestionTextsSizeMissMatchExceptionException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

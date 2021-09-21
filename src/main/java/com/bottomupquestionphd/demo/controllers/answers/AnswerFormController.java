@@ -2,9 +2,12 @@ package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
+import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -139,18 +142,55 @@ public class AnswerFormController {
 
   //NOT TESTED
   @GetMapping("/get/{answerId}")
-  public String getAnswerFormBelongingToAnswer(@PathVariable long answerId, Model model){
+  public String getAnswerFormBelongingToAnswer(@PathVariable long answerId, Model model) {
     log.info("GET answer-form/get/ " + answerId + " started");
-    try{
+    try {
       model.addAttribute("displayAnswers", answerFormService.findAnswerFormByAnswerId(answerId));
       log.info("GET answer-form/get/ " + answerId + " finished");
       return "answerform/display-answers";
-    }catch (Exception e){
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (AnswerNotFoundByIdException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (NoSuchAnswerformById e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
     return "app-user/landing-page";
+  }
 
-
+  //NOT TESTED
+  @GetMapping("/answers/{questionFormId}")
+  public String showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, Model model) {
+    log.info("GET answer-form/answers/ " + questionFormId + " started");
+    try {
+      log.info("GET answer-form/answers/ " + questionFormId + " finished");
+      model.addAttribute("displayAnswersFromAnAnswerFormDTO", answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId));
+      return "answerform/user-answers";
+    } catch (NoUserFilledOutAnswerFormException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (MissingUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionTypesAndQuestionTextsSizeMissMatchException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "index";
   }
 }

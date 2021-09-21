@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "answers")
@@ -89,7 +90,14 @@ public class Answer {
     this.deleted = deleted;
   }
 
-  public void addOneActualAnswerText(ActualAnswerText actualAnswerText){
+  public void addOneActualAnswerText(ActualAnswerText actualAnswerText) {
     this.actualAnswerTexts.add(actualAnswerText);
+  }
+
+  public String getActualAnswerTextsInList() {
+    return this.actualAnswerTexts
+            .stream()
+            .map(ActualAnswerText::getAnswerTextWithAverageOfTextAnswerVotes)
+            .collect(Collectors.joining(";; "));
   }
 }

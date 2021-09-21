@@ -6,6 +6,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAllUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAnAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
@@ -13,6 +14,8 @@ import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdExceptio
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
 import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
+import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -25,6 +28,7 @@ import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -143,12 +147,36 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     AnswerForm answerForm = findAnswerFormById(actualAnswer.getAnswerForm().getId());
     appUserService.checkIfCurrentUserMatchesUserIdInPath(answerForm.getAppUser().getId());
     DisplayAnswersFromAnAnswerFormDTO displayAnswersFromAnAnswerFormDTO = new DisplayAnswersFromAnAnswerFormDTO();
-    for (Answer answer: answerForm.getAnswers()) {
+    for (Answer answer : answerForm.getAnswers()) {
       displayAnswersFromAnAnswerFormDTO.getAnswers().add(answer);
       displayAnswersFromAnAnswerFormDTO.getQuestionTypes().add(answer.getQuestion().getDiscriminatorValue());
       displayAnswersFromAnAnswerFormDTO.getQuestionTexts().add(answer.getQuestion().getQuestionText());
     }
     return displayAnswersFromAnAnswerFormDTO;
+  }
+
+  //NOT TESTED
+  @Override
+  public DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException {
+    QuestionForm questionForm = questionFormService.findById(questionFormId);
+    if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
+      throw new NoUserFilledOutAnswerFormException("No user filled out the answer form");
+    }
+    DisplayAllUserAnswersDTO displayAllUserAnswersDTO = new DisplayAllUserAnswersDTO(questionForm, aggregateAllAnswerTextBelongingToOneQuestions(questionForm.getAnswerForms()));
+    return displayAllUserAnswersDTO;
+  }
+
+  //NOT TESTED
+  public List<List<String>> aggregateAllAnswerTextBelongingToOneQuestions(List<AnswerForm> answerForms) {
+    List<List<String>> aggregatedAnswerTextsBelongingToOneAnswers = new ArrayList<>();
+    for (AnswerForm answerForm : answerForms) {
+      List<String> temp = new ArrayList<>();
+      for (Answer answer : answerForm.getAnswers()) {
+        temp.add(answer.getActualAnswerTextsInList());
+      }
+      aggregatedAnswerTextsBelongingToOneAnswers.add(temp);
+    }
+    return aggregatedAnswerTextsBelongingToOneAnswers;
   }
 
   private void checkIfUserHasFilledOutAnswerForm(QuestionForm questionForm, long appUserId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {

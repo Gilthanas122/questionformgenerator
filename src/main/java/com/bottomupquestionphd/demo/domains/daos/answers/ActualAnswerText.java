@@ -87,4 +87,8 @@ public class ActualAnswerText {
   public double getAverageOfTextAnswerVotes(){
     return textAnswerVotes.stream().mapToDouble(TextAnswerVote::getValue).average().orElse(0);
   }
+
+  public String getAnswerTextWithAverageOfTextAnswerVotes(){
+    return this.answerText + "(" + getAverageOfTextAnswerVotes() + ")";
+  }
 }

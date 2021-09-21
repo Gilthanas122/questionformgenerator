@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "questionforms")
@@ -91,6 +92,12 @@ public class QuestionForm {
   public List<Question> getQuestions() {
     Collections.sort(questions);
     return questions;
+  }
+  public List<String> getQuestionTexts(){
+    return this.getQuestions().stream().map(Question::getQuestionText).collect(Collectors.toList());
+  }
+  public List<String> getQuestionTypes(){
+    return this.getQuestions().stream().map(Question::getDiscriminatorValue).collect(Collectors.toList());
   }
 
   public void setQuestions(List<Question> questions) {

@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
@@ -36,6 +37,7 @@ public class AnswerFormController {
   public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
     log.info("GET answer-form/create/" + questionFormId + "started");
     try {
+      CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormDTO(questionFormId);
       model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
       log.info("GET answer-form/create/" + questionFormId + "finished");
       return "answerform/create";

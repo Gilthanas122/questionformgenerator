@@ -12,51 +12,67 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/messages.html :: error" ></div>
-
-
-
 <form id="answerform" th:action="@{|/answer-form/create/${answerForm.questionFormId}/${answerForm.appUserId}|}" method="post">
-    <table class="table table-hover">
-                <tr th:each="question, iter : ${answerForm.questions}" th:object="${question}">
+    <tr th:each="question, iterStat : ${answerForm.questions}">
+        <p th:text="${question.questionText}"></p>
+        <div>
+            <th:block th:switch="${question.getDiscriminatorValue()}">
 
-                        <p th:text="*{questionText}"></p>
-                    <div  th:id="|questions[${iter.index}]|">
-                        <th:block th:switch="*{getDiscriminatorValue()}">
-                            <div th:case="'CheckBoxQuestion'">
-                                <script th:inline="javascript">
+                <div th:case="'CheckBoxQuestion'">
+                        <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
+                            <label th:text="${questionTextPossibility.answerText}"></label>
+                   <input type="checkbox"
+                          th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                          th:value="${questionTextPossibility.answerText}">
+                        </span>
+                </div>
+
+                <div th:case="'RadioButtonQuestion'">
+                        <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
+                            <label th:text="${questionTextPossibility.answerText}"></label>
+                   <input type="radio"
+                          th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                          th:value="${questionTextPossibility.answerText}">
+                        </span>
+                </div>
+
+                <div th:case="'ScaleQuestion'">
+                    <input type="range" th:id="|rangeInput${iterStat.index}|"
+                           th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                           th:max="${question.scale}"
+                           onchange="updateTextInput(this.value, this.id);">
+                    <input type="text" th:id="|rangeOutPut${iterStat.index}|" value="">
+                </div>
+
+                <div th:id="|textquestioncreate[__${iterStat.index}__]|" th:case="'TextQuestion'">
+
+                    <span th:id="|answers[__${iterStat.index}__]|">
+                        <input type="text"
+                               th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText">
+                        <script th:inline="javascript">
                                     /*<![CDATA[*/
-                                    renderCheckBoxOrRadioButtonQuestion("checkbox", "answers", /*[[${iter.index}]], [[*{getQuestionTextPossibilitiesTexts()}]]*/)
+                                    renderQuestionText( /*[[${iterStat.index}]]*/)
                                     /*]]>*/
                                 </script>
-                            </div>
-                            <div th:case="'RadioButtonQuestion'">
-                                <script th:inline="javascript">
-                                    /*<![CDATA[*/
-                                    renderCheckBoxOrRadioButtonQuestion("radio", "answers", /*[[${iter.index}]], [[*{getQuestionTextPossibilitiesTexts()}]]*/)
-                                    /*]]>*/
-                                </script>
-                            </div>
-                            <div th:case="'ScaleQuestion'">
-                                <script th:inline="javascript">
-                                    /*<![CDATA[*/
-                                    renderQuestion("scale", "answers", /*[[*{scale}]], [[${iter.index}]]*/)
-                                    /*]]>*/
-                                </script>
-                            </div>
-                            <div th:case="'TextQuestion'">
-                                <script th:inline="javascript">
-                                    /*<![CDATA[*/
-                                    renderQuestion("text", "answers", null, /*[[${iter.index}]]*/)
-                                    /*]]>*/
-                                </script>
-                            </div>
-                        </th:block>
-                    </div>
-                </tr>
+                    </span>
+                    <span th:each="otherUsersAnswer : ${answerForm.otherUsersAnswers}" >
+                        <span th:if="${otherUsersAnswer.question.id == question.id}">
+                            <span th:each="actualAnswerText, list : ${otherUsersAnswer.actualAnswerTexts}">
+                                <p th:text="${actualAnswerText.answerText}"></p>
+                                <label>1</label>
+                                <input type="radio" th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="1">
+                            </span>
+                        </span>
+                    </span>
+
+                </div>
+            </th:block>
+        </div>
+    </tr>
     </table>
 </form>
-
 <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
+<script type="text/javascript" th:src="@{/js/updateAnswerForm.js}"></script>
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>
 <script th:replace="fragments/scripts.html :: bootstrap"></script>

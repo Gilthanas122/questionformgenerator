@@ -94,10 +94,17 @@ public class Answer {
     this.actualAnswerTexts.add(actualAnswerText);
   }
 
-  public String getActualAnswerTextsInList() {
+  public String getActualAnswerInAString() {
     return this.actualAnswerTexts
             .stream()
             .map(ActualAnswerText::getAnswerTextWithAverageOfTextAnswerVotes)
             .collect(Collectors.joining(";; "));
+  }
+
+  public List<String> getActualAnswerInList() {
+    return this.actualAnswerTexts
+            .stream()
+            .map(ActualAnswerText::getAnswerText)
+            .collect(Collectors.toList());
   }
 }

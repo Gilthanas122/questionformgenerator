@@ -26,6 +26,9 @@ public class Question implements Comparable<Question> {
   private int listPosition;
   private boolean deleted;
 
+  @Transient
+  private List<String> answersNotFilledOutByUser = new ArrayList<>();
+
   @ManyToOne(cascade = {CascadeType.MERGE})
   @JsonBackReference(value = "questionsQuestionForm")
   private QuestionForm questionForm;
@@ -111,5 +114,13 @@ public class Question implements Comparable<Question> {
 
   public void addOneAnswer(Answer answer) {
     this.answers.add(answer);
+  }
+
+  public List<String> getAnswersNotFilledOutByUser() {
+    return answersNotFilledOutByUser;
+  }
+
+  public void setAnswersNotFilledOutByUser(List<String> answersNotFilledOutByUser) {
+    this.answersNotFilledOutByUser = answersNotFilledOutByUser;
   }
 }

@@ -4,6 +4,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -123,5 +124,24 @@ public class AnswerServiceImpl implements AnswerService {
   @Override
   public Answer findById(long answerId) throws AnswerNotFoundByIdException {
     return answerRepository.findById(answerId).orElseThrow(() -> new AnswerNotFoundByIdException("Couldn't find answer with the given id"));
+  }
+
+  //NOT TESTED
+  @Override
+  public List<Question> addActualTextAnswersNotFilledOutByUser(List<Question> questions, long appUserId) {
+    List<Question> questionsAddedActualAnswerTextsNotFilledOutByUser = new ArrayList<>();
+    for (int i = 0; i <questions.size(); i++) {
+      Question q = questions.get(i);
+      if (q.getDiscriminatorValue().equals("TextQuestion")){
+        for (int j = 0; j <q.getAnswers().size(); j++) {
+          Answer a = q.getAnswers().get(j);
+          if (a.getAnswerForm().getAppUser().getId() != appUserId){
+            q.setAnswersNotFilledOutByUser(a.getActualAnswerInList());
+          }
+        }
+      }
+      questionsAddedActualAnswerTextsNotFilledOutByUser.add(q);
+    }
+    return questionsAddedActualAnswerTextsNotFilledOutByUser;
   }
 }

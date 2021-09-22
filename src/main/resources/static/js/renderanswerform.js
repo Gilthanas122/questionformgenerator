@@ -8,39 +8,20 @@ window.onload = function WindowLoad(event) {
 }
 
 
-function renderQuestion(type, idName, scale, index) {
-    let container = document.getElementById("questions[" + index + "]");
-
-    if (type === "text") {
-        container.appendChild(createTextQuestionInput(index, idName));
-    } else if (type === "scale" && scale != null) {
-        container.appendChild(createScaleInput(index, scale, idName));
-    }
+function renderQuestionText(index) {
+    let container = document.getElementById("textquestioncreate[" + index + "]");
+        container.appendChild(createTextQuestionInput(index));
 }
 
-function createTextNode(questionText, tagType) {
-    let text = document.createElement(tagType);
-    text.textContent = questionText;
-    return text;
-}
-
-function createTextQuestionInput(index, idName) {
-    let container = document.createElement("DIV");
-    container.id = "textanswers" + index;
-    let input = document.createElement("INPUT");
-    numberOfInputFieldsCreated++;
-    input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
-    input.id= "textanswer"+currentTextAnswerIndex;
-    let anotherInputButton = createAnotherInputButton(index, idName);
+function createTextQuestionInput(index) {
+    let container = document.getElementById("answers[" + index + "]");
+    let anotherInputButton = createAnotherInputButton(index);
     anotherInputButton.disabled = true;
     anotherInputButton.id = "textanswerbutton" + currentTextAnswerIndex;
     let finishButton = createFinishButtonForTextAnswer(currentTextAnswerIndex);
 
     let reEnableButton = createReenableButton(currentTextAnswerIndex);
 
-
-
-    container.appendChild(input);
     container.appendChild(anotherInputButton);
     container.appendChild(finishButton);
     container.appendChild(reEnableButton);
@@ -74,50 +55,24 @@ function addEventListenerToScaleInput(input) {
     }
 }
 
-function renderCheckBoxOrRadioButtonQuestion(type, idName, index, answerTexts) {
-    let container = document.getElementById("questions[" + index + "]");
-
-    for (let i = 0; i < answerTexts.length; i++) {
-        let input = document.createElement("INPUT");
-        numberOfInputFieldsCreated++;
-        input.id = type + index;
-        input.className = "radiocheckbox";
-        if (type === "checkbox"){
-            input.name = idName + "[" + index + "].actualAnswerTexts[" + i + "].answerText"
-        }else{
-            input.name = idName + "[" + index + "].actualAnswerTexts[0].answerText"
-        }
-
-        input.type = type;
-        input.value = answerTexts[i];
-        let label = document.createElement("LABEL");
-        label.for = input.id;
-        label.textContent = answerTexts[i];
-        container.appendChild(label);
-        container.appendChild(input);
-    }
-    return container;
-}
-
-function createAnotherInputButton(index, idName) {
+function createAnotherInputButton(index) {
     let anotherInputButton = document.createElement("BUTTON");
     anotherInputButton.id = "anotherinputbutton" + index;
     anotherInputButton.textContent = "Create another input field";
     anotherInputButton.className = "buttonsToDisableEnable";
     anotherInputButton.type = "button";
-    anotherInputButton.addEventListener("click", () => createAnotherInputField(index, idName));
+    anotherInputButton.addEventListener("click", () => createAnotherInputField(index));
     return anotherInputButton;
 }
 
-function createAnotherInputField(index, idName){
-    let container = document.getElementById("textanswers" + index);
-    actualAnswerIndexForTextQuestion++;
+function createAnotherInputField(index){
+    let container = document.getElementById("answers[" + index + "]" );
     let input = document.createElement("INPUT");
     numberOfInputFieldsCreated++;
-    input.name = idName + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText" ;
-
+    input.id= "textanswer"+currentTextAnswerIndex;
+    actualAnswerIndexForTextQuestion++;
+    input.name = "answers"  + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
     container.insertBefore(input, document.getElementById("textanswerbutton" + buttonIndexToEnable));
-
 }
 
 function createFinishButtonForTextAnswer(index){
@@ -162,7 +117,6 @@ function createReenableButton(currentIndex){
     enableButton.className = "buttonsToDisableEnable";
     enableButton.type = "button";
     enableButton.addEventListener("click", () => reEnableTextQuestion(currentIndex));
-    console.log("reenable button id is " + enableButton.id);
     return enableButton;
 
 }
@@ -216,12 +170,5 @@ function checkEmptyInputFields(){
         submitButton.disabled = false;
     }
 }
-
-$(document).ready(function(){
-    var checked = $(".radiocheckbox input:checked").length > 0;
-    if (!checked){
-        alert("check me")
-    }
-});
 
 

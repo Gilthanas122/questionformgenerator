@@ -9,7 +9,7 @@
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<form th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}" method="post">
+<form id="answerform" th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}" method="post">
     <tr th:each="question, itemStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
         <div>
@@ -57,6 +57,14 @@
                                 <p th:text="${actualAnswerText.answerText}"></p>
                                 <label>1</label>
                                 <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="1">
+                                   <label>2</label>
+                                <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="2">
+                                   <label>3</label>
+                                <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="3">
+                                   <label>4</label>
+                                <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="4">
+                                   <label>5</label>
+                                <input type="radio" th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="5">
                             </span>
                         </span>
                     </span>

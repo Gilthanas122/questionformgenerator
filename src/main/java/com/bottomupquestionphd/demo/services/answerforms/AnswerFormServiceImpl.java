@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAllUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAnAnswerFormDTO;
@@ -45,13 +46,17 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     this.answerService = answerService;
   }
 
+
+  // SHOULD RE-TEST IT
   @Override
   public CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AppUser currentUser = appUserService.findCurrentlyLoggedInUser();
     checkIfUserHasFilledOutAnswerForm(questionForm, currentUser.getId());
+    List<Question> questionsWithTextQuestionsAnswersNotFilledOutByCurrentUser = answerService.addActualTextAnswersNotFilledOutByUser(questionForm.getQuestions(), currentUser.getId());
 
-    return new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionForm.getQuestions());
+    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionsWithTextQuestionsAnswersNotFilledOutByCurrentUser);
+    return createAnswerFormDTO;
   }
 
   @Override
@@ -172,7 +177,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     for (AnswerForm answerForm : answerForms) {
       List<String> temp = new ArrayList<>();
       for (Answer answer : answerForm.getAnswers()) {
-        temp.add(answer.getActualAnswerTextsInList());
+        temp.add(answer.getActualAnswerInAString());
       }
       aggregatedAnswerTextsBelongingToOneAnswers.add(temp);
     }

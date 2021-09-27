@@ -1,7 +1,6 @@
 package com.bottomupquestionphd.demo.controllers.answers;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
-import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
@@ -37,7 +36,6 @@ public class AnswerFormController {
   public String renderCreateAnswerForm(Model model, @PathVariable long questionFormId) {
     log.info("GET answer-form/create/" + questionFormId + "started");
     try {
-      CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormDTO(questionFormId);
       model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
       log.info("GET answer-form/create/" + questionFormId + "finished");
       return "answerform/create";
@@ -57,14 +55,15 @@ public class AnswerFormController {
     return "redirect:/app-user/question-form/list";
   }
 
+  // SHOULD RE-TEST
   @PostMapping("create/{questionFormId}/{appUserId}")
   public String submitAnswerForm(RedirectAttributes redirectAttributes, @ModelAttribute AnswerForm answerForm, @PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
     log.info("POST answer-form/create/" + "/" + questionFormId + "/" + appUserId + " started");
     try {
-      answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
+      AnswerForm answerFormReturned = answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
       model.addAttribute("successMessage", "Question formed successfully filled out");
       log.info("POST answer-form/create/" + "/" + questionFormId + "/" + appUserId + " finished");
-      return "redirect:/app-user/landing-page/";
+      return "redirect:/text-answer-vote/create/" + appUserId + "/" + questionFormId + "/" + answerFormReturned.getId();
     } catch (MissingUserException e) {
       log.error(e.getMessage());
       redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -118,13 +117,15 @@ public class AnswerFormController {
     return "app-user/landing-page";
   }
 
+  // SHOULD RE-TEST IT
   @PostMapping("/update/{answerFormId}/{appUserId}")
   public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
                                                @ModelAttribute AnswerForm answerForm, Model model) {
     log.info("POST answer-form/update/" + answerFormId + "/" + appUserId + " started");
     try {
-      answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
+      AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
       model.addAttribute("successMessage", "AnswerForm successfully updated");
+      return "redirect:/text-answer-vote/create/" + answerForm.getAppUser().getId() + "/" + answerForm.getQuestionForm().getId() + "/" + answerFormReturned.getId();
     } catch (NoSuchAnswerformById e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());

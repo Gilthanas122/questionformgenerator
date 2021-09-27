@@ -31,7 +31,7 @@ public class RESTQuestionFormController {
   }
 
   @GetMapping("create")
-  public ResponseEntity<?> renderCreateQuestionForm() {
+  public ResponseEntity<QuestionForm> renderCreateQuestionForm() {
     log.info("REST GET question-form/create started");
     log.info("REST GET question-form/create finished");
 
@@ -39,7 +39,7 @@ public class RESTQuestionFormController {
   }
 
   @PostMapping("create")
-  public ResponseEntity<?> saveQuestionForm(@RequestBody QuestionFormCreateDTO questionFormCreateDTO) throws NoSuchUserNameException, MissingParamsException, QuestionFormNameAlreadyExistsException {
+  public ResponseEntity<Long> saveQuestionForm(@RequestBody QuestionFormCreateDTO questionFormCreateDTO) throws NoSuchUserNameException, MissingParamsException, QuestionFormNameAlreadyExistsException {
     log.info("REST POST question-form/create started");
     long questionFormId = questionFormService.save(questionFormCreateDTO);
     log.info("REST POST question-form/create finished");
@@ -48,7 +48,7 @@ public class RESTQuestionFormController {
   }
 
   @GetMapping("list")
-  public ResponseEntity<?> listTeachersQuestionForms() throws NoQuestionFormsInDatabaseException {
+  public ResponseEntity<List<QuestionForm>> listTeachersQuestionForms() throws NoQuestionFormsInDatabaseException {
     log.info("REST GET question-form/list started");
     List<QuestionForm> questionForms = questionFormService.findAll();
     log.info("REST GET question-form/list finished");
@@ -56,7 +56,7 @@ public class RESTQuestionFormController {
   }
 
   @GetMapping("update/{id}")
-  public ResponseEntity<?> modifyQuestionForm(@PathVariable long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
+  public ResponseEntity<QuestionForm> modifyQuestionForm(@PathVariable long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
     log.info("REST GET question-form/update" + id + " started");
     QuestionForm questionForm = questionFormService.findById(id);
     log.info("REST GET question-form/update" + id + " finished");
@@ -74,7 +74,7 @@ public class RESTQuestionFormController {
   }
 
   @PutMapping("/finish/{questionFormId}")
-  public ResponseEntity<?> finishQuestionForm(@PathVariable long questionFormId) throws NotEnoughQuestionsToCreateFormException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
+  public ResponseEntity<Long> finishQuestionForm(@PathVariable long questionFormId) throws NotEnoughQuestionsToCreateFormException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
     log.info("REST PUT question-form/finished" + questionFormId + " started");
     questionFormService.finishQuestionForm(questionFormId);
     log.info("REST PUT question-form/finished" + questionFormId + " finished");
@@ -83,7 +83,7 @@ public class RESTQuestionFormController {
   }
 
   @GetMapping("/list-questions/{questionFormId}")
-  public ResponseEntity<?> listAllQuestionsBelongingToQuestionFormById(@PathVariable long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
+  public ResponseEntity<List<QuestionWithDTypeDTO>> listAllQuestionsBelongingToQuestionFormById(@PathVariable long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException {
     log.info("REST GET question-form/list-questions/" + questionFormId + " started");
     List<QuestionWithDTypeDTO> questionWithDTypeDTOS = questionFormService.findByIdAndAddQuestionType(questionFormId);
     log.info("REST GET question-form/list-questions/" + questionFormId + " finished");
@@ -92,7 +92,7 @@ public class RESTQuestionFormController {
   }
 
   @DeleteMapping("delete/{questionFormId}")
-  public ResponseEntity<?> deleteQuestionForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
+  public ResponseEntity<SuccessMessageDTO> deleteQuestionForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     log.info("REST DELETE question-form/delete/" + questionFormId + " started");
     questionFormService.deleteQuestionForm(questionFormId);
     log.info("REST DELETE question-form/delete/" + questionFormId + " finished");

@@ -31,14 +31,14 @@ public class RESTPublicController {
 
 
   @GetMapping("register")
-  public ResponseEntity<?> renderAppUserCreateForm(){
+  public ResponseEntity<AppUser> renderAppUserCreateForm(){
     log.info("REST GET /rest/register started");
     log.info("REST GET /rest/register finished");
     return new ResponseEntity<>(new AppUser.Builder().build(), HttpStatus.OK);
   }
 
   @PostMapping("register")
-  public ResponseEntity<?> saveUser(@RequestBody AppUserRegisterDTO appUserRegisterDTO) throws InvalidRegexParameterException, EmailAlreadyUsedException, MissingParamsException, UsernameAlreadyTakenException {
+  public ResponseEntity<SuccessMessageDTO> saveUser(@RequestBody AppUserRegisterDTO appUserRegisterDTO) throws InvalidRegexParameterException, EmailAlreadyUsedException, MissingParamsException, UsernameAlreadyTakenException {
     log.info("REST POST rest/register started");
     AppUser appUser = new AppUser.Builder().username(appUserRegisterDTO.username).password(appUserRegisterDTO.getPassword()).emailId(appUserRegisterDTO.getEmail()).build();
     appUserService.saveUser(appUser);
@@ -47,7 +47,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("login")
-  public ResponseEntity<?> createLoginDTO(){
+  public ResponseEntity<AppUserLoginDTO> createLoginDTO(){
     log.info("REST GET /rest/login started");
     log.info("REST GET /rest/login finished");
     return new ResponseEntity<>(new AppUserLoginDTO(), HttpStatus.OK);
@@ -62,7 +62,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("verify-account")
-  public ResponseEntity<?> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+  public ResponseEntity<SuccessMessageDTO> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
     log.info("REST /GET rest/verify-account started");
     String message = appUserService.activateUserByEmail(token);
     log.info("REST /GET rest/verify-account finished");
@@ -77,7 +77,7 @@ public class RESTPublicController {
   }
 
   @PostMapping("change-password")
-  public ResponseEntity<?> postChangeUserPassword(@RequestParam String email) throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
+  public ResponseEntity<SuccessMessageDTO> postChangeUserPassword(@RequestParam String email) throws AppUserNotActivatedException, InvalidRegexParameterException, NoSuchUserByEmailException, MissingParamsException {
     log.info("REST POST rest /change-password started");
     appUserService.sendEmailToRegeneratePassword(email);
     log.info("REST POST rest/change-password finished");
@@ -85,7 +85,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("reset-password/{appUserId}")
-  public ResponseEntity<?> getResetPassword(@PathVariable long appUserId, @RequestParam String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+  public ResponseEntity<Long> getResetPassword(@PathVariable long appUserId, @RequestParam String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
     log.info("REST GET rest/reset-password started");
     appUserService.validateChangePassword(appUserId, token);
     log.info("REST GET rest/reset-password finished");

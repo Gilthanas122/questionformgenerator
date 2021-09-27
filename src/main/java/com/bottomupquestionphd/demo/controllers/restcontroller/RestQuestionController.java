@@ -33,7 +33,7 @@ public class RestQuestionController {
   }
 
   @GetMapping("/create/{questionFormId}")
-  public ResponseEntity<?> renderCreateQuestionRest(@PathVariable long questionFormId) {
+  public ResponseEntity<Long> renderCreateQuestionRest(@PathVariable long questionFormId) {
     log.info("REST GET rest/question/create/" + questionFormId + " started");
     log.info("REST GET rest/question/create/" + questionFormId + " finished");
 
@@ -50,7 +50,7 @@ public class RestQuestionController {
   }
 
   @GetMapping("update/{questionId}")
-  public ResponseEntity<?> renderQuestionUpdateRest(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+  public ResponseEntity<QuestionWithDTypeDTO> renderQuestionUpdateRest(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
     log.info("REST GET rest/question/update/" + questionId+ "/" + " started");
     QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
     log.info("REST GET rest/question/update/" + questionId+ "/" + " finished");
@@ -59,7 +59,7 @@ public class RestQuestionController {
   }
 
   @PutMapping("update")
-  public ResponseEntity<?> updateQuestionById(@RequestBody QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
+  public ResponseEntity<Question> updateQuestionById(@RequestBody QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     log.info("REST POST rest/question/update/" + " started");
     Question questionReturned = questionService.saveQuestionFromQuestionDType(question);
     log.info("REST POST rest/question/update/" + " finished");
@@ -68,7 +68,7 @@ public class RestQuestionController {
   }
 
   @PutMapping("/update-position/{change}/{questionId}")
-  public ResponseEntity<?> updateListPosition(@PathVariable String change, @PathVariable long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException {
+  public ResponseEntity<Question> updateListPosition(@PathVariable String change, @PathVariable long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException {
     log.info("REST PUT rest/question/update-position/" + change+ "/" + questionId + " started");
     Question question = questionService.changeOrderOfQuestion(change, questionId);
     log.info("REST PUT rest/question/update-position/" + change+ "/" + questionId + " finished");
@@ -77,7 +77,7 @@ public class RestQuestionController {
   }
 
   @DeleteMapping("/delete/{questionId}")
-  public ResponseEntity<?> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException {
+  public ResponseEntity<Long> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException {
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " started");
     long questionFormId = questionService.deleteQuestion(questionId);
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " finished");

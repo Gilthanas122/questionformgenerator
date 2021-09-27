@@ -32,7 +32,7 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("create/{questionFormId}")
-  public ResponseEntity<?> renderCreateAnswerForm(@PathVariable long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public ResponseEntity<CreateAnswerFormDTO> renderCreateAnswerForm(@PathVariable long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
     log.info("RESTGET rest/answer-form/create/" + questionFormId + "started");
     CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormDTO(questionFormId);
     log.info("REST GET rest/answer-form/create/" + questionFormId + "finished");
@@ -41,7 +41,7 @@ public class RestAnswerFormController {
   }
 
   @PostMapping("create/{questionFormId}/{appUserId}")
-  public ResponseEntity<?> submitAnswerForm(@RequestBody AnswerForm answerForm, @PathVariable long questionFormId, @PathVariable long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public ResponseEntity<AnswerForm> submitAnswerForm(@RequestBody AnswerForm answerForm, @PathVariable long questionFormId, @PathVariable long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, MissingParamsException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
     log.info("REST POST rest/answer-form/create/" + "/" + questionFormId + "/" + appUserId + " started");
     AnswerForm answerFormReturned = answerFormService.saveAnswerForm(answerForm, questionFormId, appUserId);
     log.info("REST POST rest/answer-form/create/" + "/" + questionFormId + "/" + appUserId + " finished");
@@ -50,7 +50,7 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
-  public ResponseEntity<?> updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException, MissingParamsException, AnswerFormNotFilledOutException {
+  public ResponseEntity<CreateAnswerFormDTO> updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException, MissingParamsException, AnswerFormNotFilledOutException {
     log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
     CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId);
     log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
@@ -59,7 +59,7 @@ public class RestAnswerFormController {
   }
 
   @PutMapping("/update/{answerFormId}/{appUserId}")
-  public ResponseEntity<?> updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
+  public ResponseEntity<AnswerForm> updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
                                                @RequestBody AnswerForm answerForm) throws NoSuchUserByIdException, NoSuchAnswerformById, MissingParamsException, BelongToAnotherUserException {
     log.info("REST PUT rest/answer-form/update/" + answerFormId + "/" + appUserId + " started");
     AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);

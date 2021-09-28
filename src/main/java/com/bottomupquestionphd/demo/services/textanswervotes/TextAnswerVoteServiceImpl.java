@@ -100,7 +100,6 @@ public class TextAnswerVoteServiceImpl implements TextAnswerVoteService {
       }
     }
     actualAnswerTextRepository.saveAll(actualAnswerTexts);
-    System.out.println();
   }
 
   private List<TextAnswerVote> createTextAnswerVotesFromVotes(List<List<Byte>> textAnswerVotesBytes) {

@@ -1,71 +1,82 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Update Answerform</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Update Answerform</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
+<script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
+
 <form id="answerform" th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}"
       method="post">
-    <tr th:each="question, itemStat : ${answerForm.questions}">
-        <p th:text="${question.questionText}"></p>
-        <div>
-            <th:block th:switch="${question.getDiscriminatorValue()}">
+  <tr th:each="question, iterStat : ${answerForm.questions}">
+    <p th:text="${question.questionText}"></p>
+    <div>
+      <th:block th:switch="${question.getDiscriminatorValue()}">
 
-                <div th:case="'CheckBoxQuestion'">
+        <div th:case="'CheckBoxQuestion'">
                         <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
                             <label th:text="${questionTextPossibility.answerText}"></label>
                    <input type="checkbox"
-                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                          th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                          th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
                           th:value="${questionTextPossibility.answerText}">
                         </span>
-                </div>
+        </div>
 
-                <div th:case="'RadioButtonQuestion'">
+        <div th:case="'RadioButtonQuestion'">
                         <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
                             <label th:text="${questionTextPossibility.answerText}"></label>
                    <input type="radio"
-                          th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText"
-                          th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[0].answerText}"
+                          th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                          th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[0].answerText}"
                           th:value="${questionTextPossibility.answerText}">
                         </span>
-                </div>
-
-                <div th:case="'ScaleQuestion'">
-                    <input type="range" th:id="|rangeInput${itemStat.index}|"
-                           th:name="answers[__${itemStat.index}__].actualAnswerTexts[0].answerText"
-                           th:max="${question.scale}"
-                           th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[0].answerText}"
-                           onchange="updateTextInput(this.value, this.id);">
-                    <input type="text" th:id="|rangeOutPut${itemStat.index}|" value="">
-                </div>
-
-                <div th:case="'TextQuestion'">
-
-                    <span th:each="actualAnswerText, list: ${answerForm.answers[__${itemStat.index}__].actualAnswerTexts}">
-                        <input type="text"
-                               th:name="answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                               th:field="${answerForm.answers[__${itemStat.index}__].actualAnswerTexts[__${list.index}__].answerText}">
-                    </span>
-                </div>
-            </th:block>
         </div>
-    </tr>
-    </table>
-    <button type="submit">SUBMIT</button>
-    <button type="reset">RESET</button>
+
+        <div th:case="'ScaleQuestion'">
+          <input type="range" th:id="|rangeInput${iterStat.index}|"
+                 th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                 th:max="${question.scale}"
+                 th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[0].answerText}"
+                 onchange="updateTextInput(this.value, this.id);">
+          <input type="text" th:id="|rangeOutPut${iterStat.index}|" value="">
+        </div>
+
+        <div th:id="|textquestioncreate[__${iterStat.index}__]|" th:case="'TextQuestion'">
+                 <span th:id="|answers[__${iterStat.index}__]|">
+                   <span
+                       th:each="actualAnswerText, list: ${answerForm.answers[__${iterStat.index}__].actualAnswerTexts}">
+                     <input type="text"
+                               th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                               th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}">
+                    </span>
+                   </span>
+
+
+          <script th:inline="javascript">
+              /*<![CDATA[*/
+              renderQuestionText(/*[[${iterStat.index}]]*/)
+              /*]]>*/
+              /*<![CDATA[*/
+              resetForCreatingTextQuestion()
+              /*]]>*/
+          </script>
+        </div>
+      </th:block>
+    </div>
+  </tr>
+  </table>
 </form>
 
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>
 <script th:replace="fragments/scripts.html :: bootstrap"></script>
-<script type="text/javascript" th:src="@{/js/updateAnswerForm.js}"></script>
 
 </body>
 </html>

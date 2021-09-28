@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote for other users' answers</title>
+    <link th:replace="fragments/navbar.html :: bootstrap-link">
+    <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+<header th:replace="fragments/navbar.html :: navbar"></header>
+<div th:replace="fragments/messages.html :: error"></div>
+<h2>Vote for other users' answers</h2>
+<form th:method="POST"
+      th:action="@{|/text-answer-vote/create/${answersTextsNotVotedByUser.appUserId}/${answersTextsNotVotedByUser.questionFormId}/${answersTextsNotVotedByUser.answerFormId}|}">
+            <span th:each="question : ${answersTextsNotVotedByUser.questions}">
+                                  <p th:text="|QUESTIONTEXT: ${question.questionText}|"></p>
+                        <span th:each="answer, iter : ${answersTextsNotVotedByUser.answers}">
+                               <span th:each="actualAnswerText, list: ${answer.actualAnswerTexts}">
+
+                                        <span th:if="${actualAnswerText.answer.question.id == question.id}">
+                                          <p th:text="|OTHER USER ANSWER: ${actualAnswerText.answerText}|"></p>
+                                         <input hidden th:value="${actualAnswerText.id}" name="actualAnswerTextIds">
+                                          <label>1</label>
+                                         <input type="radio"
+                                                th:name="textAnswerVotes[__${iter.index}__][__${list.index}__]"
+                                                th:value=1>
+                                         <label>2</label>
+                                         <input type="radio"
+                                                th:name="textAnswerVotes[__${iter.index}__][__${list.index}__]"
+                                                th:value=2>
+                                         <label>3</label>
+                                         <input type="radio"
+                                                th:name="textAnswerVotes[__${iter.index}__][__${list.index}__]"
+                                                th:value=3>
+                                    <label>4</label>
+                                         <input type="radio"
+                                                th:name="textAnswerVotes[__${iter.index}__][__${list.index}__]"
+                                                th:value=4>
+                                    <label>5</label>
+                                         <input type="radio"
+                                                th:name="textAnswerVotes[__${iter.index}__][__${list.index}__]"
+                                                th:value=5>
+                                        </span>
+                            </div>
+                     </span>
+    </span>
+    </span>
+
+    <button type="submit">SUBMIT</button>
+    <button type="reset">RESET</button>
+</form>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+</body>
+</html>

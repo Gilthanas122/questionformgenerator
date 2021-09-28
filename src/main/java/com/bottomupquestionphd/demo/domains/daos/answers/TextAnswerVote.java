@@ -1,7 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -13,8 +12,7 @@ public class TextAnswerVote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotNull
+    private long id;
     private byte value;
     private boolean deleted;
 
@@ -25,16 +23,20 @@ public class TextAnswerVote {
     public TextAnswerVote() {
     }
 
+    public TextAnswerVote(Byte value){
+        this.value = value;
+    }
+
     public TextAnswerVote(Long id, byte value) {
         this.id = id;
         this.value = value;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

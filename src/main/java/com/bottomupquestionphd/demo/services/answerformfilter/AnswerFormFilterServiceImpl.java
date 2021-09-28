@@ -82,7 +82,9 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
         Answer answer = answerForm.getAnswers().get(i);
         StringBuilder result = new StringBuilder();
         for (int j = 0; j < answer.getActualAnswerTexts().size(); j++) {
-          result.append(answer.getActualAnswerTexts().get(j).getAnswerText() + ";;");
+          StringBuilder builder = new StringBuilder(answer.getActualAnswerTexts().get(j).getAnswerText());
+          builder.append(";;");
+          result.append(builder);
         }
         actualAnswerTexts.add(result.substring(0, result.length() - 2));
       }

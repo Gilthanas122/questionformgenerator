@@ -1,7 +1,19 @@
 package com.bottomupquestionphd.demo.services.textanswervotes;
 
+import com.bottomupquestionphd.demo.domains.dtos.textanswervote.ReceiveTextAnswerVotesDTO;
+import com.bottomupquestionphd.demo.domains.dtos.textanswervote.TextAnswerVoteForVotingDTO;
+import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.exceptions.textanswervote.NoActualAnswerTextsToVoteForException;
+import com.bottomupquestionphd.demo.exceptions.textanswervote.TextAnswerVotesMissMatchException;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface TextAnswerVoteService {
+  TextAnswerVoteForVotingDTO returnAnswersNotVotedByCurrentUser(long appUserid, long questionFormId, long answerFormId) throws BelongToAnotherUserException, MissingUserException, QuestionFormNotFoundException, AnswerFormNotFilledOutException, MissingParamsException, NoActualAnswerTextsToVoteForException;
+
+  void saveVotes(ReceiveTextAnswerVotesDTO receiveTextAnswerVotesDTO, long appUserid, long questionFormId, long answerFormId) throws BelongToAnotherUserException, TextAnswerVotesMissMatchException;
 }

@@ -89,6 +89,11 @@ public class ActualAnswerText {
   }
 
   public String getAnswerTextWithAverageOfTextAnswerVotes(){
+    //String.format
     return this.answerText + "(" + getAverageOfTextAnswerVotes() + ")";
+  }
+
+  public void addOneTextAnswerVote(TextAnswerVote textAnswerVote){
+    this.textAnswerVotes.add(textAnswerVote);
   }
 }

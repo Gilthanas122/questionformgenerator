@@ -31,6 +31,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
                               Object handler, Exception ex) throws Exception {
     log.info("Method:[" + request.getMethod() + "]  URL:[" + request.getRequestURI() +
             "]  Status code:[" + response.getStatus() + "]");
+    log.info("method: {} b {} c", request.getMethod(), request.getRequestURI());
+    System.out.printf("%s %d hello", request.getRequestURI(), response.getStatus());
     HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
   }
 }

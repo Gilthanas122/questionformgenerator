@@ -93,11 +93,13 @@ public class AnswerServiceImpl implements AnswerService {
     if (allActualAnswerTextsBelongingToAQuestion == null) {
       throw new MissingParamsException("All actual answers belonging to the user can not be null");
     }
-    return
+    List<Answer> answers =
             allActualAnswerTextsBelongingToAQuestion
                     .stream()
                     .filter(a -> a.getAnswerForm().getAppUser().getId() != appUserId)
+                    .filter(a -> a.getActualAnswerTexts().size() > 0)
                     .collect(Collectors.toList());
+    return answers;
   }
 
   @Override

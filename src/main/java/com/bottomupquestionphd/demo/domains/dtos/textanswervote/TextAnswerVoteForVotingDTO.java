@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.domains.dtos.answerform;
+package com.bottomupquestionphd.demo.domains.dtos.textanswervote;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
@@ -6,30 +6,22 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class CreateAnswerFormDTO {
+public class TextAnswerVoteForVotingDTO {
   private long questionFormId;
   private long answerFormId;
   private long appUserId;
   private List<Question> questions = new ArrayList<>();
   private List<Answer> answers = new ArrayList<>();
 
-  public CreateAnswerFormDTO() {
+  public TextAnswerVoteForVotingDTO() {
   }
 
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long appUserId, List<Question> questions, List<Answer> answers) {
+  public TextAnswerVoteForVotingDTO(long questionFormId, long answerFormId, long appUserId, List<Question> questions, List<Answer> answers) {
     this.questionFormId = questionFormId;
-    this.appUserId = appUserId;
     this.answerFormId = answerFormId;
+    this.appUserId = appUserId;
     this.questions = questions;
     this.answers = answers;
-  }
-
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId,  long appUserId, List<Question> questions) {
-    this.questionFormId = questionFormId;
-    this.answerFormId = answerFormId;
-    this.appUserId = appUserId;
-    this.questions = questions;
   }
 
   public long getQuestionFormId() {
@@ -48,14 +40,6 @@ public class CreateAnswerFormDTO {
     this.answerFormId = answerFormId;
   }
 
-  public List<Question> getQuestions() {
-    return questions;
-  }
-
-  public void setQuestions(List<Question> questions) {
-    this.questions = questions;
-  }
-
   public long getAppUserId() {
     return appUserId;
   }
@@ -72,4 +56,11 @@ public class CreateAnswerFormDTO {
     this.answers = answers;
   }
 
+  public List<Question> getQuestions() {
+    return questions;
+  }
+
+  public void setQuestions(List<Question> questions) {
+    this.questions = questions;
+  }
 }

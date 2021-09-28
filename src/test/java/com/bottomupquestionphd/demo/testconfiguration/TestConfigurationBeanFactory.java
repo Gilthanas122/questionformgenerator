@@ -379,7 +379,7 @@ public class TestConfigurationBeanFactory {
   @Bean(name = "createAnswerFormDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   public CreateAnswerFormDTO getCreateAnswerFormDTO(){
-    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(1l, 1l, 1l, getListQuestions(), getListAnswers(), getAnotherListAnswers());
+    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(1l, 1l, 1l, getListQuestions(), getListAnswers());
     return createAnswerFormDTO;
   }
 

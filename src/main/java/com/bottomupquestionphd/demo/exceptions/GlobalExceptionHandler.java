@@ -14,6 +14,8 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionC
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
+import com.bottomupquestionphd.demo.exceptions.textanswervote.NoActualAnswerTextsToVoteForException;
+import com.bottomupquestionphd.demo.exceptions.textanswervote.TextAnswerVotesMissMatchException;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.hibernate.TypeMismatchException;
 import org.slf4j.Logger;
@@ -303,6 +305,23 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleQuestionTypesAndQuestionTextsSizeMissMatchExceptionException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  //TextAnswerVotes
+  @ExceptionHandler(TextAnswerVotesMissMatchException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleTextAnswerVotesMissMatchException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NoActualAnswerTextsToVoteForException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleNoActualAnswerTextsToVoteForException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

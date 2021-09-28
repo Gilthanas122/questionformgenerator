@@ -159,13 +159,12 @@ public class QuestionFormServiceImpl implements QuestionFormService {
 
   @Override
   public List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm) {
-    List<Long> textQuestionIds = questionForm
+    return questionForm
             .getQuestions()
             .stream()
             .filter(q -> q.getDiscriminatorValue().equals("TextQuestion"))
             .map(Question::getId)
             .collect(Collectors.toList());
-    return textQuestionIds;
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.services.namedparameterservice;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -33,7 +34,9 @@ public class QueryServiceImpl implements QueryService {
                     (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
             );
         }
-
+       /* List<Query> list = new ArrayList<>();
+        list.add()
+        list.stream().*/
         return namedParameterJdbcTemplate.query(
                 "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id  " +
                         "WHERE qf.id NOT IN (:ids) GROUP BY qf.id", parameters,
@@ -58,4 +61,11 @@ public class QueryServiceImpl implements QueryService {
         return namedParameterJdbcTemplate.queryForList(query, namedParameters, String.class);
     }
 
+    @Override
+    public List<ActualAnswerText> findActualAnswerTexts(List<Long> actualAnswerTextIds) {
+        SqlParameterSource parameters = new MapSqlParameterSource("ids", actualAnswerTextIds);
+        return namedParameterJdbcTemplate.query(
+                "SELECT a.id, a.answer_text FROM actualanswertexts a WHERE a.id  IN (:ids) ORDER BY RAND() limit 1", parameters,
+                (rs, rownum) -> new ActualAnswerText(rs.getLong("id"), rs.getString("answer_text")));
+    }
 }

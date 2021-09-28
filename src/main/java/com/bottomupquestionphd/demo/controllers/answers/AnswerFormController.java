@@ -125,7 +125,7 @@ public class AnswerFormController {
     try {
       AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
       model.addAttribute("successMessage", "AnswerForm successfully updated");
-      return "redirect:/text-answer-vote/create/" + answerForm.getAppUser().getId() + "/" + answerForm.getQuestionForm().getId() + "/" + answerFormReturned.getId();
+      return "redirect:/text-answer-vote/create/" + answerFormReturned.getAppUser().getId() + "/" + answerFormReturned.getQuestionForm().getId() + "/" + answerFormReturned.getId();
     } catch (NoSuchAnswerformById e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());

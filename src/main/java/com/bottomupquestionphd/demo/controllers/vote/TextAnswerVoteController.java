@@ -2,6 +2,12 @@ package com.bottomupquestionphd.demo.controllers.vote;
 
 import com.bottomupquestionphd.demo.controllers.answers.AnswerFormController;
 import com.bottomupquestionphd.demo.domains.dtos.textanswervote.ReceiveTextAnswerVotesDTO;
+import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
+import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.exceptions.textanswervote.NoActualAnswerTextsToVoteForException;
 import com.bottomupquestionphd.demo.services.textanswervotes.TextAnswerVoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +36,24 @@ public class TextAnswerVoteController {
       model.addAttribute("receiveTextAnswerVotesDTO", new ReceiveTextAnswerVotesDTO());
       log.info("GET answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " finished");
       return "answerform/vote";
+    }catch (BelongToAnotherUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (MissingUserException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (QuestionFormNotFoundException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (AnswerFormNotFilledOutException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (MissingParamsException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (NoActualAnswerTextsToVoteForException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }catch (Exception e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
@@ -37,6 +61,7 @@ public class TextAnswerVoteController {
     return "index";
   }
 
+  //NOT TESTED
   @PostMapping("create/{appUserid}/{questionFormId}/{answerFormId}")
   public String saveOtherUsersAnswers(@ModelAttribute ReceiveTextAnswerVotesDTO receiveTextAnswerVotesDTO, @PathVariable long appUserid, @PathVariable long questionFormId, @PathVariable long answerFormId, Model model){
     log.info("POST answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " started");

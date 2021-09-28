@@ -123,11 +123,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     if (answerForm == null) {
       throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it");
     }
-    List<Long> textQuestionIds = questionFormService.getAllTextQuestionIdsFromQuestionForm(questionForm);
 
-    List<Answer> filteredAnswerRemovedOwn = answerService.removeOwnAATextsFromAATToBeVoted(appUserId,
-            getAllAnswersBelongingToAQuestion(textQuestionIds));
-    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers(), filteredAnswerRemovedOwn);
+    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers());
     return createAnswerFormDTO;
   }
 
@@ -171,6 +168,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     return displayAllUserAnswersDTO;
   }
 
+
+
   //NOT TESTED
   public List<List<String>> aggregateAllAnswerTextBelongingToOneQuestions(List<AnswerForm> answerForms) {
     List<List<String>> aggregatedAnswerTextsBelongingToOneAnswers = new ArrayList<>();
@@ -197,9 +196,5 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     if (hasUserFilledOutGivenAnswerForm) {
       throw new AnswerFormAlreadyFilledOutByCurrentUserException("You have already filled out this question form, please update the one where you filled it out");
     }
-  }
-
-  private List<Answer> getAllAnswersBelongingToAQuestion(List<Long> questionIds) throws MissingParamsException {
-    return answerService.findAllAnswerTextsBelongingToAQuestion(questionIds);
   }
 }

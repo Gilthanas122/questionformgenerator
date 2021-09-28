@@ -5,13 +5,13 @@
     <title>Create Answerform</title>
     <link th:replace="fragments/navbar.html :: bootstrap-link">
     <link th:replace="fragments/navbar.html :: css">
-
-    <script type="text/javascript" th:src="@{/js/renderanswerform.js}"></script>
-
 </head>
 <body>
+
 <header th:replace="fragments/navbar.html :: navbar"> </header>
 <div th:replace="fragments/messages.html :: error" ></div>
+
+
 <form id="answerform" th:action="@{|/answer-form/create/${answerForm.questionFormId}/${answerForm.appUserId}|}" method="post">
     <tr th:each="question, iterStat : ${answerForm.questions}">
         <p th:text="${question.questionText}"></p>
@@ -55,16 +55,6 @@
                                     /*]]>*/
                                 </script>
                     </span>
-                    <span th:each="otherUsersAnswer : ${answerForm.otherUsersAnswers}" >
-                        <span th:if="${otherUsersAnswer.question.id == question.id}">
-                            <span th:each="actualAnswerText, list : ${otherUsersAnswer.actualAnswerTexts}">
-                                <p th:text="${actualAnswerText.answerText}"></p>
-                                <label>1</label>
-                                <input type="radio" th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].textAnswerVotes[0].value" value="1">
-                            </span>
-                        </span>
-                    </span>
-
                 </div>
             </th:block>
         </div>

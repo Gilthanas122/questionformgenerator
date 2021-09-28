@@ -39,4 +39,5 @@ public interface QuestionFormService {
     void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
     void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question);
+
 }

@@ -35,24 +35,22 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
 
     if (questionWithDType.getQuestionType().equals(QuestionType.CHECKBOXQUESTION.toString())){
       CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
-      checkBoxQuestion = (CheckBoxQuestion)  setQuestionToAnswerPossibilities(checkBoxQuestion);
+      setQuestionToAnswerPossibilities(checkBoxQuestion);
       return checkBoxQuestion;
     }else if (questionWithDType.getQuestionType().equals(QuestionType.RADIOBUTTONQUESTION.toString())){
       RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
-      radioButtonQuestion = (RadioButtonQuestion) setQuestionToAnswerPossibilities(radioButtonQuestion);
+      setQuestionToAnswerPossibilities(radioButtonQuestion);
       return radioButtonQuestion;
     }else if (questionWithDType.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())){
-      ScaleQuestion scaleQuestion = new ScaleQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getScale());
-      return scaleQuestion;
+      return new ScaleQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getScale());
     }
     return new TextQuestion(questionWithDType.getId(), questionWithDType.getQuestionText());
   }
 
-  private MultipleAnswerQuestion setQuestionToAnswerPossibilities(MultipleAnswerQuestion multipleAnswerQuestion) {
+  private void setQuestionToAnswerPossibilities(MultipleAnswerQuestion multipleAnswerQuestion) {
     for (QuestionTextPossibility questionTextPossibility : multipleAnswerQuestion.getQuestionTextPossibilities()) {
       questionTextPossibility.setMultipleAnswerQuestion(multipleAnswerQuestion);
     }
-    return multipleAnswerQuestion;
   }
 
 }

@@ -6,10 +6,7 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
-import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
@@ -20,8 +17,6 @@ import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -60,12 +55,21 @@ public class QuestionServiceImpl implements QuestionService {
     questionFormService.updateAnswerFormAfterAddingNewQuestion(questionForm, question);
   }
 
+
+  //RE-TESt
   @Override
-  public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+  public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     checkIfQuestionExistsById(questionId);
     Question question = questionRepository.findById(questionId);
+    checkIfQuestionHasBeenAnswered(question);
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     return questionConversionService.convertFromQuestionToQuestionWithDType(question);
+  }
+
+  private void checkIfQuestionHasBeenAnswered(Question question) throws QuestionHasBeenAnsweredException {
+    if (question.getAnswers().size()> 1){
+      throw new QuestionHasBeenAnsweredException("You can not modify a question where answers has been provided");
+    }
   }
 
   private void checkIfQuestionExistsById(long questionId) throws QuestionNotFoundByIdException {
@@ -86,7 +90,7 @@ public class QuestionServiceImpl implements QuestionService {
     if (!questionWithDTypeDTO.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())){
       questionWithDTypeDTO.setScale(0);
     }
-    questionWithDTypeDTO.setQuestionTextPossibilities(removeEmptyOrNullAnswerTextsFromQuestionTextPossibilities(questionWithDTypeDTO.getQuestionTextPossibilities()));
+    questionWithDTypeDTO.setQuestionTextPossibilities(setToDeletedQuestionTextPossibilitiesAndFilterOutEmptyField(questionWithDTypeDTO.getQuestionTextPossibilities()));
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionWithDTypeDTO);
     Question question = findById(questionWithDTypeDTO.getId());
     Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
@@ -97,15 +101,22 @@ public class QuestionServiceImpl implements QuestionService {
     converted.setId(question.getId());
     converted.setListPosition(question.getListPosition());
     converted.setQuestionForm(question.getQuestionForm());
+    converted.setAnswers(question.getAnswers());
     questionRepository.save(converted);
     return converted;
   }
 
-  private List<QuestionTextPossibility> removeEmptyOrNullAnswerTextsFromQuestionTextPossibilities(List<QuestionTextPossibility> questionTextPossibilities) {
-    List<QuestionTextPossibility> questionTextPossibilitiesFiltered = questionTextPossibilities
-            .stream().filter(Objects::nonNull)
-            .filter(questionTextPossibility -> questionTextPossibility.getAnswerText() != null && !questionTextPossibility.getAnswerText().isEmpty())
-            .collect(Collectors.toList());
+  private List<QuestionTextPossibility> setToDeletedQuestionTextPossibilitiesAndFilterOutEmptyField(List<QuestionTextPossibility> questionTextPossibilitiesFiltered) {
+    for (int i = 0; i <questionTextPossibilitiesFiltered.size(); i++) {
+      QuestionTextPossibility currentQuestionTextpossibility = questionTextPossibilitiesFiltered.get(i);
+      if (currentQuestionTextpossibility.getAnswerText() == null || currentQuestionTextpossibility.getAnswerText().isEmpty()){
+        if (currentQuestionTextpossibility.getId() == 0){
+          questionTextPossibilitiesFiltered.remove(currentQuestionTextpossibility);
+        }else{
+          currentQuestionTextpossibility.setDeleted(true);
+        }
+      }
+    }
     return questionTextPossibilitiesFiltered;
   }
 
@@ -129,8 +140,9 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
-  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     Question question = findById(questionId);
+    checkIfQuestionHasBeenAnswered(question);
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     questionRepository.setToBeDeleted(questionId);

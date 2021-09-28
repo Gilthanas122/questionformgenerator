@@ -9,10 +9,7 @@ import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAnd
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
 import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
-import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.exceptions.textanswervote.NoActualAnswerTextsToVoteForException;
 import com.bottomupquestionphd.demo.exceptions.textanswervote.TextAnswerVotesMissMatchException;
@@ -254,6 +251,14 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleInvalidQuestionPositionException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(QuestionHasBeenAnsweredException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionHasBeenAnsweredException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

@@ -4,10 +4,7 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
-import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
@@ -19,8 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.validation.Valid;
 
 @Controller
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
@@ -73,16 +68,19 @@ public class QuestionController {
 
   @GetMapping("update/{questionId}")
   public String renderQuestionUpdate(@PathVariable long questionId, Model model) {
-    log.info("GET question/update/" + questionId+ "/" + " started");
+    log.info("GET question/update/" + questionId + "/" + " started");
     try {
       QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
       model.addAttribute("question", question);
-      log.info("GET question/update/" + questionId+ "/" + " finished");
+      log.info("GET question/update/" + questionId + "/" + " finished");
       return "question/update";
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionHasBeenAnsweredException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     } catch (Exception e) {
@@ -93,11 +91,11 @@ public class QuestionController {
   }
 
   @PostMapping("update/{questionId}")
-  public String updateQuestionById(@ModelAttribute @Valid QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
-    log.info("POST question/update/" + questionId+ "/" + " started");
+  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
+    log.info("POST question/update/" + questionId + "/" + " started");
     try {
       questionService.saveQuestionFromQuestionDType(question);
-      log.info("POST question/update/" + questionId+ "/" + " finished");
+      log.info("POST question/update/" + questionId + "/" + " finished");
       return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
     } catch (MissingParamsException e) {
       log.error(e.getMessage());
@@ -117,11 +115,11 @@ public class QuestionController {
 
   @GetMapping("/update-position/{change}/{questionId}")
   public String updateListPosition(@PathVariable String change, @PathVariable long questionId, RedirectAttributes redirectAttributes) throws QuestionNotFoundByIdException {
-    log.info("GET question/update-position/" + change+ "/" + questionId + " started");
+    log.info("GET question/update-position/" + change + "/" + questionId + " started");
     try {
       long questionFormId = questionService.findQuestionFormIdBelongingToQuestion(questionId);
       questionService.changeOrderOfQuestion(change, questionId);
-      log.info("GET question/update-position/" + change+ "/" + questionId + " finished");
+      log.info("GET question/update-position/" + change + "/" + questionId + " finished");
       return "redirect:/question-form/list-questions/" + questionFormId;
     } catch (InvalidQuestionPositionChangeException e) {
       log.error(e.getMessage());
@@ -152,7 +150,10 @@ public class QuestionController {
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("validations", e.getMessage());
-    } catch (Exception e) {
+    } catch (QuestionHasBeenAnsweredException e) {
+      log.error(e.getMessage());
+      redirectAttributes.addAttribute("validations", e.getMessage());
+    }catch (Exception e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("validations", e.getMessage());
     }

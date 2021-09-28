@@ -20,6 +20,8 @@ import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -78,8 +80,13 @@ public class QuestionServiceImpl implements QuestionService {
     return questionRepository.findById(questionId);
   }
 
+  //RE-TEST THIS SHIT
   @Override
   public Question saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
+    if (!questionWithDTypeDTO.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())){
+      questionWithDTypeDTO.setScale(0);
+    }
+    questionWithDTypeDTO.setQuestionTextPossibilities(removeEmptyOrNullAnswerTextsFromQuestionTextPossibilities(questionWithDTypeDTO.getQuestionTextPossibilities()));
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionWithDTypeDTO);
     Question question = findById(questionWithDTypeDTO.getId());
     Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
@@ -92,6 +99,14 @@ public class QuestionServiceImpl implements QuestionService {
     converted.setQuestionForm(question.getQuestionForm());
     questionRepository.save(converted);
     return converted;
+  }
+
+  private List<QuestionTextPossibility> removeEmptyOrNullAnswerTextsFromQuestionTextPossibilities(List<QuestionTextPossibility> questionTextPossibilities) {
+    List<QuestionTextPossibility> questionTextPossibilitiesFiltered = questionTextPossibilities
+            .stream().filter(Objects::nonNull)
+            .filter(questionTextPossibility -> questionTextPossibility.getAnswerText() != null && !questionTextPossibility.getAnswerText().isEmpty())
+            .collect(Collectors.toList());
+    return questionTextPossibilitiesFiltered;
   }
 
   @Override
@@ -137,7 +152,7 @@ public class QuestionServiceImpl implements QuestionService {
     if (!questionDTO.getAnswers().get(0).matches("[0-9]+")) {
       throw new InvalidInputFormatException("Scale value can only be a number");
     }
-    ScaleQuestion scaleButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.valueOf(questionDTO.getAnswers().get(0)));
+    ScaleQuestion scaleButtonQuestion = new ScaleQuestion(questionDTO.getQuestionText(), Integer.parseInt(questionDTO.getAnswers().get(0)));
     scaleButtonQuestion.setQuestionForm(questionForm);
     scaleButtonQuestion.setListPosition(getListPositionForQuestions(questionForm));
     questionRepository.save(scaleButtonQuestion);

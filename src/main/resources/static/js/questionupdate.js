@@ -1,31 +1,22 @@
-let inputIndex = 0;
+var currentInputIndex;
 
-window.onload = function WindowLoad(event) {
-    addEventListeners();
-}
-
-function addEventListeners() {
-    let checkBoxButton = document.getElementById("updatecheckboxbutton");
-    let radioButton = document.getElementById("updateradiobutton");
-
-    radioButton.addEventListener("click", () => createAnotherInputField('radio'), false);
-    checkBoxButton.addEventListener("click", () => createAnotherInputField('checkbox'), false);
-}
-
-function createAnotherInputField(buttonId) {
-    let tablerow;
-    let anotherInputButton;
-    if (buttonId === "checkbox"){
-        tablerow = document.getElementById("updatecheckbox");
-        anotherInputButton = document.getElementById("updatecheckboxbutton");
-    }else{
-        tablerow = document.getElementById("updateradio");
-        anotherInputButton = document.getElementById("updateradiobutton");
-    }
+function createAnotherInputField(index) {
+    let allContainers = document.getElementsByClassName("innerMultipleAnswer")
+    let container = allContainers[0];
+    let anotherInputButtons = document.getElementsByClassName("updateMultipleAnswerButton");
+    let anotherInputButton = anotherInputButtons[0];
     let input = document.createElement("input");
     input.placeholder = "Enter your answer here";
     input.type = "text";
-    input.id = "input" + inputIndex;
-    input.name = "answers[" + inputIndex + "]";
-    tablerow.insertBefore(input, anotherInputButton);
+    input.id = "input" + currentInputIndex;
+    input.name = "questionTextPossibilities[" + currentInputIndex + "].answerText";
+    currentInputIndex = currentInputIndex + 1;
+    container.insertBefore(input, anotherInputButton);
+}
+
+function increaseInputIndex(index){
+  let anotherInputButtons = document.getElementsByClassName("updateMultipleAnswerButton");
+  let anotherInputButton = anotherInputButtons[0];
+  anotherInputButton.addEventListener("click", ()=> createAnotherInputField(index + 1), false);
+  currentInputIndex = index + 1;
 }

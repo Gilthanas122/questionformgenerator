@@ -16,14 +16,14 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
       MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
       questionWithDTypeDTO.setQuestionTextPossibilities(multipleAnswerQuestion.getQuestionTextPossibilities());
       if (question instanceof RadioButtonQuestion){
-        questionWithDTypeDTO.setQuestionType(QuestionType.CHECKBOXQUESTION.toString());
+        questionWithDTypeDTO.setQuestionType(QuestionType.RADIOBUTTONQUESTION.toString());
       }else{
         questionWithDTypeDTO.setQuestionType(QuestionType.CHECKBOXQUESTION.toString());
       }
     }else if (question instanceof ScaleQuestion){
       ScaleQuestion scaleQuestion = (ScaleQuestion) question;
       questionWithDTypeDTO.setScale(scaleQuestion.getScale());
-      questionWithDTypeDTO.setQuestionType(QuestionType.CHECKBOXQUESTION.toString());
+      questionWithDTypeDTO.setQuestionType(QuestionType.SCALEQUESTION.toString());
     }else{
       questionWithDTypeDTO.setQuestionType(QuestionType.TEXTQUESTION.toString());
     }
@@ -32,11 +32,12 @@ public class QuestionConversionServiceImpl implements QuestionConversionService{
 
   @Override
   public Question convertQuestionWithDTypeToQuestion(QuestionWithDTypeDTO questionWithDType) {
+
     if (questionWithDType.getQuestionType().equals(QuestionType.CHECKBOXQUESTION.toString())){
       CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
       checkBoxQuestion = (CheckBoxQuestion)  setQuestionToAnswerPossibilities(checkBoxQuestion);
       return checkBoxQuestion;
-    }else if (questionWithDType.getQuestionType().equals(QuestionType.CHECKBOXQUESTION.toString())){
+    }else if (questionWithDType.getQuestionType().equals(QuestionType.RADIOBUTTONQUESTION.toString())){
       RadioButtonQuestion radioButtonQuestion = new RadioButtonQuestion(questionWithDType.getId(), questionWithDType.getQuestionText(), questionWithDType.getQuestionTextPossibilities());
       radioButtonQuestion = (RadioButtonQuestion) setQuestionToAnswerPossibilities(radioButtonQuestion);
       return radioButtonQuestion;

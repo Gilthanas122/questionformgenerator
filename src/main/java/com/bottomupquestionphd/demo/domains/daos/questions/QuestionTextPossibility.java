@@ -1,10 +1,10 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sun.istack.NotNull;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "questiontextpossibilities")
@@ -13,7 +13,7 @@ public class QuestionTextPossibility {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  @NotNull
+  @NotBlank(message = "Name may not be blank")
   private String answerText;
   private boolean deleted;
 
@@ -43,7 +43,9 @@ public class QuestionTextPossibility {
   }
 
   public void setAnswerText(String answerText) {
-    this.answerText = answerText;
+    if (!answerText.isBlank()){
+      this.answerText = answerText;
+    }
   }
 
   public MultipleAnswerQuestion getMultipleAnswerQuestion() {

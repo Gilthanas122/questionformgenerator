@@ -9,7 +9,6 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionC
 import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
 import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
 import org.hibernate.TypeMismatchException;
@@ -20,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
@@ -92,7 +93,7 @@ public class QuestionController {
   }
 
   @PostMapping("update/{questionId}")
-  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
+  public String updateQuestionById(@ModelAttribute @Valid QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
     log.info("POST question/update/" + questionId+ "/" + " started");
     try {
       questionService.saveQuestionFromQuestionDType(question);
@@ -111,7 +112,7 @@ public class QuestionController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return "redirect:/question/update/" + questionId;
+    return "redirect:/app-user/landing-page/";
   }
 
   @GetMapping("/update-position/{change}/{questionId}")

@@ -13,35 +13,49 @@
 <div th:replace="fragments/messages.html :: error" ></div>
 <a class="btn btn-info" th:href="@{|/question-form/list-questions/${question.questionFormId}|}">See the questions belonging to the question form</a>
 <h1>Update your question</h1>
+<script type="text/javascript" th:src="@{/js/questionupdate.js}"></script>
 
 
 <form th:action="@{|/question/update/${question.id}|}" method="post" th:object="${question}">
     <input hidden th:field="*{id}">
     <input hidden th:field="*{questionType}">
     <input th:field="*{questionText}">
-    <th:block th:switch="*{questionType}">
-        <div id="updateradio"  th:case="'Radio button'">
-            <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
-                <td>
-                    <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
-                    <input th:value="${questionTextPossibility.id}" th:name="|answerPossibilities[${iter.index}].id|" hidden>
-                </td>
-            </tr>
-            <button type="button" id="updateradiobutton">Add another input field</button>
-        </div>
-        <div id="updatecheckbox"  th:case="'Check box'">
-            <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
-                <td>
-                    <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
-                    <input th:value="${questionTextPossibility.id}" th:name="|questionTextPossibilities[${iter.index}].id|" hidden>
-                </td>
-            </tr>
-            <button type="button" id="updatecheckboxbutton">Add another input field</button>
-        </div>
-        <div th:case="'Scale'">
-            <input th:field = "*{scale}" name="scale">
-        </div>
-    </th:block>
+    <div id="updateMultipleAnswer" >
+        <th:block th:switch="*{questionType}">
+            <div class="innerMultipleAnswer" th:case="'RadioButtonQuestion'" th:with="sizeList =${#lists.size(question.questionTextPossibilities)}">
+                <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
+                    <td>
+                        <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
+                        <input th:value="${questionTextPossibility.id}" th:name="|questionTextPossibilities[${iter.index}].id|" hidden>
+                    </td>
+                </tr>
+                <button type="button" class="updateMultipleAnswerButton">Add another input field</button>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    increaseInputIndex(/*[[${sizeList}]]*/)
+                    /*]]>*/
+                </script>
+            </div>
+            <div class="innerMultipleAnswer"  th:case="'CheckBoxQuestion'" th:with="sizeList =${#lists.size(question.questionTextPossibilities)}">
+                <tr th:each="questionTextPossibility, iter : *{questionTextPossibilities}">
+                    <td>
+                        <input th:field="*{questionTextPossibilities[__${iter.index}__].answerText}" th:name="|questionTextPossibilities[${iter.index}].answerText|" th:placeholder="${questionTextPossibility.answerText}">
+                        <input th:value="${questionTextPossibility.id}" th:name="|questionTextPossibilities[${iter.index}].id|" hidden>
+                    </td>
+                </tr>
+                <button type="button" class="updateMultipleAnswerButton">Add another input field</button>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    increaseInputIndex(/*[[${sizeList}]]*/)
+                    /*]]>*/
+                </script>
+            </div>
+            <div th:case="'ScaleQuestion'">
+                <input th:field = "*{scale}" name="scale">
+            </div>
+        </th:block>
+    </div>
+
     <button type="reset">Reset</button>
     <button type="submit">SUBMIT</button>
 

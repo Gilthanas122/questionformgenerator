@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Renew a new Question Form</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
+</head>
+<body>
+<header th:replace="fragments/navbar.html :: navbar"> </header>
+
+<div th:replace="fragments/messages.html :: error" ></div>
+
+<h1>Renew your questionform</h1>
+<form th:action="@{/question-form/update}" method="post" th:object="${questionForm}">
+  <div>
+    <input hidden name="id" th:field="*{id}">
+  </div>
+  <div>
+    <label for="name">Give a name for your question form</label>
+    <input th:field="*{name}" id="name" autofocus placeholder="Enter your question forms name">
+  </div>
+
+  <div>
+    <label for="description">Give a description for your question form</label>
+    <input th:field="*{description}" id="description" autofocus placeholder="Enter your question form's description">
+  </div>
+
+  <button type="reset"> Reset</button>
+  <button type="submit">SUBMIT</button>
+</form>
+
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
+</body>
+</html>

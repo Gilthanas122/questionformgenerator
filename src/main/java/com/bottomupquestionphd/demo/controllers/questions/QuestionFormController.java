@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.controllers.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
+import com.bottomupquestionphd.demo.domains.dtos.SuccessMessageDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
@@ -54,7 +55,57 @@ public class QuestionFormController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return "questionform/create";
+    return "app-user/landing-page";
+  }
+
+  //RE-TESt
+  @GetMapping("update/{id}")
+  public String modifyQuestionForm(@PathVariable long id, Model model) {
+    log.info("GET question-form/update" + id + " started");
+    try {
+      model.addAttribute("questionForm", questionFormService.findById(id));
+      log.info("GET question-form/update" + id + " finished");
+      return "questionform/update";
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (MissingUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "questionform/list";
+  }
+
+  //RE-TESt
+  @PostMapping("update")
+  public String updateQuestionForm(@ModelAttribute QuestionFormCreateDTO questionForm, Model model) {
+    log.info("POST question-form/create started");
+    model.addAttribute("questionFormDTO", questionForm);
+    try {
+      questionFormService.updateQuestionForm(questionForm, questionForm.getId());
+      log.info("POST question-form/create finished");
+      model.addAttribute("succesMessage", new SuccessMessageDTO("200", "Questionform update"));
+      return "redirect:/question-form/list";
+    } catch (MissingParamsException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (QuestionFormNotFoundException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "app-user/landing-page";
   }
 
   @GetMapping("list")
@@ -70,29 +121,6 @@ public class QuestionFormController {
       model.addAttribute("error", e.getMessage());
     }
     log.info("GET question-form/list finished");
-    return "questionform/list";
-  }
-
-  @GetMapping("update/{id}")
-  public String modifyQuestionForm(@PathVariable long id, Model model) {
-    log.info("GET question-form/update" + id + " started");
-    try {
-      model.addAttribute("questionForm", questionFormService.findById(id));
-      log.info("GET question-form/update" + id + " finished");
-      return "questionform/create";
-    } catch (BelongToAnotherUserException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
-    } catch (QuestionFormNotFoundException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
-    } catch (MissingUserException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
-    } catch (Exception e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
-    }
     return "questionform/list";
   }
 
@@ -128,7 +156,7 @@ public class QuestionFormController {
   public String listAllQuestionsBelongingToQuestionFormById(@RequestParam(required = false) String error, @PathVariable long questionFormId, Model model) {
     log.info("GET question-form/list-questions/" + questionFormId + " started");
     try {
-      model.addAttribute("questions", questionFormService.findByIdAndAddQuestionType(questionFormId) );
+      model.addAttribute("questions", questionFormService.findByIdAndAddQuestionType(questionFormId));
       model.addAttribute("error", error);
       log.info("GET question-form/list-questions/" + questionFormId + " finished");
       return "questionform/list-questions";
@@ -149,15 +177,15 @@ public class QuestionFormController {
   }
 
   @GetMapping("delete/{questionFormId}")
-  public String deleteQuestionForm(@PathVariable long questionFormId, Model model){
+  public String deleteQuestionForm(@PathVariable long questionFormId, Model model) {
     log.info("GET question-form/delete/" + questionFormId + " started");
     try {
       questionFormService.deleteQuestionForm(questionFormId);
       model.addAttribute("success", "Question Form with " + questionFormId + "successfully deleted");
-    }catch (QuestionFormNotFoundException e){
+    } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }

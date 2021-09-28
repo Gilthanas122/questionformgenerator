@@ -3,17 +3,33 @@ var buttonIndexToEnable = 0;
 var currentTextAnswerIndex = 0;
 var numberOfInputFieldsCreated = 0;
 var hasInputfieldsCreated = false;
+const currentIndexesForTextInputUpdate = [];
+var isItUpdatePage = true;
 
 window.onload = function WindowLoad(event) {
     createValidateResetAndSubmitButtons();
 }
 
 function renderQuestionText(index) {
-    if (!hasInputfieldsCreated){
+    isItUpdatePage = true;
+    if (!hasInputfieldsCreated) {
         let container = document.getElementById("textquestioncreate[" + index + "]");
         container.appendChild(createTextQuestionInput(index));
         hasInputfieldsCreated = true;
     }
+}
+
+function renderQuestionTextForCreate(index) {
+    isItUpdatePage = false;
+    let container = document.getElementById("textquestioncreate[" + index + "]");
+    container.appendChild(createTextQuestionInput(index));
+    hasInputfieldsCreated = true;
+}
+
+function setCurrentIndexForAnotherInputField(listIndex, value) {
+    console.log("listindex " + listIndex + " value " + value);
+    currentIndexesForTextInputUpdate[listIndex] = value;
+    console.log(currentIndexesForTextInputUpdate[listIndex]);
 }
 
 function createTextQuestionInput(index) {
@@ -50,8 +66,11 @@ function createAnotherInputField(index) {
     numberOfInputFieldsCreated++;
     input.id = "textanswer" + currentTextAnswerIndex;
     actualAnswerIndexForTextQuestion++;
-    input.name = "answers" + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
-    console.log("textanswerbutton"+ buttonIndexToEnable);
+    if (isItUpdatePage) {
+        input.name = "answers" + "[" + index + "].actualAnswerTexts[" + (currentIndexesForTextInputUpdate[index] + 1) + "].answerText";
+    } else {
+        input.name = "answers" + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
+    }
     container.insertBefore(input, document.getElementById("textanswerbutton" + buttonIndexToEnable));
 }
 
@@ -84,7 +103,6 @@ function enableDisableFinishAndAddAnotherTextFieldButtons() {
             buttons[i].disabled = true;
         }
     }
-
 }
 
 function createReenableButton(currentIndex) {
@@ -106,22 +124,12 @@ function reEnableTextQuestion(currentIndex) {
     enableDisableFinishAndAddAnotherTextFieldButtons();
 }
 
-function createValidInputFieldsButton() {
-    let validateEmptyFieldsButton = document.createElement("BUTTON");
-    validateEmptyFieldsButton.textContent = "Validate Inputs";
-    validateEmptyFieldsButton.type = "button";
-    validateEmptyFieldsButton.addEventListener("click", () => checkEmptyInputFields());
-    return validateEmptyFieldsButton;
-
-}
-
 function createValidateResetAndSubmitButtons() {
     let form = document.getElementById("answerform");
     let submitButton = document.createElement("BUTTON");
     submitButton.type = "submit";
     submitButton.id = "submitbutton";
     submitButton.textContent = "SUBMIT";
-    submitButton.disabled = true;
 
     let resetButton = document.createElement("BUTTON");
     resetButton.type = "reset";
@@ -130,25 +138,8 @@ function createValidateResetAndSubmitButtons() {
         submitButton.disabled = true;
     })
 
-    let validateButton = createValidInputFieldsButton();
-
     form.appendChild(resetButton);
-    form.appendChild(validateButton);
     form.appendChild(submitButton);
-}
-
-function checkEmptyInputFields() {
-    let inputFields = document.getElementsByTagName("INPUT");
-    let isThereAnEmptyField = false;
-    for (let i = 0; i < inputFields.length; i++) {
-        if (inputFields[i].value === "" || inputFields[i].value === null) {
-            isThereAnEmptyField = true;
-        }
-    }
-    if (!isThereAnEmptyField) {
-        let submitButton = document.getElementById("submitbutton");
-        submitButton.disabled = false;
-    }
 }
 
 function updateTextInput(val, id) {
@@ -156,8 +147,6 @@ function updateTextInput(val, id) {
     document.getElementById('rangeOutPut' + lastChar).value = val;
 }
 
-function resetForCreatingTextQuestion(){
+function resetForCreatingTextQuestion() {
     hasInputfieldsCreated = false;
 }
-
-

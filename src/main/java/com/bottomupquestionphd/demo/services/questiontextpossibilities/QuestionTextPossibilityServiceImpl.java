@@ -21,7 +21,7 @@ public class QuestionTextPossibilityServiceImpl implements QuestionTextPossibili
 
   public QuestionTextPossibilityServiceImpl(QuestionTextPossibilityRepository questionTextPossibilityRepository) {
     Supplier<Integer> supplier = () -> 5;
-    Consumer<String> consumer = x-> System.out.println(x);
+    Consumer<String> consumer = System.out::println;
     Query<String> query = ()->"select * from all";
     this.questionTextPossibilityRepository = questionTextPossibilityRepository;
   }
@@ -29,8 +29,7 @@ public class QuestionTextPossibilityServiceImpl implements QuestionTextPossibili
   @Override
   public List<QuestionTextPossibility> convertStringToQuestionTextPossibility(List<String> questionTextPossibilities) {
     questionTextPossibilities
-            .stream()
-            .forEach(throwingConsumerWrapper(question -> ErrorServiceImpl.buildMissingFieldErrorMessage(question), MissingParamsException.class));
+            .forEach(throwingConsumerWrapper(ErrorServiceImpl::buildMissingFieldErrorMessage, MissingParamsException.class));
 
     return questionTextPossibilities
             .stream()

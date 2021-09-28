@@ -65,7 +65,7 @@ public class QueryServiceImpl implements QueryService {
     public List<ActualAnswerText> findActualAnswerTexts(List<Long> actualAnswerTextIds) {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", actualAnswerTextIds);
         return namedParameterJdbcTemplate.query(
-                "SELECT a.id, a.answer_text FROM actualanswertexts a WHERE a.id  IN (:ids) ORDER BY RAND() limit 1", parameters,
+                "SELECT a.id, a.answer_text FROM actualanswertexts a WHERE a.id  IN (:ids)", parameters,
                 (rs, rownum) -> new ActualAnswerText(rs.getLong("id"), rs.getString("answer_text")));
     }
 }

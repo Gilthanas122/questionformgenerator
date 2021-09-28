@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.ActualAnswerTextSearchTermResultDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.AnswerSearchTermResultDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.QuestionFormAnswersExportExcelDTO;
@@ -122,7 +123,7 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
         answerSearchTermResultDTO.setAppUserId(answer.getAnswerForm().getAppUser().getId());
         if (questionType.matches("CheckBoxQuestion|RadioButtonQuestion|TextQuestion")) {
           actualAnswerTextSearchTermResultDTO = getAnswersForCheckBoxOrRadiobuttonOrTextQuestion(actualSearchTerm, answer, questionType, answerSearchTermResultDTO);
-        } else if (questionType.equals("ScaleQuestion")) {
+        } else if (questionType.equals(QuestionType.SCALEQUESTION.toString())) {
           actualAnswerTextSearchTermResultDTO = getAnswersForScaleQuestion(actualSearchTerm, answer, actualAnswerTextSearchTermResultDTO);
         }
       }

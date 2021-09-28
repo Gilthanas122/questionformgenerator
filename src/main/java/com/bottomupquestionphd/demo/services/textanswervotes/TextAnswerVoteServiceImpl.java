@@ -56,7 +56,7 @@ public class TextAnswerVoteServiceImpl implements TextAnswerVoteService {
                     .equals("TextQuestion"))
             .filter(q -> questionHasAnswersFilledOutByOtherUser(q, appUserid))
             .collect(Collectors.toList());
-    if (textQuestions.size() < 1){
+    if (textQuestions.size() < 1) {
       throw new NoActualAnswerTextsToVoteForException("No other user filled out this questionform so far or you voted for all the available answers");
     }
     List<Question> questionsRandomlyChoosen = chooseQuestionsRandomly(textQuestions);
@@ -71,7 +71,7 @@ public class TextAnswerVoteServiceImpl implements TextAnswerVoteService {
   private List<Question> chooseQuestionsRandomly(List<Question> textQuestions) {
     Random rand = new Random();
     int randomNumberOfQuestions = Math.min(textQuestions.size(), 5);
-    if (randomNumberOfQuestions == 0){
+    if (randomNumberOfQuestions == 0) {
       List<Question> questionsEmpty = new ArrayList<>();
       return questionsEmpty;
     }

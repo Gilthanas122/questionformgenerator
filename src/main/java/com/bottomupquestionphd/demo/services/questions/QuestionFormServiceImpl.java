@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
@@ -162,7 +163,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     return questionForm
             .getQuestions()
             .stream()
-            .filter(q -> q.getDiscriminatorValue().equals("TextQuestion"))
+            .filter(q -> q.getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString()))
             .map(Question::getId)
             .collect(Collectors.toList());
   }

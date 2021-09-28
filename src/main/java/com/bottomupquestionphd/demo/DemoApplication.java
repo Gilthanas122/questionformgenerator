@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo;
 
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

@@ -1,8 +1,5 @@
 package com.bottomupquestionphd.demo.services.questions;
 
-import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
-import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
-import com.bottomupquestionphd.demo.domains.daos.answers.TextAnswerVote;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -14,6 +11,7 @@ import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.hibernate.TypeMismatchException;
@@ -29,13 +27,15 @@ public class QuestionServiceImpl implements QuestionService {
   private final QuestionTextPossibilityService questionTextPossibilityService;
   private final AppUserService appUserService;
   private final QuestionConversionService questionConversionService;
+  private final DeleteService deleteService;
 
-  public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, QuestionTextPossibilityService questionTextPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService) {
+  public QuestionServiceImpl(QuestionRepository questionRepository, QuestionFormService questionFormService, QuestionTextPossibilityService questionTextPossibilityService, AppUserService appUserService, QuestionConversionService questionConversionService, DeleteService deleteService) {
     this.questionRepository = questionRepository;
     this.questionFormService = questionFormService;
     this.questionTextPossibilityService = questionTextPossibilityService;
     this.appUserService = appUserService;
     this.questionConversionService = questionConversionService;
+    this.deleteService = deleteService;
   }
 
   @Override
@@ -142,40 +142,18 @@ public class QuestionServiceImpl implements QuestionService {
     return question;
   }
 
+  //RE-TEST
   @Override
   public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     Question question = findById(questionId);
     question.setDeleted(true);
-    setAnswersAndAssociatedEntitiesToBeDeleted(question);
+    deleteService.setQuestionToBeDeleted(question);
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     questionRepository.save(question);
     
     questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());
     return question.getQuestionForm().getId();
-  }
-
-  private void setAnswersAndAssociatedEntitiesToBeDeleted(Question question) {
-    for (int i = 0; i < question.getAnswers().size(); i++) {
-      Answer currentAnswer = question.getAnswers().get(i);
-      currentAnswer.setDeleted(true);
-      setActualAnswerTextToBeDeleted(currentAnswer.getActualAnswerTexts());
-    }
-  }
-
-  private void setActualAnswerTextToBeDeleted(List<ActualAnswerText> actualAnswerTexts) {
-    for (int i = 0; i <actualAnswerTexts.size(); i++) {
-      ActualAnswerText currentActualAnswerText = actualAnswerTexts.get(i);
-      currentActualAnswerText.setDeleted(true);
-      setTextAnswerVotesToBeDeleted(currentActualAnswerText.getTextAnswerVotes());
-    }
-  }
-
-  private void setTextAnswerVotesToBeDeleted(List<TextAnswerVote> textAnswerVotes) {
-    for (int i = 0; i <textAnswerVotes.size(); i++) {
-      TextAnswerVote currentTextAnswerVote = textAnswerVotes.get(i);
-      currentTextAnswerVote.setDeleted(true);
-    }
   }
 
   @Override

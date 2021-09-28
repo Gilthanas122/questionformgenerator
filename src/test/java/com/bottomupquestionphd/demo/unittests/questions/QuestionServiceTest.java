@@ -13,6 +13,7 @@ import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullEx
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.questions.QuestionConversionService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
@@ -48,12 +49,13 @@ public class QuestionServiceTest {
   private final AppUserService appUserService = Mockito.mock(AppUserService.class);
   private final QuestionConversionService questionConversionService = Mockito.mock(QuestionConversionService.class);
   private QuestionService questionService;
+  private DeleteService deleteService = Mockito.mock(DeleteService.class);
   @Autowired
   private BeanFactory beanFactory;
 
   @Before
   public void setup() {
-    questionService = new QuestionServiceImpl(questionRepository, questionFormService, questionTextPossibilityService, appUserService, questionConversionService);
+    questionService = new QuestionServiceImpl(questionRepository, questionFormService, questionTextPossibilityService, appUserService, questionConversionService, deleteService);
   }
 
   @Test

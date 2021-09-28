@@ -15,6 +15,7 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionE
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.questions.QuestionConversionService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
@@ -45,6 +46,7 @@ public class QuestionFormServiceTest {
   private final AppUserService appUserService = Mockito.mock(AppUserService.class);
   private final QuestionConversionService questionConversionService = Mockito.mock(QuestionConversionService.class);
   private final QueryService queryService = Mockito.mock(QueryService.class);
+  private final DeleteService deleteService = Mockito.mock(DeleteService.class);
 
   private QuestionFormService questionFormService;
 
@@ -53,7 +55,7 @@ public class QuestionFormServiceTest {
 
   @Before
   public void setup() {
-    questionFormService = new QuestionFormServiceImpl(questionFormRepository, appUserService, questionConversionService, queryService);
+    questionFormService = new QuestionFormServiceImpl(questionFormRepository, appUserService, questionConversionService, queryService, deleteService);
   }
 
   @Test

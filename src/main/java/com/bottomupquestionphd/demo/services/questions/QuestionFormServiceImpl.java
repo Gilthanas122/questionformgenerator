@@ -16,6 +16,7 @@ import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionE
 import com.bottomupquestionphd.demo.exceptions.questionform.*;
 import com.bottomupquestionphd.demo.repositories.QuestionFormRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
@@ -31,12 +32,14 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   private final AppUserService appUserService;
   private final QuestionConversionService questionConversionService;
   private final QueryService queryService;
+  private final DeleteService deleteService;
 
-  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService, QueryService queryService) {
+  public QuestionFormServiceImpl(QuestionFormRepository questionFormRepository, AppUserService appUserService, QuestionConversionService questionConversionService, QueryService queryService, DeleteService deleteService) {
     this.questionFormRepository = questionFormRepository;
     this.appUserService = appUserService;
     this.questionConversionService = questionConversionService;
     this.queryService = queryService;
+    this.deleteService = deleteService;
   }
 
   @Override
@@ -149,13 +152,15 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     return questionForm;
   }
 
+  //RE-TEST
   @Override
   public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     checkIfQuestionFormExists(questionFormId);
     QuestionForm questionForm = questionFormRepository.findById(questionFormId);
     appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
-    questionFormRepository.deleteQuestionFormById(questionFormId);
-    queryService.deleteQuestionsBelongingToQuestionForm(questionFormId);
+    deleteService.setQuestionFormToBeDeleted(questionForm);
+    questionFormRepository.save(questionForm);
+    queryService.deleteQuestionsBelongingToQuestionForm(questionFormId); // nem kell talan?
   }
 
   @Override

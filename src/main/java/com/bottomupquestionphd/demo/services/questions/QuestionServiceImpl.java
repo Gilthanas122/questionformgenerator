@@ -1,5 +1,8 @@
 package com.bottomupquestionphd.demo.services.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
+import com.bottomupquestionphd.demo.domains.daos.answers.TextAnswerVote;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
@@ -68,7 +71,7 @@ public class QuestionServiceImpl implements QuestionService {
 
   private void checkIfQuestionHasBeenAnswered(Question question) throws QuestionHasBeenAnsweredException {
     if (question.getAnswers().size()> 1){
-      throw new QuestionHasBeenAnsweredException("You can not modify a question where answers has been provided");
+      throw new QuestionHasBeenAnsweredException("You can not modify a question where answers has been provided, only delete it");
     }
   }
 
@@ -142,12 +145,37 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     Question question = findById(questionId);
-    checkIfQuestionHasBeenAnswered(question);
+    question.setDeleted(true);
+    setAnswersAndAssociatedEntitiesToBeDeleted(question);
 
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
-    questionRepository.setToBeDeleted(questionId);
+    questionRepository.save(question);
+    
     questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());
     return question.getQuestionForm().getId();
+  }
+
+  private void setAnswersAndAssociatedEntitiesToBeDeleted(Question question) {
+    for (int i = 0; i < question.getAnswers().size(); i++) {
+      Answer currentAnswer = question.getAnswers().get(i);
+      currentAnswer.setDeleted(true);
+      setActualAnswerTextToBeDeleted(currentAnswer.getActualAnswerTexts());
+    }
+  }
+
+  private void setActualAnswerTextToBeDeleted(List<ActualAnswerText> actualAnswerTexts) {
+    for (int i = 0; i <actualAnswerTexts.size(); i++) {
+      ActualAnswerText currentActualAnswerText = actualAnswerTexts.get(i);
+      currentActualAnswerText.setDeleted(true);
+      setTextAnswerVotesToBeDeleted(currentActualAnswerText.getTextAnswerVotes());
+    }
+  }
+
+  private void setTextAnswerVotesToBeDeleted(List<TextAnswerVote> textAnswerVotes) {
+    for (int i = 0; i <textAnswerVotes.size(); i++) {
+      TextAnswerVote currentTextAnswerVote = textAnswerVotes.get(i);
+      currentTextAnswerVote.setDeleted(true);
+    }
   }
 
   @Override

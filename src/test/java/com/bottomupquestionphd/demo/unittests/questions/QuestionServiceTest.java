@@ -7,10 +7,7 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
-import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -181,7 +178,7 @@ public class QuestionServiceTest {
   }
 
   @Test
-  public void findByIdConvertToQuestionWithDtypeDTO_withValidQuestionId_returnsQuestionWithYDTypeDTO() throws BelongToAnotherUserException, QuestionNotFoundByIdException {
+  public void findByIdConvertToQuestionWithDtypeDTO_withValidQuestionId_returnsQuestionWithYDTypeDTO() throws BelongToAnotherUserException, QuestionNotFoundByIdException, QuestionHasBeenAnsweredException {
     long questionId = 1;
     Mockito.when(questionRepository.existsById(questionId)).thenReturn(true);
     Mockito.when(questionRepository.findById(questionId)).thenReturn((Question) beanFactory.getBean("validQuestion"));
@@ -195,7 +192,7 @@ public class QuestionServiceTest {
   }
 
   @Test(expected = QuestionNotFoundByIdException.class)
-  public void findByIdConvertToQuestionWithDtypeDTO_withInValidQuestionId_throwsQuestionNotFoundException() throws BelongToAnotherUserException, QuestionNotFoundByIdException {
+  public void findByIdConvertToQuestionWithDtypeDTO_withInValidQuestionId_throwsQuestionNotFoundException() throws BelongToAnotherUserException, QuestionNotFoundByIdException, QuestionHasBeenAnsweredException {
     Mockito.when(questionRepository.existsById(1l)).thenReturn(false);
     questionService.findByIdAndConvertToQuestionWithDTypeDTO(1);
   }
@@ -313,7 +310,7 @@ public class QuestionServiceTest {
   }
 
   @Test
-  public void deleteQuestion_withValidQuestionId_returnsQuestionFormId() throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException {
+  public void deleteQuestion_withValidQuestionId_returnsQuestionFormId() throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException, QuestionHasBeenAnsweredException {
     Question question = (Question) beanFactory.getBean("validQuestion");
     question.getQuestionForm().setId(3);
 

@@ -109,9 +109,10 @@ public class QuestionFormController {
   }
 
   @GetMapping("list")
-  public String listTeachersQuestionForms(Model model) {
+  public String listTeachersQuestionForms(Model model, @RequestParam (required = false) String error) {
     log.info("GET question-form/list started");
     try {
+      model.addAttribute("error", error);
       model.addAttribute("questionForms", questionFormService.findAll());
     } catch (NoQuestionFormsInDatabaseException e) {
       log.error(e.getMessage());

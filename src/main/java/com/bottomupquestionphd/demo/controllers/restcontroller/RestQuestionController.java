@@ -6,10 +6,7 @@ import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidInputFormatException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionChangeException;
-import com.bottomupquestionphd.demo.exceptions.question.InvalidQuestionPositionException;
-import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -50,7 +47,7 @@ public class RestQuestionController {
   }
 
   @GetMapping("update/{questionId}")
-  public ResponseEntity<QuestionWithDTypeDTO> renderQuestionUpdateRest(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
+  public ResponseEntity<QuestionWithDTypeDTO> renderQuestionUpdateRest(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     log.info("REST GET rest/question/update/" + questionId+ "/" + " started");
     QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
     log.info("REST GET rest/question/update/" + questionId+ "/" + " finished");
@@ -58,6 +55,7 @@ public class RestQuestionController {
     return new ResponseEntity<>(question, HttpStatus.OK);
   }
 
+  //RE-TEST
   @PutMapping("update")
   public ResponseEntity<Question> updateQuestionById(@RequestBody QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     log.info("REST POST rest/question/update/" + " started");
@@ -76,8 +74,9 @@ public class RestQuestionController {
     return new ResponseEntity<>(question, HttpStatus.OK);
   }
 
+  //RE-TESt
   @DeleteMapping("/delete/{questionId}")
-  public ResponseEntity<Long> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException {
+  public ResponseEntity<Long> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException, QuestionHasBeenAnsweredException {
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " started");
     long questionFormId = questionService.deleteQuestion(questionId);
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " finished");

@@ -67,7 +67,7 @@ public class QuestionController {
   }
 
   @GetMapping("update/{questionId}")
-  public String renderQuestionUpdate(@PathVariable long questionId, Model model) {
+  public String renderQuestionUpdate(@PathVariable long questionId, RedirectAttributes rd, Model model) {
     log.info("GET question/update/" + questionId + "/" + " started");
     try {
       QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
@@ -76,22 +76,22 @@ public class QuestionController {
       return "question/update";
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (QuestionHasBeenAnsweredException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     }
     return "redirect:/question-form/list";
   }
 
   @PostMapping("update/{questionId}")
-  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, Model model, @PathVariable long questionId) {
+  public String updateQuestionById(@ModelAttribute QuestionWithDTypeDTO question, RedirectAttributes rd, Model model, @PathVariable long questionId) {
     log.info("POST question/update/" + questionId + "/" + " started");
     try {
       questionService.saveQuestionFromQuestionDType(question);
@@ -99,16 +99,16 @@ public class QuestionController {
       return "redirect:/question-form/list-questions/" + questionService.findQuestionFormIdBelongingToQuestion(questionId);
     } catch (MissingParamsException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (TypeMismatchException e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
+      rd.addAttribute("error", e.getMessage());
     }
     return "redirect:/app-user/landing-page/";
   }
@@ -123,16 +123,16 @@ public class QuestionController {
       return "redirect:/question-form/list-questions/" + questionFormId;
     } catch (InvalidQuestionPositionChangeException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     } catch (InvalidQuestionPositionException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     }
     return "app-user/landing-page";
   }
@@ -146,16 +146,16 @@ public class QuestionController {
       return "redirect:/question-form/list-questions/" + formId;
     } catch (QuestionNotFoundByIdException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     } catch (QuestionHasBeenAnsweredException e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     }catch (Exception e) {
       log.error(e.getMessage());
-      redirectAttributes.addAttribute("validations", e.getMessage());
+      redirectAttributes.addAttribute("error", e.getMessage());
     }
     return "redirect:/question-form/list/";
   }

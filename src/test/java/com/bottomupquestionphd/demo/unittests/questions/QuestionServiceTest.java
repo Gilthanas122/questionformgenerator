@@ -321,7 +321,7 @@ public class QuestionServiceTest {
     long questionFormId = questionService.deleteQuestion(question.getId());
 
     assertEquals(3, questionFormId);
-    Mockito.verify(questionRepository, times(1)).setToBeDeleted(question.getId());
+    Mockito.verify(questionRepository, times(1)).save(question);
   }
 
   @Test

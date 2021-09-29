@@ -3,15 +3,12 @@ var buttonIndexToEnable = 0;
 var currentTextAnswerIndex = 0;
 var numberOfInputFieldsCreated = 0;
 var hasInputfieldsCreated = false;
-const currentIndexesForTextInputUpdate = [];
-var isItUpdatePage = true;
 
 window.onload = function WindowLoad(event) {
     createValidateResetAndSubmitButtons();
 }
 
 function renderQuestionText(index) {
-    isItUpdatePage = true;
     if (!hasInputfieldsCreated) {
         let container = document.getElementById("textquestioncreate[" + index + "]");
         container.appendChild(createTextQuestionInput(index));
@@ -20,16 +17,9 @@ function renderQuestionText(index) {
 }
 
 function renderQuestionTextForCreate(index) {
-    isItUpdatePage = false;
     let container = document.getElementById("textquestioncreate[" + index + "]");
     container.appendChild(createTextQuestionInput(index));
     hasInputfieldsCreated = true;
-}
-
-function setCurrentIndexForAnotherInputField(listIndex, value) {
-    console.log("listindex " + listIndex + " value " + value);
-    currentIndexesForTextInputUpdate[listIndex] = value;
-    console.log(currentIndexesForTextInputUpdate[listIndex]);
 }
 
 function createTextQuestionInput(index) {
@@ -62,15 +52,12 @@ function createAnotherInputButton(index) {
 function createAnotherInputField(index) {
     let elementId = "answers[" + index + "]";
     let container = document.getElementById(elementId);
+    let numberOfInputFieldsInContainer = container.getElementsByTagName('INPUT').length
     let input = document.createElement("INPUT");
     numberOfInputFieldsCreated++;
     input.id = "textanswer" + currentTextAnswerIndex;
     actualAnswerIndexForTextQuestion++;
-    if (isItUpdatePage) {
-        input.name = "answers" + "[" + index + "].actualAnswerTexts[" + (currentIndexesForTextInputUpdate[index] + 1) + "].answerText";
-    } else {
-        input.name = "answers" + "[" + index + "].actualAnswerTexts[" + actualAnswerIndexForTextQuestion + "].answerText";
-    }
+    input.name = "answers" + "[" + index + "].actualAnswerTexts[" + numberOfInputFieldsInContainer + "].answerText";
     container.insertBefore(input, document.getElementById("textanswerbutton" + buttonIndexToEnable));
 }
 
@@ -85,7 +72,7 @@ function createFinishButtonForTextAnswer(index) {
     return finishButton;
 }
 
-function resetActualAnswerIndexForTextQuestion(currentTextAnswerIndex) {
+function resetActualAnswerIndexForTextQuestion() {
     actualAnswerIndexForTextQuestion = 0;
     buttonIndexToEnable++;
     enableDisableFinishAndAddAnotherTextFieldButtons();

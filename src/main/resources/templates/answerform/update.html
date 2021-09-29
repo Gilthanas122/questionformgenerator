@@ -54,11 +54,6 @@
                      <input th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
                             th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
                             type="text">
-                     <script th:inline="javascript">
-              /*<![CDATA[*/
-              setCurrentIndexForAnotherInputField(/*[[${iterStat.index}]], [[${list.index}]]*/)
-              /*]]>*/
-          </script>
                     </span>
                    </span>
 

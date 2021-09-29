@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,18 +105,16 @@ public class AnswerServiceImpl implements AnswerService {
   @Override
   public List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers, AnswerForm answerForm, List<Answer> originalFormsAnswers, AnswerFormServiceImpl answerFormService) throws MissingParamsException {
     for (Answer answer : answers) {
-      Predicate<ActualAnswerText> isNotEmptyOrNull = item -> !item.actualAnswerTextIsNullOrEmpty();
-      List<ActualAnswerText> answerTextOfAnswer = answer.getActualAnswerTexts();
-      List<ActualAnswerText> actualAnswerTextsFiltered = new ArrayList<>();
-
-      answer
-              .getActualAnswerTexts()
-              .stream()
-              .filter(isNotEmptyOrNull)
-              .forEach(item -> {
-                actualAnswerTextsFiltered.add(item);
-              });
-      answer.setActualAnswerTexts(answerTextOfAnswer);
+      if (answer == null){
+        answers.remove(answer);
+      }
+      List<ActualAnswerText> temp = new ArrayList<>();
+      for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
+        if(actualAnswerText.getAnswerText() != null && !actualAnswerText.getAnswerText().isEmpty()){
+          temp.add(actualAnswerText);
+        }
+      }
+      answer.setActualAnswerTexts(temp);
     }
     answers = setAnswersToAnswerForm(answerForm, answers, originalFormsAnswers);
     return answers;

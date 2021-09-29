@@ -131,6 +131,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   @Override
   public AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException {
     AnswerForm originalAnswerForm1 = findAnswerFormById(answerFormId);
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     if (originalAnswerForm1.getAppUser().getId() != appUserId) {
       throw new BelongToAnotherUserException("This answerForm belongs to another user");
     }

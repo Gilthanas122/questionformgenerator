@@ -3,10 +3,7 @@ package com.bottomupquestionphd.demo.controllers.answers;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
@@ -90,12 +87,13 @@ public class AnswerFormController {
     return "redirect:/answer-form/create/" + questionFormId;
   }
 
-  @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
-  public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) {
-    log.info("GET answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
+  // RE-TEST
+  @GetMapping("/update/{questionFormId}/{appUserId}")
+  public String updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
+    log.info("GET answer-form/update/" + questionFormId + "/" + appUserId + " started");
     try {
-      model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId));
-      log.info("GET answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
+      model.addAttribute("answerForm", answerFormService.createAnswerFormToUpdate(questionFormId, appUserId));
+      log.info("GET answer-form/update/" + questionFormId + "/" + appUserId + " finished");
       return "answerform/update";
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
@@ -125,6 +123,7 @@ public class AnswerFormController {
     try {
       AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
       model.addAttribute("successMessage", "AnswerForm successfully updated");
+      log.info("POST answer-form/update/" + answerFormId + "/" + appUserId + " finished");
       return "redirect:/text-answer-vote/create/" + answerFormReturned.getAppUser().getId() + "/" + answerFormReturned.getQuestionForm().getId() + "/" + answerFormReturned.getId();
     } catch (NoSuchAnswerformById e) {
       log.error(e.getMessage());
@@ -135,11 +134,16 @@ public class AnswerFormController {
     } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
+    } catch (NumberOfQuestionAndAnswersShouldMatchException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (AnswerFormNumberOfAnswersShouldMatchException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    log.info("POST answer-form/update/" + answerFormId + "/" + appUserId + " finished");
     return "app-user/landing-page";
   }
 

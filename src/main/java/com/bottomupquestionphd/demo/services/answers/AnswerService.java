@@ -8,7 +8,6 @@ import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdExceptio
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
-import com.bottomupquestionphd.demo.services.answerforms.AnswerFormServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +26,11 @@ public interface AnswerService {
 
   List<Answer> removeOwnAATextsFromAATToBeVoted(long appUserId, List<Answer> allActualAnswerTextsBelongingToAQuestion) throws MissingParamsException;
 
-  List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers, AnswerForm answerForm, List<Answer> originalFormsAnswers, AnswerFormServiceImpl answerFormService) throws MissingParamsException;
+  List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers) throws MissingParamsException;
 
   Answer findById(long answerId) throws AnswerNotFoundByIdException;
 
   List<Question> addActualTextAnswersNotFilledOutByUser(List<Question> questions, long appUserId);
+
+  void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> collect);
 }

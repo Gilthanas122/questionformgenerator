@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.domains.daos.answers;
 
+import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
@@ -89,8 +90,10 @@ public class ActualAnswerText {
   }
 
   public String getAnswerTextWithAverageOfTextAnswerVotes(){
-    //String.format
-    return this.answerText + "(" + getAverageOfTextAnswerVotes() + ")";
+    if (answer.getQuestion().getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString())){
+      return this.answerText + "(" + getAverageOfTextAnswerVotes() + ")";
+    }
+    return this.answerText;
   }
 
   public void addOneTextAnswerVote(TextAnswerVote textAnswerVote){

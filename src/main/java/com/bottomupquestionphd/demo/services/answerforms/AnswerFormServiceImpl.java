@@ -12,10 +12,7 @@ import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAn
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
@@ -24,10 +21,12 @@ import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFound
 import com.bottomupquestionphd.demo.repositories.AnswerFormRepository;
 import com.bottomupquestionphd.demo.services.answers.AnswerService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +37,17 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   private final QuestionFormService questionFormService;
   private final AppUserService appUserService;
   private final AnswerService answerService;
+  private final DeleteService deleteService;
+  private final EntityManager entityManager;
 
-  public AnswerFormServiceImpl(AnswerFormRepository answerFormRepository, QuestionFormService questionFormService, AppUserService appUserService, AnswerService answerService) {
+  public AnswerFormServiceImpl(AnswerFormRepository answerFormRepository, QuestionFormService questionFormService, AppUserService appUserService, AnswerService answerService, DeleteService deleteService, EntityManager entityManager) {
     this.answerFormRepository = answerFormRepository;
     this.questionFormService = questionFormService;
     this.appUserService = appUserService;
     this.answerService = answerService;
+    this.deleteService = deleteService;
+    this.entityManager = entityManager;
   }
-
 
   // SHOULD RE-TEST IT
   @Override
@@ -53,10 +55,8 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AppUser currentUser = appUserService.findCurrentlyLoggedInUser();
     checkIfUserHasFilledOutAnswerForm(questionForm, currentUser.getId());
-    List<Question> questionsWithTextQuestionsAnswersNotFilledOutByCurrentUser = answerService.addActualTextAnswersNotFilledOutByUser(questionForm.getQuestions(), currentUser.getId());
 
-    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionsWithTextQuestionsAnswersNotFilledOutByCurrentUser);
-    return createAnswerFormDTO;
+    return new CreateAnswerFormDTO(0, questionFormId, currentUser.getId(), questionForm.getQuestions());
   }
 
   @Override
@@ -106,6 +106,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     return answerFormRepository.findAllQuestionFormsFilledOutByUser(appUserId);
   }
 
+
   @Override
   public List<Long> findQuestionFormIdsFilledOutByUser(long appUserId) {
     return answerFormRepository.findAllQuestionFormIdsFilledOutByAppUser(appUserId);
@@ -113,34 +114,101 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
   @Override
   @Transactional
-  public CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long answerFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException, MissingParamsException {
+  public CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException, MissingParamsException {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AnswerForm answerForm = questionForm.getAnswerForms()
             .stream()
-            .filter(a -> a.getId() == answerFormId)
+            .filter(a -> a.getAppUser().getId() == appUserId)
             .findFirst().orElse(null);
     if (answerForm == null) {
       throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it");
+    }else if (answerForm.getAnswers().size() < 1){
+      deleteService.setAnswerFormToBeDeleted(answerForm);
+      throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it, you provided no valid answers");
     }
 
-    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerFormId, questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers());
+    CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerForm.getId(), questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers());
     return createAnswerFormDTO;
   }
 
   @Override
-  public AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException {
-    AnswerForm originalAnswerForm1 = findAnswerFormById(answerFormId);
+  @Transactional
+  public AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
+    AnswerForm originalAnswerForm = findAnswerFormById(answerFormId);
+    if (originalAnswerForm == null){
+      throw new AnswerFormNotFoundException("Couldn't find answerform");
+    }
+    QuestionForm questionForm = originalAnswerForm.getQuestionForm();
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
-    if (originalAnswerForm1.getAppUser().getId() != appUserId) {
+    if (originalAnswerForm.getAppUser().getId() != appUserId) {
       throw new BelongToAnotherUserException("This answerForm belongs to another user");
     }
-    answerForm.setAppUser(originalAnswerForm1.getAppUser());
-    answerForm.setQuestionForm(originalAnswerForm1.getQuestionForm());
-    answerForm.setId(originalAnswerForm1.getId());
-    answerForm.setAnswers(answerService.removeNullAnswerTextsFromAnswer(answerForm.getAnswers(), answerForm, originalAnswerForm1.getAnswers(), this));
-    answerFormRepository.save(answerForm);
-    return answerForm;
+    answerForm.setAnswers(answerService.removeNullAnswerTextsFromAnswer(answerForm.getAnswers()));
+    List<Answer> answersReturned = setActualAnswerTextsFromOriginalToUpdated(answerForm.getAnswers(), originalAnswerForm.getAnswers(), answerForm);
+    setAnswerFormsAnswerToDeleted(originalAnswerForm.getAnswers());
+    setQuestionsToAnswers(questionForm.getQuestions(), answersReturned);
+    originalAnswerForm.getAnswers().addAll(answersReturned);
+    setAnswersToAnswerForm(originalAnswerForm, originalAnswerForm.getAnswers());
+    entityManager.merge(originalAnswerForm);
+    entityManager.flush();
+    return originalAnswerForm;
+  }
+
+  private void setAnswerFormsAnswerToDeleted(List<Answer> answers) {
+    for (int i = 0; i <answers.size(); i++) {
+      answers.get(i).setDeleted(true);
+    }
+  }
+
+  private List<Answer> setActualAnswerTextsFromOriginalToUpdated(List<Answer> answers, List<Answer> originalAnswerFormAnswer, AnswerForm answerformUpdated) throws AnswerFormNumberOfAnswersShouldMatchException {
+    if (answers.size() != originalAnswerFormAnswer.size()){
+      throw new AnswerFormNumberOfAnswersShouldMatchException("Updated AnswerForms number of answers and original AnswerForms number of answers should match");
+    }
+    for (int i = 0; i <answers.size(); i++) {
+      Answer answer = originalAnswerFormAnswer.get(i);
+      List<ActualAnswerText> filteredActualAnswerTexts = findMatchingActualAnswerTexts(answers.get(i), originalAnswerFormAnswer.get(i));
+      answer.setActualAnswerTexts(filteredActualAnswerTexts);
+    }
+    return answers;
+  }
+
+  private List<ActualAnswerText> findMatchingActualAnswerTexts(Answer answer, Answer originalAnswerFormAnswer) {
+    List<ActualAnswerText> filteredAnswerTexts = new ArrayList<>();
+    for (int i = 0; i <answer.getActualAnswerTexts().size(); i++) {
+      ActualAnswerText updated = answer.getActualAnswerTexts().get(i);
+      for (int j = 0; j <originalAnswerFormAnswer.getActualAnswerTexts().size(); j++) {
+        ActualAnswerText original = originalAnswerFormAnswer.getActualAnswerTexts().get(j);
+        if (updated.equals(original)){
+          original.setAnswer(answer);
+          filteredAnswerTexts.add(original);
+          answer.getActualAnswerTexts().remove(original);
+          originalAnswerFormAnswer.getActualAnswerTexts().remove(original);
+        }
+      }
+    }
+    if (answer.getActualAnswerTexts().size() > 0){
+      for (int i = 0; i <answer.getActualAnswerTexts().size(); i++) {
+        answer.getActualAnswerTexts().get(i).setAnswer(answer);
+      }
+      filteredAnswerTexts.addAll(answer.getActualAnswerTexts());
+    }
+    return filteredAnswerTexts;
+  }
+
+  private void setQuestionsToAnswers(List<Question> questions, List<Answer> answers) throws NumberOfQuestionAndAnswersShouldMatchException {
+    if (questions.size() != answers.size()){
+      throw new NumberOfQuestionAndAnswersShouldMatchException("Number of questions and the provided number of answers do not match");
+    }
+    for (int i = 0; i <questions.size(); i++) {
+      answers.get(i).setQuestion(questions.get(i));
+    }
+  }
+
+  private void setAnswersToAnswerForm(AnswerForm originalAnswerForm, List<Answer> answers) {
+    for (int i = 0; i <answers.size(); i++) {
+      answers.get(i).setAnswerForm(originalAnswerForm);
+    }
   }
 
   //NOT TESTED
@@ -168,7 +236,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     DisplayAllUserAnswersDTO displayAllUserAnswersDTO = new DisplayAllUserAnswersDTO(questionForm, aggregateAllAnswerTextBelongingToOneQuestions(questionForm.getAnswerForms()));
     return displayAllUserAnswersDTO;
   }
-
 
 
   //NOT TESTED

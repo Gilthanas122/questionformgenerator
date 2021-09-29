@@ -13,7 +13,6 @@ import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerRepository;
 import com.bottomupquestionphd.demo.services.actualanswertexts.ActualAnswerTextService;
-import com.bottomupquestionphd.demo.services.answerforms.AnswerFormServiceImpl;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 
@@ -103,20 +102,23 @@ public class AnswerServiceImpl implements AnswerService {
   }
 
   @Override
-  public List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers, AnswerForm answerForm, List<Answer> originalFormsAnswers, AnswerFormServiceImpl answerFormService) throws MissingParamsException {
-    for (Answer answer : answers) {
-      if (answer == null){
-        answers.remove(answer);
-      }
-      List<ActualAnswerText> temp = new ArrayList<>();
-      for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
-        if(actualAnswerText.getAnswerText() != null && !actualAnswerText.getAnswerText().isEmpty()){
-          temp.add(actualAnswerText);
-        }
-      }
-      answer.setActualAnswerTexts(temp);
+  public List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers) throws MissingParamsException {
+    if (answers == null){
+      throw new MissingParamsException("List of answers can not be null");
     }
-    answers = setAnswersToAnswerForm(answerForm, answers, originalFormsAnswers);
+      for (int i = 0; i <answers.size(); i++) {
+        Answer answer = answers.get(i);
+        if (answer == null){
+          throw new MissingParamsException("Answer can not be null");
+        }
+        List<ActualAnswerText> temp = new ArrayList<>();
+        for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
+          if(actualAnswerText.getAnswerText() != null && !actualAnswerText.getAnswerText().isEmpty()){
+            temp.add(actualAnswerText);
+          }
+        }
+        answer.setActualAnswerTexts(temp);
+      }
     return answers;
   }
 
@@ -143,5 +145,11 @@ public class AnswerServiceImpl implements AnswerService {
       questionsAddedActualAnswerTextsNotFilledOutByUser.add(q);
     }
     return questionsAddedActualAnswerTextsNotFilledOutByUser;
+  }
+
+  // NOT TESTED
+  @Override
+  public void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> answerIds) {
+    actualAnswerTextService.setAnswerTextsToBeDeleted(answerIds);
   }
 }

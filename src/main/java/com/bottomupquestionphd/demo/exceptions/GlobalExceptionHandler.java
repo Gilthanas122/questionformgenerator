@@ -1,10 +1,7 @@
 package com.bottomupquestionphd.demo.exceptions;
 
 import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoUserFilledOutAnswerFormException;
+import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
@@ -305,11 +302,26 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
-
   @ExceptionHandler(QuestionTypesAndQuestionTextsSizeMissMatchException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleQuestionTypesAndQuestionTextsSizeMissMatchExceptionException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NumberOfQuestionAndAnswersShouldMatchException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleNumberOfQuestionAndAnswersShouldMatchException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(AnswerFormNumberOfAnswersShouldMatchException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleAnswerFormNumberOfAnswersShouldMatchException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
@@ -327,6 +339,15 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public @ResponseBody
   ErrorMessageDTO handleNoActualAnswerTextsToVoteForException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  //Random Exception
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public @ResponseBody
+  ErrorMessageDTO handleRandomException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

@@ -22,7 +22,7 @@
         <tr th:each="questionForm : ${questionFormDTOs}" th:object="${questionForm}">
             <td th:text="*{name}"></td>
             <td>
-                <a class="button" th:href="@{|/answer-form/update/*{questionFormId}/*{answerFormId}/*{appUserId}|}"> EDIT YOUR ANSWERS</a>
+                <a class="button" th:href="@{|/answer-form/update/*{questionFormId}/*{appUserId}|}"> EDIT YOUR ANSWERS</a>
             </td>
         </tr>
         </tbody>

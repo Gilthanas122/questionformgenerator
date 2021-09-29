@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.services.namedparameterservice;
 import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -29,7 +30,7 @@ public class QueryServiceImpl implements QueryService {
         SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
         if (ids == null || ids.isEmpty()) {
             return namedParameterJdbcTemplate.query(
-                    "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id  " +
+                    "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id WHERE qf.deleted = 0" +
                             " GROUP BY qf.id", parameters,
                     (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
             );
@@ -38,8 +39,8 @@ public class QueryServiceImpl implements QueryService {
         list.add()
         list.stream().*/
         return namedParameterJdbcTemplate.query(
-                "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id  " +
-                        "WHERE qf.id NOT IN (:ids) GROUP BY qf.id", parameters,
+                "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id" +
+                        " WHERE qf.deleted = 0 AND qf.id NOT IN (:ids) GROUP BY qf.id", parameters,
                 (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
         );
     }

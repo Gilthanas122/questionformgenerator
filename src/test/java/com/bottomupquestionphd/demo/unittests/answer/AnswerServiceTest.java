@@ -37,6 +37,7 @@ public class AnswerServiceTest {
   private final QuestionFormService questionFormService = Mockito.mock(QuestionFormService.class);
   private final ActualAnswerTextService actualAnswerTextService = Mockito.mock(ActualAnswerTextService.class);
 
+
   @Autowired
   private BeanFactory beanFactory;
 

@@ -4,9 +4,7 @@ import com.bottomupquestionphd.demo.controllers.answers.AnswerFormController;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormNotFilledOutException;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
+import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -51,16 +49,16 @@ public class RestAnswerFormController {
 
   @GetMapping("/update/{questionFormId}/{answerFormId}/{appUserId}")
   public ResponseEntity<CreateAnswerFormDTO> updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long answerFormId, @PathVariable long appUserId, Model model) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException, MissingParamsException, AnswerFormNotFilledOutException {
-    log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " started");
-    CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormToUpdate(questionFormId, answerFormId, appUserId);
-    log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + answerFormId + "/" + appUserId + " finished");
+    log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + appUserId + " started");
+    CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormToUpdate(questionFormId, appUserId);
+    log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + appUserId + " finished");
 
     return new ResponseEntity<>(createAnswerFormDTO, HttpStatus.OK);
   }
 
   @PutMapping("/update/{answerFormId}/{appUserId}")
   public ResponseEntity<AnswerForm> updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
-                                               @RequestBody AnswerForm answerForm) throws NoSuchUserByIdException, NoSuchAnswerformById, MissingParamsException, BelongToAnotherUserException {
+                                               @RequestBody AnswerForm answerForm) throws NoSuchUserByIdException, NoSuchAnswerformById, MissingParamsException, BelongToAnotherUserException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
     log.info("REST PUT rest/answer-form/update/" + answerFormId + "/" + appUserId + " started");
     AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
     log.info("REST PUT rest/answer-form/update/" + answerFormId + "/" + appUserId + " finished");

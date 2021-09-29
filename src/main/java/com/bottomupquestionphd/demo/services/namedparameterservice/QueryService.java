@@ -16,4 +16,5 @@ public interface QueryService {
   List<String> filterActualAnswerTextsForScaleQuestion(long id, String operator, String searchTerm);
 
   List<ActualAnswerText> findActualAnswerTexts(List<Long> actualAnswerTextIds);
+
 }

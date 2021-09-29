@@ -5,8 +5,7 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
-import com.bottomupquestionphd.demo.exceptions.answerform.AnswerFormAlreadyFilledOutByCurrentUserException;
-import com.bottomupquestionphd.demo.exceptions.answerform.NoSuchAnswerformById;
+import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
@@ -16,6 +15,7 @@ import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
 import com.bottomupquestionphd.demo.services.answerforms.AnswerFormServiceImpl;
 import com.bottomupquestionphd.demo.services.answers.AnswerService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
+import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
@@ -38,6 +40,8 @@ public class AnswerFormServiceTest {
   private final QuestionFormService questionFormService = Mockito.mock(QuestionFormService.class);
   private final AppUserService appUserService = Mockito.mock(AppUserService.class);
   private final AnswerService answerService = Mockito.mock(AnswerService.class);
+  private final DeleteService deleteService = Mockito.mock(DeleteService.class);
+  private final EntityManager entityManager = Mockito.mock(EntityManager.class);
 
   @Autowired
   private BeanFactory beanFactory;
@@ -46,7 +50,7 @@ public class AnswerFormServiceTest {
 
   @Before
   public void setup() {
-    answerFormService = new AnswerFormServiceImpl(answerFormRepository, questionFormService, appUserService, answerService);
+    answerFormService = new AnswerFormServiceImpl(answerFormRepository, questionFormService, appUserService, answerService, deleteService, entityManager);
   }
 
   @Test
@@ -165,7 +169,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test
-  public void saveUpdatedAnswerForm_withValidInput() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById {
+  public void saveUpdatedAnswerForm_withValidInput() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     answerForm.getAnswers().get(0).getActualAnswerTexts().get(0).setAnswerText(null);
     long answerFormId = answerForm.getId();
@@ -179,7 +183,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test(expected = BelongToAnotherUserException.class)
-  public void saveUpdatedAnswerForm_withNotMatchingAppUserId_throwsBelongsToAnotherUserException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById {
+  public void saveUpdatedAnswerForm_withNotMatchingAppUserId_throwsBelongsToAnotherUserException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
     long appUserId = 12;
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     long answerFormId = answerForm.getId();

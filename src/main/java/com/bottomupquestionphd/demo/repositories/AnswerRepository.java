@@ -26,4 +26,5 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("SELECT a from Answer a WHERE a.question.id IN ?1")
     List<Answer> findAllByQuestionIds(List<Long> questionIds);
+
 }

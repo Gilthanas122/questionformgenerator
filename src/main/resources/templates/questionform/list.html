@@ -26,6 +26,7 @@
         <td>Delete question form</td>
         <td>Search answers</td>
         <td>See individual answers</td>
+        <td>Download answers in excel</td>
     </tr>
     </thead>
     <tbody>
@@ -41,6 +42,7 @@
         <td><a type="button" th:href="@{|/question-form/delete/*{id}|}">DELETE Question Form</a></td>
         <td><a type="button" th:href="@{|/answer-form/filter/search/*{id}|}">SEARCH</a></td>
         <td><a type="button" th:href="@{|/answer-form/answers/*{id}|}">ANSWERS</a></td>
+        <td><a type="button" th:href="@{|/answer-form/filter/download-all-answers/*{id}|}">DOWNLOAD</a></td>
 
     </tr>
     </tbody>

@@ -9,8 +9,6 @@ import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFound
 import com.bottomupquestionphd.demo.services.answerformfilter.AnswerFormFilterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,14 +68,12 @@ public class AnswerFormFilterController {
     return "index";
   }
 
-  @GetMapping("/return-all-answers/{questionFormId}")
-  @ResponseBody
-  public ResponseEntity<?> returnAllAnswers(@PathVariable long questionFormId, Model model, HttpServletResponse response){
+  @GetMapping("/download-all-answers/{questionFormId}")
+  public String returnAllAnswers(@PathVariable long questionFormId, Model model, HttpServletResponse response){
     log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " started");
     try {
       log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " finished");
       answerFormFilterService.returnAllAnswersBelongingToQuestionForm(questionFormId,response);
-      return new ResponseEntity<>(HttpStatus.OK);
     }catch (MissingUserException e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
@@ -91,6 +87,6 @@ public class AnswerFormFilterController {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    return "redirect:/questionform/list";
   }
 }

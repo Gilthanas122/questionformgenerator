@@ -17,6 +17,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserExcept
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerFormRepository;
+import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
@@ -30,16 +31,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
-  private AnswerFormRepository answerFormRepository;
-  private QuestionFormService questionFormService;
-  private AppUserService appUserService;
-  private QueryService queryService;
+  private final AnswerFormRepository answerFormRepository;
+  private final QuestionFormService questionFormService;
+  private final AppUserService appUserService;
+  private final QueryService queryService;
+  private final AnswerFormService answerFormService;
 
-  public AnswerFormFilterServiceImpl(AnswerFormRepository answerFormRepository, QuestionFormService questionFormService, AppUserService appUserService, QueryService queryService) {
+  public AnswerFormFilterServiceImpl(AnswerFormRepository answerFormRepository, QuestionFormService questionFormService, AppUserService appUserService, QueryService queryService, AnswerFormService answerFormService) {
     this.answerFormRepository = answerFormRepository;
     this.questionFormService = questionFormService;
     this.appUserService = appUserService;
     this.queryService = queryService;
+    this.answerFormService = answerFormService;
   }
 
   @Override
@@ -66,7 +69,10 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
   public void returnAllAnswersBelongingToQuestionForm(long questionFormId, HttpServletResponse response) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, IOException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
     List<String> questionTexts = findQuestionTextsFromQuestionForm(questionForm.getQuestions());
-    List<List<String>> answerTexts = createListStringFromAnswerFormsAnswers(questionForm.getAnswerForms(), questionTexts.size());
+    for (int i = 0; i <questionForm.getAnswerForms().size(); i++) {
+      answerFormService.sortAnswersByQuestions(questionForm.getQuestions(), questionForm.getAnswerForms().get(i).getAnswers());
+    }
+    List<List<String>> answerTexts = createListStringFromAnswerFormsAnswers(questionForm.getAnswerForms());
     response.setContentType("application/octet-stream");
     String headerKey = "Content-Disposition";
     String headerValue = "attachement; filename=answers.xlsx";
@@ -75,7 +81,7 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
     questionFormAnswersExportExcelDTO.export(response);
   }
 
-  private List<List<String>> createListStringFromAnswerFormsAnswers(List<AnswerForm> answerForms, int questionsSize) {
+  private List<List<String>> createListStringFromAnswerFormsAnswers(List<AnswerForm> answerForms) {
     List<List<String>> results = new ArrayList<>();
     List<String> actualAnswerTexts = new ArrayList<>();
     for (AnswerForm answerForm : answerForms) {
@@ -87,7 +93,11 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
           builder.append(";;");
           result.append(builder);
         }
-        actualAnswerTexts.add(result.substring(0, result.length() - 2));
+        if (result.length() > 3){
+          actualAnswerTexts.add(result.substring(0, result.length() - 2));
+        }else{
+          actualAnswerTexts.add("no answer provided");
+        }
       }
       results.add(actualAnswerTexts);
     }

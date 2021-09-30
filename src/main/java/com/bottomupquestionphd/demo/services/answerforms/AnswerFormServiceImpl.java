@@ -131,7 +131,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     return createAnswerFormDTO;
   }
 
-  private void sortAnswersByQuestions(List<Question> questions, List<Answer> answers) {
+  public void sortAnswersByQuestions(List<Question> questions, List<Answer> answers) {
     Set<Answer> sortedAnswersByQuestions = new LinkedHashSet<>();
     for (int i = 0; i <questions.size(); i++) {
       Question q = questions.get(i);

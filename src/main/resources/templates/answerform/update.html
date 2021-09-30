@@ -15,13 +15,16 @@
 <form id="answerform" method="post"
       th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}">
   <tr th:each="question, iterStat : ${answerForm.questions}">
-    <p th:text="${question.questionText}"></p>
+    <p th:text="${question.questionText}"></p>  <!--Rendering the question's text-->
     <div>
-      <th:block th:switch="${question.getDiscriminatorValue()}">
+      <th:block th:switch="${question.getDiscriminatorValue()}"> <!--checking what questiontype the current question belongs to-->
 
         <div th:case="'CheckBoxQuestion'">
                         <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
-                            <label th:text="${questionTextPossibility.answerText}"></label>
+                            <label th:text="${questionTextPossibility.answerText}"></label>  <!--Displaying the possible answertext value-->
+                          <!-- I use th:field to prefill-->
+                          <!-- I use th:name to make it available on the backend-->
+                          <!-- I use th:value to set what value will be sent to the backend when clicking on this checkbox-->
                             <input
                                 th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
                                 th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
@@ -41,7 +44,7 @@
         </div>
 
         <div th:case="'ScaleQuestion'">
-          <th:block th:each="i: ${#numbers.sequence(1, question.scale)}">
+          <th:block th:each="i: ${#numbers.sequence(1, question.scale)}"> <!-- Scale question generates radio button with numbers until the scale attribute of ScaleQuestion class-->
             <label th:text="${i}"></label>
             <input th:field="${answerForm.questions[__${iterStat.index}__].answers[0].actualAnswerTexts[0].answerText}"
                    th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
@@ -51,6 +54,7 @@
         </div>
 
         <div th:case="'TextQuestion'" th:id="|textquestioncreate[__${iterStat.index}__]|">
+          <!--With TextQuestion users can provided more than one answer. f.e What are the best movies? They can generate more than one input fields to provide answers -->
                  <span th:id="|answers[__${iterStat.index}__]|">
                    <span
                        th:each="actualAnswerText, list: ${answerForm.answers[__${iterStat.index}__].actualAnswerTexts}">
@@ -62,7 +66,7 @@
                     </span>
                    </span>
 
-          <script th:inline="javascript">
+          <script th:inline="javascript">  <!-- This js code creates the buttons that enable the adding of new input fields, finishing given question and re-enabling modification-->
               /*<![CDATA[*/
               renderQuestionText(/*[[${iterStat.index}]]*/)
               /*]]>*/

@@ -7,9 +7,10 @@
   <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
+<script th:src="@{/js/renderanswerform.js}" type="text/javascript"></script>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
-<script th:src="@{/js/renderanswerform.js}" type="text/javascript"></script>
+<h1>Update your answerform</h1>
 
 <form id="answerform" method="post"
       th:action="@{|/answer-form/update/${answerForm.answerFormId}/${answerForm.appUserId}|}">
@@ -17,25 +18,15 @@
     <p th:text="${question.questionText}"></p>
     <div>
       <th:block th:switch="${question.getDiscriminatorValue()}">
-        <input th:value="${answerForm.answers[__${iterStat.index}__].id}" name="|answerForm.answers[${iterStat.index}].id|" hidden>
 
-<!--        <div th:case="'CheckBoxQuestion'">
-                        <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
-                            <label th:text="${questionTextPossibility.answerText}"></label>
-
-                   <input th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
-                          th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                          th:value="${questionTextPossibility.answerText}"
-                          type="checkbox">
-                        </span>
-        </div>-->
         <div th:case="'CheckBoxQuestion'">
                         <span th:each="questionTextPossibility, list: ${question.questionTextPossibilities}">
                             <label th:text="${questionTextPossibility.answerText}"></label>
-                            <input th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
-                                   th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                                   th:value="${questionTextPossibility.answerText}"
-                                   type="checkbox">
+                            <input
+                                th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                                th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                                th:value="${questionTextPossibility.answerText}"
+                                type="checkbox">
                         </span>
         </div>
         <div th:case="'RadioButtonQuestion'">
@@ -50,12 +41,13 @@
         </div>
 
         <div th:case="'ScaleQuestion'">
-          <input onchange="updateTextInput(this.value, this.id);" th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[0].answerText}"
-                 th:id="|rangeInput${iterStat.index}|"
-                 th:max="${question.scale}"
-                 th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
-                 type="range">
-          <input th:id="|rangeOutPut${iterStat.index}|" type="text" value="">
+          <th:block th:each="i: ${#numbers.sequence(1, question.scale)}">
+            <label th:text="${i}"></label>
+            <input th:field="${answerForm.questions[__${iterStat.index}__].answers[0].actualAnswerTexts[0].answerText}"
+                   th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                   th:value="${i}"
+                   type="radio">
+          </th:block>
         </div>
 
         <div th:case="'TextQuestion'" th:id="|textquestioncreate[__${iterStat.index}__]|">
@@ -63,9 +55,10 @@
                    <span
                        th:each="actualAnswerText, list: ${answerForm.answers[__${iterStat.index}__].actualAnswerTexts}">
 
-                     <input th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
-                            th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
-                            type="text">
+                     <input
+                         th:field="${answerForm.answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText}"
+                         th:name="answers[__${iterStat.index}__].actualAnswerTexts[__${list.index}__].answerText"
+                         type="text">
                     </span>
                    </span>
 
@@ -83,7 +76,6 @@
   </tr>
   </table>
 </form>
-
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

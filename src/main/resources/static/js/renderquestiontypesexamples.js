@@ -133,7 +133,7 @@ function createInputScaleTextNode(buttonId) {
     addEventlistenerToItem(input);
     container.appendChild(label);
     container.appendChild(input);
-    container.appendChild(createSubDivExampleScale(buttonId));
+    container.appendChild(createSubDivExample("scale"));
 
     container.appendChild(resetbutton);
 
@@ -147,21 +147,23 @@ function createSubDivExample(buttonId) {
 
     container.appendChild(exampleText);
     if (buttonId === "radio" || buttonId === "checkbox") {
-        container.appendChild(createSubDivExampleRadioOrCheckbox(buttonId));
+        container.appendChild(createSubDivExampleRadioOrCheckboxOrScale(buttonId));
     } else if (buttonId === "text") {
         container.appendChild(createSubDivExampleText())
     } else {
-        container.appendChild(createSubDivExampleScale());
+        container.appendChild(createSubDivExampleRadioOrCheckboxOrScale("scale"));
     }
     return container;
 }
 
-function createSubDivExampleRadioOrCheckbox(buttonId) {
+function createSubDivExampleRadioOrCheckboxOrScale(buttonId) {
     let container = document.createElement("DIV");
     if (buttonId == "checkbox") {
         container.appendChild(createInputs("checkbox", "Which character(s) do you like from the following?", "Ron", "Harry"));
-    } else {
+    } else if (buttonId == "radio") {
         container.appendChild(createInputs("radio", "Which one is your favourite character?", "Hermione", "Dumbledore"));
+    }else{
+        container.appendChild(createInputs("scale", "How much do you like Harry Potter?", null, null))
     }
     return container;
 }
@@ -170,24 +172,40 @@ function createInputs(inputType, questionTextInput, input1, input2) {
     let container = document.createElement("DIV");
     let questionText = createTextNode(questionTextInput, "P");
     container.appendChild(questionText);
-    for (i = 0; i < 2; i++) {
-        let radioButton = document.createElement("INPUT");
-        radioButton.className += "check";
-        radioButton.type = inputType;
-        radioButton.id = inputType + i;
-        let radioButtonLabel = document.createElement("LABEL");
-        radioButtonLabel.for = inputType + i;
-        if (i === 0) {
-            radioButtonLabel.textContent = input1;
-            radioButton.checked=true;
-        } else {
-            if (inputType === "checkbox"){
-                radioButton.checked =true;
-            }
-            radioButtonLabel.textContent = input2;
+    if (inputType == "scale"){
+        for (let i = 1; i <= 5; i++) {
+            let radioButton = document.createElement("INPUT");
+            radioButton.className += "check";
+            radioButton.name = "radiobutton";
+            radioButton.type = "radio";
+            radioButton.id = inputType + i;
+            let radioButtonLabel = document.createElement("LABEL");
+            radioButtonLabel.for = inputType + i;
+            radioButtonLabel.textContent = i;
+            container.appendChild(radioButtonLabel);
+            container.appendChild(radioButton);
         }
-        container.appendChild(radioButtonLabel);
-        container.appendChild(radioButton);
+    }else{
+        for (i = 0; i < 2; i++) {
+            let radioButton = document.createElement("INPUT");
+            radioButton.className += "check";
+            radioButton.type = inputType;
+            radioButton.id = inputType + i;
+            radioButton.name = "checkboxradio";
+            let radioButtonLabel = document.createElement("LABEL");
+            radioButtonLabel.for = inputType + i;
+            if (i === 0) {
+                radioButtonLabel.textContent = input1;
+                radioButton.checked=true;
+            } else {
+                if (inputType === "checkbox"){
+                    radioButton.checked =true;
+                }
+                radioButtonLabel.textContent = input2;
+            }
+            container.appendChild(radioButtonLabel);
+            container.appendChild(radioButton);
+        }
     }
     return container;
 }
@@ -202,33 +220,6 @@ function createSubDivExampleText() {
     return container;
 }
 
-function createSubDivExampleScale(buttonId) {
-    let container = document.createElement("DIV");
-    container.id = "subdivexample";
-    let textInput = document.createElement("INPUT");
-    textInput.value = buttonId;
-    textInput.name = "type";
-    textInput.type = "range";
-    textInput.max = 5;
-    textInput.className = "slider";
-    textInput.id = "scalerange";
-
-    let rangeOutput = document.createElement("p");
-    rangeOutput.id = "rangeoutput";
-
-    addEventListenerToScaleInput(textInput);
-
-
-    let exampleText = createTextNode("How much do you like the book Harry Potter?"
-        + "On a scale of 1 to " + textInput.max, "LABEL")
-
-
-    container.appendChild(exampleText);
-    container.appendChild(textInput);
-    container.appendChild(rangeOutput);
-    return container;
-
-}
 
 function createTextNode(questionText, tagType) {
     let text = document.createElement(tagType);

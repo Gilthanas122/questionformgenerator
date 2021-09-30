@@ -22,6 +22,7 @@ function renderQuestionTextForCreate(index) {
     hasInputfieldsCreated = true;
 }
 
+
 function createTextQuestionInput(index) {
     let container = document.getElementById("answers[" + index + "]");
     let anotherInputButton = createAnotherInputButton(index);
@@ -129,10 +130,6 @@ function createValidateResetAndSubmitButtons() {
     form.appendChild(submitButton);
 }
 
-function updateTextInput(val, id) {
-    let lastChar = id.substr(id.length - 1);
-    document.getElementById('rangeOutPut' + lastChar).value = val;
-}
 
 function resetForCreatingTextQuestion() {
     hasInputfieldsCreated = false;

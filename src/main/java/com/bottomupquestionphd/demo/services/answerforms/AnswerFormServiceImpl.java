@@ -28,8 +28,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AnswerFormServiceImpl implements AnswerFormService {
@@ -127,9 +126,25 @@ public class AnswerFormServiceImpl implements AnswerFormService {
       deleteService.setAnswerFormToBeDeleted(answerForm);
       throw new AnswerFormNotFilledOutException("You need to fill out the answerform in order to update it, you provided no valid answers");
     }
-
+    sortAnswersByQuestions(questionForm.getQuestions(), answerForm.getAnswers());
     CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(answerForm.getId(), questionFormId, appUserId, questionForm.getQuestions(), answerForm.getAnswers());
     return createAnswerFormDTO;
+  }
+
+  private void sortAnswersByQuestions(List<Question> questions, List<Answer> answers) {
+    Set<Answer> sortedAnswersByQuestions = new LinkedHashSet<>();
+    for (int i = 0; i <questions.size(); i++) {
+      Question q = questions.get(i);
+      for (int j = 0; j <answers.size(); j++) {
+        Answer a = answers.get(j);
+        if (q.getId() == a.getQuestion().getId()){
+          sortedAnswersByQuestions.add(a);
+          break;
+        }
+      }
+    }
+    answers.clear();
+    answers.addAll(sortedAnswersByQuestions);
   }
 
   @Override

@@ -200,4 +200,17 @@ public class AnswerFormController {
     }
     return "index";
   }
+  @GetMapping("list-answers/{questionFormId}/{appUserId}")
+  public String seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
+    log.info("GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " started");
+    try {
+      model.addAttribute("displayOneUserAnswersDTO", answerFormService.findAllAnswersBelongingToAnUser(questionFormId, appUserId));
+      log.info("GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " finished");
+      return "answerform/list-all-user-answers";
+    }catch (Exception e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "app-user/landing-page";
+  }
 }

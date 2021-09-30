@@ -9,6 +9,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAllUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAnAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayOneUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
@@ -242,6 +243,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   //NOT TESTED
+  // just send questiontexts;
   @Override
   public DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
@@ -264,6 +266,33 @@ public class AnswerFormServiceImpl implements AnswerFormService {
       aggregatedAnswerTextsBelongingToOneAnswers.add(temp);
     }
     return aggregatedAnswerTextsBelongingToOneAnswers;
+  }
+
+  //NOT TESTED
+  @Override
+  public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, AnswerFormNotFoundException {
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
+    QuestionForm questionForm = questionFormService.findById(questionFormId);
+    AnswerForm answerForm = questionForm.getAnswerForms().stream().filter(a -> a.getAppUser().getId() == appUserId).findFirst().orElse(null);
+    if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
+      throw new NoUserFilledOutAnswerFormException("No user filled out the answer form");
+    }
+    if (answerForm == null){
+      throw new AnswerFormNotFoundException("Couldn't find the required answerform");
+    }
+
+    List<String> filteredAnswers = aggregateAllAnswerTextBelongingToAnswerForm(answerForm);
+
+    DisplayOneUserAnswersDTO displayOneUserAnswersDTO = new DisplayOneUserAnswersDTO(filteredAnswers, questionForm.getQuestionTexts());
+    return displayOneUserAnswersDTO;
+  }
+
+  private List<String> aggregateAllAnswerTextBelongingToAnswerForm(AnswerForm answerForm) {
+    List<String> aggregatedAnswerTextsBelongingToOneAnswersForms = new ArrayList<>();
+      for (Answer answer : answerForm.getAnswers()) {
+        aggregatedAnswerTextsBelongingToOneAnswersForms.add(answer.getActualAnswerInAString());
+      }
+    return aggregatedAnswerTextsBelongingToOneAnswersForms;
   }
 
   private void checkIfUserHasFilledOutAnswerForm(QuestionForm questionForm, long appUserId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {

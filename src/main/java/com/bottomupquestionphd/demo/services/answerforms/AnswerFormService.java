@@ -6,6 +6,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAllUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayAnswersFromAnAnswerFormDTO;
+import com.bottomupquestionphd.demo.domains.dtos.answerform.DisplayOneUserAnswersDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
@@ -40,5 +41,7 @@ public interface AnswerFormService {
   DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException;
 
   void sortAnswersByQuestions(List<Question> questions, List<Answer> answers);
+
+  DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, AnswerFormNotFoundException;
 
 }

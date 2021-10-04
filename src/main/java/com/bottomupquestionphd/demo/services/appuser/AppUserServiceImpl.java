@@ -53,7 +53,7 @@ public class AppUserServiceImpl implements AppUserService {
   public AppUserLoginDTO validateLogin(AppUserLoginDTO loginDTO) throws AppUserPasswordMissMatchException, NoSuchUserNameException, MissingParamsException, AppUserNotActivatedException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(loginDTO);
     Optional<AppUser> appUser = appUserRepository.findByUsername(loginDTO.getUsername());
-    if (appUser == null || !appUser.isPresent()) {
+    if (appUser == null || appUser.isEmpty()) {
       throw new NoSuchUserNameException("No such username in the database");
     } else if (!passwordEncoder.matches(loginDTO.getPassword(), appUser.get().getPassword())) {
       throw new AppUserPasswordMissMatchException("Username didn't match the password");
@@ -65,8 +65,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   public AppUser findCurrentlyLoggedInUser() {
     Principal auth = SecurityContextHolder.getContext().getAuthentication();
-    AppUser appUser = appUserRepository.findByUsername(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
-    return appUser;
+    return appUserRepository.findByUsername(auth.getName()).orElseThrow(() -> new UsernameNotFoundException("Couldn't find user with the given username"));
   }
 
   @Override
@@ -77,13 +76,16 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     AppUser appUser = findCurrentlyLoggedInUser();
-  if (appUser.getId() != appUserId && !appUser.getRoles().contains("ROLE_ADMIN")) { // not tested for role admin
+  if (appUser.getId() != appUserId && !appUser.getRoles().contains("ROLE_ADMIN")) {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }
   }
 
   @Override
-  public String activateUserByEmail(String token) throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+  public String activateUserByEmail(String token) throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException, MissingParamsException {
+    if (token == null || token.isEmpty()){
+      throw new MissingParamsException("Token is required");
+    }
     AppUser appUser = appUserRepository.findByConfirmationToken(token);
     if (appUser == null) {
       throw new NoSuchUserByEmailException("No user with the given email");
@@ -97,34 +99,33 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public void sendEmailToRegeneratePassword(String email) throws MissingParamsException, AppUserNotActivatedException, NoSuchUserByEmailException, InvalidRegexParameterException {
-    if (email == null || email.isBlank()) {
-      throw new MissingParamsException("Email is required");
-    }
-    RegexServiceImpl.checkRegex(email, "email");
+  public void sendEmailToRegeneratePassword(String email) throws AppUserNotActivatedException, NoSuchUserByEmailException, InvalidRegexParameterException {
+    RegexServiceImpl.checkRegex(email, RegexErrorType.REGEXEMAIL.toString());
     AppUser appUser = appUserRepository.findByEmailId(email);
     if (appUser == null) {
       throw new NoSuchUserByEmailException("No such user by email. Provide a valid email address");
     } else if (!appUser.isActive()) {
-      throw new AppUserNotActivatedException("You should activate your app user in order to login! Check your email");
+      throw new AppUserNotActivatedException("You should activate your app user in order to login or to reacquire password! Check your email");
     }
     appUser.setConfirmationToken(appUser.generateRandomTokenNotSstatic());
     emailService.sendEmailToChangePassword(appUser);
   }
 
   @Override
-  public void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+  public void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException, BelongToAnotherUserException {
     if (!changePasswordDTO.getPassword1().equals(changePasswordDTO.getPassword2())) {
       throw new PassWordMissMachException("The two passwords should match");
     }
-    RegexServiceImpl.checkRegex(changePasswordDTO.getPassword1(), "password");
+    checkIfCurrentUserMatchesUserIdInPath(appUserId);
+    RegexServiceImpl.checkRegex(changePasswordDTO.getPassword1(), RegexErrorType.REGEXPASSWORD.toString());
     AppUser appUser = findById(appUserId);
     appUser.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword1()));
     appUserRepository.save(appUser);
   }
 
   @Override
-  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
+    checkIfCurrentUserMatchesUserIdInPath(appUserId);
     if (token == null || token.isBlank()){
       throw new MissingParamsException("Token is required.");
     }

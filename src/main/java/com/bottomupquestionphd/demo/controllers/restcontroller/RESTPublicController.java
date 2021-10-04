@@ -62,7 +62,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("verify-account")
-  public ResponseEntity<SuccessMessageDTO> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException {
+  public ResponseEntity<SuccessMessageDTO> verifyUserAccount(@RequestParam String token) throws ConfirmationTokenDoesNotExistException, NoSuchUserByEmailException, AppUserIsAlreadyActivatedException, MissingParamsException {
     log.info("REST /GET rest/verify-account started");
     String message = appUserService.activateUserByEmail(token);
     log.info("REST /GET rest/verify-account finished");
@@ -85,7 +85,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("reset-password/{appUserId}")
-  public ResponseEntity<Long> getResetPassword(@PathVariable long appUserId, @RequestParam String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
+  public ResponseEntity<Long> getResetPassword(@PathVariable long appUserId, @RequestParam String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
     log.info("REST GET rest/reset-password started");
     appUserService.validateChangePassword(appUserId, token);
     log.info("REST GET rest/reset-password finished");
@@ -93,7 +93,7 @@ public class RESTPublicController {
   }
 
   @PostMapping("reset-password/{appUserId}")
-  public ResponseEntity<?> postResetPassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException {
+  public ResponseEntity<?> postResetPassword(@RequestBody ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException, BelongToAnotherUserException {
     log.info("REST POST rest/reset-password started");
     appUserService.changePassword(changePasswordDTO, appUserId);
     log.info("REST POST rest/reset-password finished");

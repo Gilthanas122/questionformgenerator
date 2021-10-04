@@ -21,11 +21,11 @@ public interface AppUserService {
 
   void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException;
 
-  String activateUserByEmail(String token) throws  NoSuchUserByEmailException, AppUserIsAlreadyActivatedException;
+  String activateUserByEmail(String token) throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException, MissingParamsException;
 
   void sendEmailToRegeneratePassword(String email) throws MissingParamsException, AppUserNotActivatedException, NoSuchUserByEmailException, InvalidRegexParameterException;
 
-  void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException;
+  void changePassword(ChangePasswordDTO changePasswordDTO, long appUserId) throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException, BelongToAnotherUserException;
 
-  void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException;
+  void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException;
 }

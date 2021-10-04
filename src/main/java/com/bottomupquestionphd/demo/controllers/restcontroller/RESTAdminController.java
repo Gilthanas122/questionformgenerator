@@ -1,10 +1,7 @@
 package com.bottomupquestionphd.demo.controllers.restcontroller;
 
 import com.bottomupquestionphd.demo.controllers.admin.AdminController;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
-import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
-import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
+import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +58,7 @@ public class RESTAdminController {
   }
 
   @DeleteMapping("delete-user/{id}")
-  public ResponseEntity<?> deleteUserREST(@PathVariable long id) throws NoSuchUserByIdException, NoUsersInDatabaseException {
+  public ResponseEntity<?> deleteUserREST(@PathVariable long id) throws NoSuchUserByIdException, NoUsersInDatabaseException, UserAlreadyDisabledException {
     log.info("REST DELETE admin/delete-user/" + id + " started");
     adminAppUserService.deleteUser(id);
     log.info("REST DELETE admin/delete-user/" + id + " finished");

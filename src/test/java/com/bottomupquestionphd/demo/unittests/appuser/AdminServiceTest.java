@@ -1,10 +1,7 @@
 package com.bottomupquestionphd.demo.unittests.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
-import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
-import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
+import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserServiceImpl;
@@ -172,7 +169,7 @@ public class AdminServiceTest {
   }
 
   @Test
-  public void deleteUser_withValidUser() throws NoSuchUserByIdException {
+  public void deleteUser_withValidUser() throws NoSuchUserByIdException, UserAlreadyDisabledException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
     Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(java.util.Optional.of(appUser));
@@ -180,5 +177,15 @@ public class AdminServiceTest {
     adminAppUserService.deleteUser(appUser.getId());
 
     Mockito.verify(appUserRepository, times(1)).setUserToDisabled(appUser.getId());
+  }
+
+  @Test(expected = UserAlreadyDisabledException.class)
+  public void deleteUser_withAlreadyDisabledUser() throws NoSuchUserByIdException, UserAlreadyDisabledException {
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setDisabled(true);
+
+    Mockito.when(appUserRepository.findById(appUser.getId())).thenReturn(java.util.Optional.of(appUser));
+
+    adminAppUserService.deleteUser(appUser.getId());
   }
 }

@@ -1,15 +1,11 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
-import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
-import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
+import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AdminAppUserServiceImpl implements AdminAppUserService{
@@ -34,12 +30,11 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
     }
    AppUser appUser = checkIfUserByIdExists(id);
    String roleConverted = "ROLE_" + role.toUpperCase();
-   if (!userHasGivenRole(roleConverted, appUser)){
-     appUser.addNewRole(roleConverted);
-     appUserRepository.save(appUser);
-   }else{
+   if (userHasGivenRole(roleConverted, appUser)){
      throw new RoleMissMatchException("User already has the given role");
    }
+    appUser.addNewRole(roleConverted);
+    appUserRepository.save(appUser);
   }
 
   private boolean checkIfValidRoleSuffix(String role){
@@ -52,11 +47,7 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
   }
 
   private AppUser checkIfUserByIdExists(long id) throws NoSuchUserByIdException {
-    Optional<AppUser> appUser = appUserRepository.findById(id);
-    if (appUser.isEmpty()){
-      throw new NoSuchUserByIdException("No user at the given id");
-    }
-    return appUser.get();
+    return appUserRepository.findById(id).orElseThrow(() -> new NoSuchUserByIdException("No user at the given id"));
   }
 
   @Override
@@ -100,8 +91,11 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
   }
 
   @Override
-  public void deleteUser(long id) throws NoSuchUserByIdException {
+  public void deleteUser(long id) throws NoSuchUserByIdException, UserAlreadyDisabledException {
     AppUser appUser = checkIfUserByIdExists(id);
+    if (appUser.isDisabled()){
+      throw new UserAlreadyDisabledException("User is already inactive");
+    }
     appUserRepository.setUserToDisabled(appUser.getId());
   }
 }

@@ -1,9 +1,6 @@
 package com.bottomupquestionphd.demo.controllers.admin;
 
-import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.NoUsersInDatabaseException;
-import com.bottomupquestionphd.demo.exceptions.appuser.RoleMissMatchException;
-import com.bottomupquestionphd.demo.exceptions.appuser.UserDeactivateException;
+import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,11 +140,14 @@ public class AdminController {
     } catch (NoSuchUserByIdException e){
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (Exception e){
+    } catch (UserAlreadyDisabledException e){
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-    return "admin/change-user-role";
+      return "admin/change-user-role";
   }
 
 }

@@ -9,6 +9,7 @@ import com.bottomupquestionphd.demo.exceptions.email.EmailAlreadyUsedException;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.emailService.EmailService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
+import com.bottomupquestionphd.demo.services.validations.RegexErrorType;
 import com.bottomupquestionphd.demo.services.validations.RegexServiceImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Service
 public class AppUserServiceImpl implements AppUserService {
   private final AppUserRepository appUserRepository;
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
 
   public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
@@ -35,8 +36,8 @@ public class AppUserServiceImpl implements AppUserService {
   @Transactional
   public void saveUser(AppUser appUser) throws MissingParamsException, UsernameAlreadyTakenException, EmailAlreadyUsedException, InvalidRegexParameterException {
     ErrorServiceImpl.buildMissingFieldErrorMessage(appUser);
-    RegexServiceImpl.checkRegex(appUser.getPassword(), "password");
-    RegexServiceImpl.checkRegex(appUser.getEmailId(), "email");
+    RegexServiceImpl.checkRegex(appUser.getPassword(), RegexErrorType.REGEXPASSWORD.toString());
+    RegexServiceImpl.checkRegex(appUser.getEmailId(), RegexErrorType.REGEXEMAIL.toString());
     if (appUserRepository.existsByUsername(appUser.getUsername())) {
       throw new UsernameAlreadyTakenException("The username is already taken");
     } else if (appUserRepository.existByEmailId(appUser.getEmailId())) {

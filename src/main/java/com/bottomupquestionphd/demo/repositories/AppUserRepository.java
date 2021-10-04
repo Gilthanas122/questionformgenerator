@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +30,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
   @Query("SELECT a from AppUser a WHERE a.confirmationToken = ?1")
   AppUser findByConfirmationToken(String token);
+
+  @Query("Select a from AppUser a WHERE a.id <> ?1")
+  List<AppUser> findAllCurrentUserNotIncluded(long appUserId);
 }

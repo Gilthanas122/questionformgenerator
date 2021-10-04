@@ -161,6 +161,14 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  @ExceptionHandler(UserAlreadyDisabledException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleAlreadyDisabledException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   //Question Form Controller
 
   @ExceptionHandler(QuestionFormNameAlreadyExistsException.class)

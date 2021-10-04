@@ -22,7 +22,7 @@ public class AdminController {
     this.adminAppUserService = adminAppUserService;
   }
 
-  @GetMapping("change-user-role")
+  @GetMapping("/")
   public String renderChangeUserRoleHTML(Model model) {
     log.info("GET admin/change-user-role started");
     try {

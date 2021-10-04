@@ -88,21 +88,4 @@ public class AppUserController {
         }
         return "app-user/landing-page";
     }
-
-/*    @GetMapping("/question-form/list-not-filled-out/{appUserId}")
-    public String returnQuestionFormsNotFilledOutByUserFromNavbar(Model model, long appUserId) {
-        log.info("GET /question-form/list-not-filled-out/" + appUserId + " started");
-        try {
-            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser(appUserId));
-            log.info("GET /question-form/list-not-filled-out/" + appUserId + " finished");
-            return "app-user/list-not-filled-out-question-forms";
-        } catch (BelongToAnotherUserException e) {
-            log.validations(e.getMessage());
-            model.addAttribute("validations", e.getMessage());
-        } catch (Exception e) {
-            log.validations(e.getMessage());
-            model.addAttribute("validations", e.getMessage());
-        }
-        return "app-user/landing-page";
-    }*/
 }

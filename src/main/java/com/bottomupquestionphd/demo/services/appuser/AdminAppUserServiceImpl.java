@@ -10,9 +10,11 @@ import java.util.List;
 @Service
 public class AdminAppUserServiceImpl implements AdminAppUserService{
   private final AppUserRepository appUserRepository;
+  private final AppUserService appUserService;
 
-  public AdminAppUserServiceImpl(AppUserRepository appUserRepository) {
+  public AdminAppUserServiceImpl(AppUserRepository appUserRepository, AppUserService appUserService) {
     this.appUserRepository = appUserRepository;
+    this.appUserService = appUserService;
   }
 
   @Override
@@ -20,7 +22,8 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
     if (appUserRepository.count() < 1){
       throw new NoUsersInDatabaseException("No users in database");
     }
-    return appUserRepository.findAll();
+    long appUserId = appUserService.findCurrentlyLoggedInUser().getId();
+    return appUserRepository.findAllCurrentUserNotIncluded(appUserId);
   }
 
   @Override
@@ -94,7 +97,7 @@ public class AdminAppUserServiceImpl implements AdminAppUserService{
   public void deleteUser(long id) throws NoSuchUserByIdException, UserAlreadyDisabledException {
     AppUser appUser = checkIfUserByIdExists(id);
     if (appUser.isDisabled()){
-      throw new UserAlreadyDisabledException("User is already inactive");
+      throw new UserAlreadyDisabledException("User is already disabled.");
     }
     appUserRepository.setUserToDisabled(appUser.getId());
   }

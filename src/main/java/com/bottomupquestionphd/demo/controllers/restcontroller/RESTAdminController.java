@@ -21,7 +21,7 @@ public class RESTAdminController {
     this.adminAppUserService = adminAppUserService;
   }
 
-  @GetMapping("change-user-role")
+  @GetMapping("/")
   public ResponseEntity<?> renderChangeUserRoleHTMLRest() throws NoUsersInDatabaseException {
     log.info("REST GET admin/change-user-role started");
     log.info("REST GET admin/change-user-role finished");
@@ -29,7 +29,6 @@ public class RESTAdminController {
     return new ResponseEntity<>(adminAppUserService.findAllUsers(), HttpStatus.OK);
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/remove-user-role/{role}/{id}")
   public ResponseEntity<?> removeUserRoleRest(@PathVariable String role, @PathVariable long id) throws NoSuchUserByIdException, RoleMissMatchException, NoUsersInDatabaseException {
     log.info("REST GET admin/remove-user-role/" + role + "/" + id + " started");

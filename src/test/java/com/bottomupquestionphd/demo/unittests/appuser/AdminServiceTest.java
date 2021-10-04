@@ -5,6 +5,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.repositories.AppUserRepository;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserService;
 import com.bottomupquestionphd.demo.services.appuser.AdminAppUserServiceImpl;
+import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.times;
 @Import(TestConfigurationBeanFactory.class)
 public class AdminServiceTest {
   private final AppUserRepository appUserRepository = Mockito.mock(AppUserRepository.class);
+  private final AppUserService appUserService = Mockito.mock(AppUserService.class);
   private AdminAppUserService adminAppUserService;
 
   @Autowired
@@ -31,21 +33,25 @@ public class AdminServiceTest {
 
   @Before
   public void setup() {
-    this.adminAppUserService = new AdminAppUserServiceImpl(appUserRepository);
+    this.adminAppUserService = new AdminAppUserServiceImpl(appUserRepository, appUserService);
   }
 
   @Test
   public void findAllUsers_withMoreThanOneUserInDB_returnsListOfAppUsers() throws NoUsersInDatabaseException {
     List<AppUser> appUsers = (List<AppUser>) beanFactory.getBean("validUsers");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setId(1);
 
-    Mockito.when(appUserRepository.count()).thenReturn(4l);
-    Mockito.when(appUserRepository.findAll()).thenReturn(appUsers);
+    Mockito.when(appUserRepository.count()).thenReturn(5L);
+    Mockito.when(appUserService.findCurrentlyLoggedInUser()).thenReturn(appUser);
+    Mockito.when(appUserRepository.findAllCurrentUserNotIncluded(appUser.getId())).thenReturn(appUsers);
 
     List<AppUser> returnedAppUsers = adminAppUserService.findAllUsers();
 
-    Mockito.verify(appUserRepository, times(1)).findAll();
+    Mockito.verify(appUserRepository, times(1)).findAllCurrentUserNotIncluded(appUser.getId());
     Assert.assertEquals("ROLE_USER,ROLE_ADMIN", returnedAppUsers.get(0).getRoles());
     Assert.assertEquals("ROLE_USER", returnedAppUsers.get(1).getRoles());
+    Assert.assertEquals(4, returnedAppUsers.size());
   }
 
   @Test(expected = NoUsersInDatabaseException.class)

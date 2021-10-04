@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.NestedServletException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -352,6 +354,31 @@ public class GlobalExceptionHandler {
   }
 
   //Random Exception
+
+  @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  public @ResponseBody
+  ErrorMessageDTO handleUnAuthorizedException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(NestedServletException.class)
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  public @ResponseBody
+  ErrorMessageDTO handleAccessDeniedException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+  @ResponseStatus(value = HttpStatus.FORBIDDEN)
+  public @ResponseBody
+  ErrorMessageDTO handleForbiddenException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   public @ResponseBody

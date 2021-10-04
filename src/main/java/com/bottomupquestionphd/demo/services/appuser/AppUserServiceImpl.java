@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.services.appuser;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUserRole;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
@@ -76,7 +77,7 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     AppUser appUser = findCurrentlyLoggedInUser();
-  if (appUser.getId() != appUserId && !appUser.getRoles().contains("ROLE_ADMIN")) {
+  if (appUser.getId() != appUserId && !appUser.getRoles().contains(AppUserRole.ADMIN.toString())) {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }
   }

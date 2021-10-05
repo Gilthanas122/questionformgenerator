@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+
   @Autowired
   @Qualifier("gmail")
   private JavaMailSender javaMailSender;

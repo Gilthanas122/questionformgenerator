@@ -117,7 +117,6 @@ public class AppUserServiceImpl implements AppUserService {
     if (!changePasswordDTO.getPassword1().equals(changePasswordDTO.getPassword2())) {
       throw new PassWordMissMachException("The two passwords should match");
     }
-    checkIfCurrentUserMatchesUserIdInPath(appUserId);
     RegexServiceImpl.checkRegex(changePasswordDTO.getPassword1(), RegexErrorType.REGEXPASSWORD.toString());
     AppUser appUser = findById(appUserId);
     appUser.setPassword(passwordEncoder.encode(changePasswordDTO.getPassword1()));
@@ -126,8 +125,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Override
   public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
-    checkIfCurrentUserMatchesUserIdInPath(appUserId);
-    if (token == null || token.isBlank()){
+    if (token == null || token.isEmpty()){
       throw new MissingParamsException("Token is required.");
     }
     AppUser appUser = findById(appUserId);

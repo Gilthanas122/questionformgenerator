@@ -202,10 +202,10 @@ public class QuestionFormRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()", is(4)))
             .andExpect(jsonPath("$[1].id", is(2)))
-            .andExpect(jsonPath("$[1].questionType", is("Radio button")))
+            .andExpect(jsonPath("$[1].questionType", is("RadioButtonQuestion")))
             .andExpect(jsonPath("$[1].questionTextPossibilities[0].answerText", is("Radio")))
             .andExpect(jsonPath("$[0].id", is(1)))
-            .andExpect(jsonPath("$[0].questionType", is("Check box")))
+            .andExpect(jsonPath("$[0].questionType", is("CheckBoxQuestion")))
             .andExpect(jsonPath("$[0].questionTextPossibilities[0].answerText", is("Check box")))
             .andExpect(jsonPath("$[2].scale", is(5)));
   }

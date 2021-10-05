@@ -255,7 +255,7 @@ public class AppUserServiceTest {
   }
 
   @Test
-  public void findCurrentlyLoggedInUser_withValidUser_returnsAppuser() throws BelongToAnotherUserException {
+  public void findCurrentlyLoggedInUser_withValidUser_returnsAppuser() {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
     Mockito.when(appUserRepository.findByUsername(any())).thenReturn(Optional.of(appUser));
@@ -266,7 +266,7 @@ public class AppUserServiceTest {
   }
 
   @Test(expected = UsernameNotFoundException.class)
-  public void findCurrentlyLoggedInUser_withInValidUser_throwsUserNameNotFound() throws BelongToAnotherUserException {
+  public void findCurrentlyLoggedInUser_withInValidUser_throwsUserNameNotFound() {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
     Mockito.when(specificUserDetails.getUsername()).thenReturn(appUser.getUsername());

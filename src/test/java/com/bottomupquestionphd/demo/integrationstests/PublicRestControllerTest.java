@@ -4,9 +4,13 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserRegisterDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,11 +27,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Sql(value = {"/db/data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/db/clear-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class PublicRestControllerTest {
+
+  @RegisterExtension
+  static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+          .withConfiguration(GreenMailConfiguration.aConfig().withUser("question", "answer"))
+          .withPerMethodLifecycle(false);
 
   @Autowired
   private WebApplicationContext webApplicationContext;
@@ -37,6 +46,7 @@ public class PublicRestControllerTest {
   public void setUp() {
     mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
   }
+
 
   @Test
   public void registerUser_getAppUser() throws Exception {
@@ -234,8 +244,8 @@ public class PublicRestControllerTest {
     mockMvc.perform(post("/rest/change-password")
             .contentType(MediaType.APPLICATION_JSON)
             .param("email", ""))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", is("Email is required")));
+            .andExpect(status().isNotAcceptable())
+            .andExpect(jsonPath("$.message", is("Not valid email format")));
   }
 
   @Test
@@ -253,7 +263,7 @@ public class PublicRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .param("email", "usernotactivated@user.com"))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message", is("You should activate your app user in order to login! Check your email")));
+            .andExpect(jsonPath("$.message", is("You should activate your app user in order to login or to reacquire password! Check your email")));
   }
 
   @Test
@@ -263,13 +273,6 @@ public class PublicRestControllerTest {
            .param("token", "user-token"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$", is(3)));
-  }
-
-  @Test
-  public void getResetPassword_withNoToken_shouldThrowMissingParamsException() throws Exception {
-    mockMvc.perform(get("/rest/reset-password/3")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest());
   }
 
   @Test

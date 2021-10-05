@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+  id 'org.springframework.boot' version '2.4.1'
+  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+  id 'java'
 }
 
 group = 'com.bottomupquestionphd'
@@ -9,41 +9,41 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
 }
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
-    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
-    implementation 'junit:junit:4.13.2'
-    compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.4.0'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.5.5'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.5.5'
-    compileOnly 'org.projectlombok:lombok:1.18.20'
-    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
-    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
-    implementation 'io.springfox:springfox-data-rest:3.0.0'
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.5'
-    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
-    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
-    runtimeOnly 'com.h2database:h2:1.4.200'
-    implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.4.5'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    implementation group: 'com.icegreen', name: 'greenmail-junit4', version: '2.0.0-alpha-1'
-    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.7.21'
-    testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '4.2.2.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
+  implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
+  implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+  implementation 'junit:junit:4.13.2'
+  compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.4.0'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.5'
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.5.5'
+  implementation 'org.springframework.boot:spring-boot-starter-web:2.5.5'
+  compileOnly 'org.projectlombok:lombok:1.18.20'
+  implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
+  implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+  implementation 'io.springfox:springfox-data-rest:3.0.0'
+  implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.4.5'
+  compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
+  implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.0.0'
+  runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+  runtimeOnly 'com.h2database:h2:1.4.200'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.4.5'
+  annotationProcessor 'org.projectlombok:lombok:1.18.20'
+  testImplementation group: 'com.icegreen', name: 'greenmail-junit5', version: '1.6.5'
+  testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.7.21'
+  testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '4.2.2.RELEASE'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.5'
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }

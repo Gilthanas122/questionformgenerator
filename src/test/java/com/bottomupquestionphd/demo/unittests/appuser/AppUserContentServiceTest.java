@@ -45,7 +45,7 @@ public class AppUserContentServiceTest {
   }
 
   @Test
-  public void indQuestionFormsFilledOutByUser_withValidUserId() throws BelongToAnotherUserException, NoSuchUserByIdException {
+  public void findQuestionFormsFilledOutByUser_withValidUserId() throws BelongToAnotherUserException, NoSuchUserByIdException {
     List<AppUsersQuestionFormsDTO> appUsersQuestionFormsDTOs = (List<AppUsersQuestionFormsDTO>) beanFactory.getBean("appUsersQuestionFormsDTOs");
     long appUserId = 1;
     Mockito.when(answerFormService.findQuestionFormsFilledOutByAppUserId(appUserId)).thenReturn(appUsersQuestionFormsDTOs);

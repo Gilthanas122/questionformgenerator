@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.unittests.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUserRole;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -145,6 +147,23 @@ public class QuestionFormServiceTest {
     Mockito.verify(questionFormRepository, times(1)).findAllByAppUserId(appUser.getId());
   }
 
+  @Test
+  public void findAll_withAdminUser_returnsListOfQuestionForms() throws NoQuestionFormsInDatabaseException {
+    List<QuestionForm> questionForms = (List<QuestionForm>) beanFactory.getBean("questionForms");
+    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
+    appUser.setId(3);
+    appUser.setRoles(AppUserRole.ADMIN.toString());
+
+    Mockito.when(appUserService.findCurrentlyLoggedInUser()).thenReturn(appUser);
+    Mockito.when(questionFormRepository.findAll()).thenReturn(questionForms);
+    List<QuestionForm> returnedQuestionForms = questionFormService.findAll();
+
+    Assert.assertEquals(4, returnedQuestionForms.size());
+    Assert.assertEquals("question form name0", returnedQuestionForms.get(0).getName());
+
+    Mockito.verify(questionFormRepository, times(1)).findAll();
+  }
+
   @Test(expected = NoQuestionFormsInDatabaseException.class)
   public void findAll_withNoQuestionFormsInDBByTheUser_throwsNoQuestionFormInDatabaseException() throws NoQuestionFormsInDatabaseException {
     List<QuestionForm> questionForms = new ArrayList<>();
@@ -160,7 +179,7 @@ public class QuestionFormServiceTest {
 
   @Test
   public void finishQuestionForm_withEnoughQuestions() throws BelongToAnotherUserException, QuestionFormNotFoundException, NotEnoughQuestionsToCreateFormException, MissingUserException {
-    QuestionForm questionForm = (QuestionForm)  beanFactory.getBean("questionForm");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     questionForm.setAppUser(appUser);
     questionForm.setId(3);
@@ -171,12 +190,12 @@ public class QuestionFormServiceTest {
     questionFormService.finishQuestionForm(questionForm.getId());
 
     Mockito.verify(questionFormRepository, times(1)).save(questionForm);
-    Assert.assertTrue(questionForm.isFinished());
+    assertTrue(questionForm.isFinished());
   }
 
   @Test(expected = NotEnoughQuestionsToCreateFormException.class)
   public void finishQuestionForm_withTooFewQuestions_throwsNotEnoughQuestionsToCreateAFormException() throws BelongToAnotherUserException, QuestionFormNotFoundException, NotEnoughQuestionsToCreateFormException, MissingUserException {
-    QuestionForm questionForm = (QuestionForm)  beanFactory.getBean("questionForm");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     List<Question> questions = new ArrayList<>();
     questionForm.setQuestions(questions);
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
@@ -211,7 +230,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withValidInputUp_returnsQuestion() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = "up";
-    int currentListPosition =1;
+    int currentListPosition = 1;
 
     Question question = questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
 
@@ -222,7 +241,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withValidInputDown_returnsQuestion() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = "down";
-    int currentListPosition =1;
+    int currentListPosition = 1;
 
     Question question = questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
 
@@ -233,7 +252,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withInvalidDirection_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = "hello";
-    int currentListPosition =1;
+    int currentListPosition = 1;
 
     questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
   }
@@ -242,7 +261,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withInvalidDirectionNull_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = null;
-    int currentListPosition =1;
+    int currentListPosition = 1;
 
     questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
   }
@@ -251,7 +270,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withInvalidPositionForUp_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = "up";
-    int currentListPosition =0;
+    int currentListPosition = 0;
 
     questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
   }
@@ -260,7 +279,7 @@ public class QuestionFormServiceTest {
   public void findQuestionToSwitchPositionWith_withInvalidPositionForDown_throwsInvalidQuestionPositionChangeException() throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     String direction = "down";
-    int currentListPosition =3;
+    int currentListPosition = 3;
 
     questionFormService.findQuestionToSwitchPositionWith(questionForm, currentListPosition, direction);
   }
@@ -295,14 +314,19 @@ public class QuestionFormServiceTest {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
     questionForm.setAppUser(appUser);
     appUser.setId(11);
+    QuestionForm questionFormDeleted = (QuestionForm) beanFactory.getBean("questionForm");
+    questionFormDeleted.setAppUser(appUser);
+    questionFormDeleted.setDeleted(true);
 
     Mockito.when(questionFormRepository.existsById(questionForm.getId())).thenReturn(true);
+    Mockito.when(deleteService.setQuestionFormToBeDeleted(any())).thenReturn(questionFormDeleted);
     Mockito.when(questionFormRepository.findById(anyLong())).thenReturn(questionForm);
+
 
     questionFormService.deleteQuestionForm(questionForm.getId());
 
-    Mockito.verify(questionFormRepository, times(1)).deleteQuestionFormById(questionForm.getId());
     Mockito.verify(queryService, times(1)).deleteQuestionsBelongingToQuestionForm(questionForm.getId());
+    Mockito.verify(questionFormRepository, times(1)).save(questionFormDeleted);
   }
 
   @Test(expected = QuestionFormNotFoundException.class)
@@ -328,7 +352,7 @@ public class QuestionFormServiceTest {
   }
 
   @Test
-  public void getAllTextQuestionIdsFromQuestionForm_withTwoTextQuestions_returnListLong(){
+  public void getAllTextQuestionIdsFromQuestionForm_withTwoTextQuestions_returnListLong() {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     TextQuestion textQuestion = (TextQuestion) beanFactory.getBean("textQuestion");
     textQuestion.setId(1);
@@ -341,14 +365,14 @@ public class QuestionFormServiceTest {
 
     List<Long> textQuestionIds = questionFormService.getAllTextQuestionIdsFromQuestionForm(questionForm);
 
-    Assert.assertTrue(textQuestionIds.size() == 2);
-    Assert.assertTrue(textQuestionIds.contains(1l));
-    Assert.assertTrue(textQuestionIds.contains(2l));
+    assertTrue(textQuestionIds.size() == 2);
+    assertTrue(textQuestionIds.contains(1l));
+    assertTrue(textQuestionIds.contains(2l));
 
   }
 
   @Test
-  public void getAllTextQuestionIdsFromQuestionForm_withNoTextQuestions_returnListLong(){
+  public void getAllTextQuestionIdsFromQuestionForm_withNoTextQuestions_returnListLong() {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     CheckBoxQuestion checkBoxQuestion = (CheckBoxQuestion) beanFactory.getBean("checkboxQuestion");
     checkBoxQuestion.setId(1);
@@ -361,7 +385,7 @@ public class QuestionFormServiceTest {
 
     List<Long> textQuestionIds = questionFormService.getAllTextQuestionIdsFromQuestionForm(questionForm);
 
-    Assert.assertTrue(textQuestionIds.isEmpty());
+    assertTrue(textQuestionIds.isEmpty());
   }
 
   @Test
@@ -417,6 +441,16 @@ public class QuestionFormServiceTest {
             .checkIfCurrentUserMatchesUserIdInPath(anyLong());
 
     questionFormService.updateQuestionForm(questionFormCreateDTO, 2L);
+  }
+
+  @Test
+  public void updateAnswerFormAfterAddingNewQuestion_withValidData() {
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerForm");
+    Question question = (Question) beanFactory.getBean("validQuestion");
+
+    questionFormService.updateAnswerFormAfterAddingNewQuestion(questionForm, question);
+
+    Mockito.verify(questionFormRepository, times(1)).save(questionForm);
   }
 
 }

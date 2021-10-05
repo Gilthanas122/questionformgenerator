@@ -3,6 +3,7 @@ package com.bottomupquestionphd.demo.services.questions;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUserRole;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionFormServiceImpl implements QuestionFormService {
-
   private final QuestionFormRepository questionFormRepository;
   private final AppUserService appUserService;
   private final QuestionConversionService questionConversionService;
@@ -80,7 +80,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
   @Override
   public List<QuestionForm> findAll() throws NoQuestionFormsInDatabaseException {
     AppUser appUser = appUserService.findCurrentlyLoggedInUser();
-    if (appUser.getRoles().contains("ROLE_ADMIN")){ ///this line not tested
+    if (appUser.getRoles().contains(AppUserRole.ADMIN.toString())) {
       return questionFormRepository.findAll();
     }
     List<QuestionForm> questionForms = questionFormRepository.findAllByAppUserId(appUser.getId());
@@ -116,24 +116,17 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     if (direction == null || (!direction.equals("up") && !direction.equals("down"))) {
       throw new InvalidQuestionPositionChangeException("Not valid parameter provided for changing the position");
     }
-    if (direction.equals("up")) {
-      return questionForm
-              .getQuestions()
-              .stream()
-              .filter(question -> question.getListPosition() == currentPosition - 1)
-              .findFirst()
-              .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more forward. Is the first element"));
-    }
+    int movementDirection = direction.equals("up") ? -1 : 1;
     return questionForm
             .getQuestions()
             .stream()
-            .filter(question -> question.getListPosition() == currentPosition + 1)
+            .filter(question -> question.getListPosition() == currentPosition + movementDirection)
             .findFirst()
-            .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move element more backwards. Is the last element"));
+            .orElseThrow(() -> new InvalidQuestionPositionException("Not possible to move the element further forward or further backwards"));
   }
 
   @Override
-  public void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm){
+  public void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm) {
     for (int i = 0; i < questionForm.getQuestions().size() - 1; i++) {
       if (questionForm.getQuestions().get(i).isDeleted()) {
         questionForm.getQuestions().remove(i);
@@ -152,13 +145,12 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     return questionForm;
   }
 
-  //RE-TEST
   @Override
   public void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException {
     checkIfQuestionFormExists(questionFormId);
     QuestionForm questionForm = questionFormRepository.findById(questionFormId);
     appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
-    deleteService.setQuestionFormToBeDeleted(questionForm);
+    questionForm = deleteService.setQuestionFormToBeDeleted(questionForm);
     questionFormRepository.save(questionForm);
     queryService.deleteQuestionsBelongingToQuestionForm(questionFormId); // nem kell talan?
   }
@@ -175,18 +167,17 @@ public class QuestionFormServiceImpl implements QuestionFormService {
 
   @Override
   public void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException {
-      ErrorServiceImpl.buildMissingFieldErrorMessage(questionFormCreateDTO);
-      if (!questionFormRepository.existsById(id)){
-        throw new QuestionFormNotFoundException("No question form with the given id in the database, can not update it");
-      }
-      QuestionForm questionForm = questionFormRepository.findById(id);
-      appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
-      questionForm.setName(questionFormCreateDTO.getName());
-      questionForm.setDescription(questionFormCreateDTO.getDescription());
-      questionFormRepository.save(questionForm);
+    ErrorServiceImpl.buildMissingFieldErrorMessage(questionFormCreateDTO);
+    if (!questionFormRepository.existsById(id)) {
+      throw new QuestionFormNotFoundException("No question form with the given id in the database, can not update it");
+    }
+    QuestionForm questionForm = questionFormRepository.findById(id);
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
+    questionForm.setName(questionFormCreateDTO.getName());
+    questionForm.setDescription(questionFormCreateDTO.getDescription());
+    questionFormRepository.save(questionForm);
   }
 
-  //NOT TESTED
   @Override
   public void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question) {
     List<AnswerForm> answerForms = questionForm.getAnswerForms();

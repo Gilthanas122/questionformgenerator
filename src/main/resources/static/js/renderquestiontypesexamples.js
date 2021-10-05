@@ -5,15 +5,15 @@ window.onload = function WindowLoad(event) {
 }
 
 function addEventListeners() {
-    let trueFalseButton = document.getElementById("radio");
-    let scaleButton = document.getElementById("scale");
-    let textButton = document.getElementById("text");
-    let checkBoxButton = document.getElementById("checkbox");
+    let trueFalseButton = document.getElementById("RadioButtonQuestion");
+    let ScaleQuestionButton = document.getElementById("ScaleQuestion");
+    let textButton = document.getElementById("TextQuestion");
+    let checkBoxButton = document.getElementById("CheckBoxQuestion");
 
-    trueFalseButton.addEventListener("click", () => renderElements('radio'), false);
-    scaleButton.addEventListener("click", () => renderElements('scale'), false);
-    textButton.addEventListener("click", () => renderElements('text'), false);
-    checkBoxButton.addEventListener("click", () => renderElements('checkbox'), false);
+    trueFalseButton.addEventListener("click", () => renderElements('RadioButtonQuestion'), false);
+    ScaleQuestionButton.addEventListener("click", () => renderElements('ScaleQuestion'), false);
+    textButton.addEventListener("click", () => renderElements('TextQuestion'), false);
+    checkBoxButton.addEventListener("click", () => renderElements('CheckBoxQuestion'), false);
 }
 
 function renderElements(buttonId) {
@@ -36,11 +36,11 @@ function renderElements(buttonId) {
     form.appendChild(createQuestionTextInputAndLabel());
 
 
-    if (buttonId === "radio" || buttonId === "checkbox") {
+    if (buttonId === "RadioButtonQuestion" || buttonId === "CheckBoxQuestion") {
         form.appendChild(createInputRadioOrCheckboxNode(buttonId));
-    } else if (buttonId === "text") {
+    } else if (buttonId === "TextQuestion") {
         form.appendChild(createInputTextNode(buttonId));
-    } else if (buttonId === "scale") {
+    } else if (buttonId === "ScaleQuestion") {
         form.appendChild(createInputScaleTextNode(buttonId));
     } else {
         alert("Invalid input")
@@ -129,11 +129,11 @@ function createInputScaleTextNode(buttonId) {
     let input = document.createElement("INPUT");
     input.name = "answers[0]";
     input.id = "input0";
-    input.placeholder = "enter the max value of the scale";
+    input.placeholder = "enter the max value of the ScaleQuestion";
     addEventlistenerToItem(input);
     container.appendChild(label);
     container.appendChild(input);
-    container.appendChild(createSubDivExample("scale"));
+    container.appendChild(createSubDivExample("ScaleQuestion"));
 
     container.appendChild(resetbutton);
 
@@ -146,24 +146,24 @@ function createSubDivExample(buttonId) {
     let exampleText = createTextNode("An example for the choose question type", "P");
 
     container.appendChild(exampleText);
-    if (buttonId === "radio" || buttonId === "checkbox") {
+    if (buttonId === "RadioButtonQuestion" || buttonId === "CheckBoxQuestion") {
         container.appendChild(createSubDivExampleRadioOrCheckboxOrScale(buttonId));
     } else if (buttonId === "text") {
         container.appendChild(createSubDivExampleText())
     } else {
-        container.appendChild(createSubDivExampleRadioOrCheckboxOrScale("scale"));
+        container.appendChild(createSubDivExampleRadioOrCheckboxOrScale("ScaleQuestion"));
     }
     return container;
 }
 
 function createSubDivExampleRadioOrCheckboxOrScale(buttonId) {
     let container = document.createElement("DIV");
-    if (buttonId == "checkbox") {
-        container.appendChild(createInputs("checkbox", "Which character(s) do you like from the following?", "Ron", "Harry"));
-    } else if (buttonId == "radio") {
-        container.appendChild(createInputs("radio", "Which one is your favourite character?", "Hermione", "Dumbledore"));
+    if (buttonId == "CheckBoxQuestion") {
+        container.appendChild(createInputs("CheckBoxQuestion", "Which character(s) do you like from the following?", "Ron", "Harry"));
+    } else if (buttonId == "RadioButtonQuestion") {
+        container.appendChild(createInputs("RadioButtonQuestion", "Which one is your favourite character?", "Hermione", "Dumbledore"));
     }else{
-        container.appendChild(createInputs("scale", "How much do you like Harry Potter?", null, null))
+        container.appendChild(createInputs("ScaleQuestion", "How much do you like Harry Potter?", null, null))
     }
     return container;
 }
@@ -172,7 +172,7 @@ function createInputs(inputType, questionTextInput, input1, input2) {
     let container = document.createElement("DIV");
     let questionText = createTextNode(questionTextInput, "P");
     container.appendChild(questionText);
-    if (inputType == "scale"){
+    if (inputType == "ScaleQuestion"){
         for (let i = 1; i <= 5; i++) {
             let radioButton = document.createElement("INPUT");
             radioButton.className += "check";
@@ -191,14 +191,14 @@ function createInputs(inputType, questionTextInput, input1, input2) {
             radioButton.className += "check";
             radioButton.type = inputType;
             radioButton.id = inputType + i;
-            radioButton.name = "checkboxradio";
+            radioButton.name = "CheckBoxQuestionradio";
             let radioButtonLabel = document.createElement("LABEL");
             radioButtonLabel.for = inputType + i;
             if (i === 0) {
                 radioButtonLabel.textContent = input1;
                 radioButton.checked=true;
             } else {
-                if (inputType === "checkbox"){
+                if (inputType === "CheckBoxQuestion"){
                     radioButton.checked =true;
                 }
                 radioButtonLabel.textContent = input2;

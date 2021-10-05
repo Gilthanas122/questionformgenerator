@@ -44,13 +44,13 @@ public class QuestionServiceImpl implements QuestionService {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
     questionForm.setFinished(false);
     Question question;
-    if (type.equals("text")) {
+    if (type.equals(QuestionType.TEXTQUESTION.toString())) {
      question =  saveTextQuestion(questionDTO, questionForm);
-    } else if (type.equals("checkbox")) {
+    } else if (type.equals(QuestionType.CHECKBOXQUESTION.toString())) {
       question =   saveCheckBoxQuestion(questionDTO, questionForm);
-    } else if (type.equals("radio")) {
+    } else if (type.equals(QuestionType.RADIOBUTTONQUESTION.toString())) {
       question =   saveRadioQuestion(questionDTO, questionForm);
-    } else if (type.equals("scale")) {
+    } else if (type.equals(QuestionType.SCALEQUESTION.toString())) {
       question =   saveScaleQuestion(questionDTO, questionForm);
     }else{
       throw new InvalidInputFormatException("Invalid Question Type");

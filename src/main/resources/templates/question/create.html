@@ -15,10 +15,10 @@
         <div id="typediv">
             <p hidden id="questionFormId" th:text="${questionFormId}"></p>
             <p id="explanationtext"> Choose what type of question you wish to create</p>
-            <button  class="inputbuttons" id="radio" type="button"> Radio button</button>
-            <button  class="inputbuttons" id="checkbox" type="button"> Check box </button>
-            <button  class="inputbuttons" id="scale" type="button"> Scale 1-10 </button>
-            <button  class="inputbuttons" id="text" type="button"> Text answer </button>
+            <button  class="inputbuttons" id="RadioButtonQuestion" type="button"> Radio button</button>
+            <button  class="inputbuttons" id="CheckBoxQuestion" type="button"> Check box </button>
+            <button  class="inputbuttons" id="ScaleQuestion" type="button"> Scale 1-10 </button>
+            <button  class="inputbuttons" id="TextQuestion" type="button"> Text answer </button>
             <a  class="btn btn-warning" th:href="@{|/question-form/finish/${questionFormId}|}" id="finish" type="button">Submit Form </a>
         </div>
 

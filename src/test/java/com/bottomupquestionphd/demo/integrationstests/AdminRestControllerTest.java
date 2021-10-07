@@ -1,5 +1,7 @@
 package com.bottomupquestionphd.demo.integrationstests;
 
+import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
+import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,6 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"/db/clear-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @WithMockUser(username = "admin", roles = {"ADMIN"})
 public class AdminRestControllerTest {
+  @Autowired
+  private AppUserService appUserService;
   @Autowired
   private WebApplicationContext webApplicationContext;
   private MockMvc mockMvc;
@@ -60,15 +66,51 @@ public class AdminRestControllerTest {
     mockMvc.perform(get("/rest/admin/"))
             .andExpect(status().isUnauthorized());
   }*/
-
-  @WithMockUser(username = "admin", roles = {"ADMIN"})
   @Test
-  public void removeUserRole_withValidRequestToRemoveTeacherRole_shouldReturnModifiedUsers() throws Exception {
+  public void addUserRole_withValidData_shouldReturnListModifiedUsers() throws Exception {
+    mockMvc.perform(get("/rest/admin/add-user-role/admin/2")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(5)))
+            .andExpect(jsonPath("$[0].roles", is("ROLE_USER,ROLE_TEACHER,ROLE_ADMIN")));
+
+    assertEquals(appUserService.findById(2).getRoles(), "ROLE_USER,ROLE_TEACHER,ROLE_ADMIN");
+  }
+
+  @Test
+  public void addUserRole_withInvalidRoleSuffix_shouldThrowRoleMissMatchException() throws Exception {
+    mockMvc.perform(get("/rest/admin/add-user-role/kaki/2")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", is("Invalid role")));
+  }
+
+  @Test
+  public void addUserRole_withInvalidId_shouldThrowNoSuchUserByIdException() throws Exception {
+    mockMvc.perform(get("/rest/admin/add-user-role/admin/66")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message", is("No user at the given id")));
+  }
+
+  @Test
+  public void addUserRole_withUserThatHasAlreadyThatRole_shouldThrowRoleMissMatchException() throws Exception {
+    mockMvc.perform(get("/rest/admin/add-user-role/teacher/2")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", is("User already has the given role")));
+  }
+
+
+  @Test
+  public void removeUserRole_withValidRequestToRemoveTeacherRole_shouldReturnListModifiedUsers() throws Exception {
     mockMvc.perform(get("/rest/admin/remove-user-role/teacher/2")
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(5)))
             .andExpect(jsonPath("$[1].roles", is("ROLE_USER")));
+
+    assertEquals(appUserService.findById(2).getRoles(), "ROLE_USER");
   }
 
   @Test
@@ -104,6 +146,9 @@ public class AdminRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(5)))
             .andExpect(jsonPath("$[0].active", is(false)));
+
+    assertEquals(appUserService.findById(2).isActive(), false);
+
   }
 
   @Test
@@ -130,6 +175,9 @@ public class AdminRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[3].active", is(true)));
+
+    assertEquals(appUserService.findById(4).isActive(), true);
+
   }
 
   @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -155,6 +203,8 @@ public class AdminRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(4)));
+
+    assertThrows(NoSuchUserByIdException.class, ()-> appUserService.findById(2));
   }
 
   @Test

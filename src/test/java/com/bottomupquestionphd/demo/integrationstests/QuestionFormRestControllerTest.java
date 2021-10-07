@@ -1,6 +1,8 @@
 package com.bottomupquestionphd.demo.integrationstests;
 
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreateDTO;
+import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
+import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class QuestionFormRestControllerTest {
   @Autowired
   private WebApplicationContext webApplicationContext;
+  @Autowired
+  private QuestionFormService questionFormService;
   private MockMvc mockMvc;
 
   @BeforeAll
@@ -50,6 +56,8 @@ public class QuestionFormRestControllerTest {
             .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("question form test name", "question form test description"))))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", is(5)));
+
+    assertEquals("question form test name", questionFormService.findById(5).getName());
   }
 
   @Test
@@ -126,6 +134,8 @@ public class QuestionFormRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
             .andExpect(status().isCreated());
+
+    assertEquals("modified name", questionFormService.findById(2).getName());
   }
 
   @Test
@@ -232,6 +242,16 @@ public class QuestionFormRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
+  }
+
+  @Test
+  public void delete_withValidData() throws Exception {
+    mockMvc.perform(delete("/rest/question-form/delete/1")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message", is("Question Form with id 1 successfully deleted")));
+
+    assertThrows(QuestionFormNotFoundException.class, () -> questionFormService.findById(1));
   }
 
   @Test

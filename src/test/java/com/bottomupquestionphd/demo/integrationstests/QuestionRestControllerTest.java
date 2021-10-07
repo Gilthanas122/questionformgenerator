@@ -3,6 +3,8 @@ package com.bottomupquestionphd.demo.integrationstests;
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
+import com.bottomupquestionphd.demo.exceptions.question.QuestionNotFoundByIdException;
+import com.bottomupquestionphd.demo.services.questions.QuestionServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,10 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(value = {"/db/clear-tables.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @WithMockUser(username = "teacher", roles = {"TEACHER"})
 public class QuestionRestControllerTest {
+  @Autowired
+  private QuestionServiceImpl questionService;
 
   @Autowired
   private WebApplicationContext webApplicationContext;
   private MockMvc mockMvc;
+
 
   @BeforeAll
   public void setUp() {
@@ -53,24 +60,20 @@ public class QuestionRestControllerTest {
   public void postQuestionCreateRest_withValidTextQuestion_shouldReturnStatusOk() throws Exception {
     mockMvc.perform(post("/rest/question/create/" + QuestionType.TEXTQUESTION.toString() + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text"))))
+                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test check box question text"))))
             .andExpect(status().isOk());
+
+    assertEquals("test check box question text", questionService.findById(12).getQuestionText());
   }
 
   @Test
   public void postQuestionCreateRest_withValidRadioButtonQuestion_shouldReturnStatusOk() throws Exception {
     mockMvc.perform(post("/rest/question/create/" + QuestionType.RADIOBUTTONQUESTION.toString() + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text", List.of("radio answer text", "radio answer text 2", "radio answer text 3")))))
+                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test radio button question text", List.of("radio answer text", "radio answer text 2", "radio answer text 3")))))
             .andExpect(status().isOk());
-  }
 
-  @Test
-  public void postQuestionCreateRest_withValidCheckBoxQuestion_shouldReturnStatusOk() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION.toString() + "/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text", List.of("checkbox answer text", "checkbox answer text 2", "checkbox answer text 3")))))
-            .andExpect(status().isOk());
+    assertEquals("test radio button question text", questionService.findById(11).getQuestionText());
   }
 
   @Test
@@ -79,6 +82,19 @@ public class QuestionRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text scale", List.of("5")))))
             .andExpect(status().isOk());
+
+    assertEquals("test question text scale", questionService.findById(9).getQuestionText());
+  }
+
+  @Test
+  public void postQuestionCreateRest_withValidCheckBoxQuestion_shouldReturnStatusOk() throws Exception {
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION.toString() + "/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text", List.of("checkbox answer text", "checkbox answer text 2", "checkbox answer text 3")))))
+                    .andExpect(status().isOk());
+
+    assertEquals("test question text", questionService.findById(10).getQuestionText());
+
   }
 
   @Test
@@ -198,6 +214,8 @@ public class QuestionRestControllerTest {
             .andExpect(jsonPath("$.id", is(1)))
             .andExpect(jsonPath("$.listPosition", is(0)))
             .andExpect(jsonPath("$.questionText", is("modified check box question text")));
+
+    assertEquals("modified check box question text", questionService.findById(1).getQuestionText());
   }
 
   @Test
@@ -209,6 +227,9 @@ public class QuestionRestControllerTest {
             .andExpect(jsonPath("$.id", is(2)))
             .andExpect(jsonPath("$.listPosition", is(1)))
             .andExpect(jsonPath("$.questionText", is("modified radio button question text")));
+
+    assertEquals("modified radio button question text", questionService.findById(2).getQuestionText());
+
   }
 
   @Test
@@ -220,6 +241,9 @@ public class QuestionRestControllerTest {
             .andExpect(jsonPath("$.id", is(3)))
             .andExpect(jsonPath("$.listPosition", is(2)))
             .andExpect(jsonPath("$.questionText", is("modified scale question text")));
+
+    assertEquals("modified scale question text", questionService.findById(3).getQuestionText());
+
   }
 
   @Test
@@ -231,6 +255,8 @@ public class QuestionRestControllerTest {
             .andExpect(jsonPath("$.id", is(4)))
             .andExpect(jsonPath("$.listPosition", is(3)))
             .andExpect(jsonPath("$.questionText", is("modified text question text")));
+
+    assertEquals("modified text question text", questionService.findById(4).getQuestionText());
   }
 
   @Test
@@ -275,6 +301,8 @@ public class QuestionRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.listPosition", is(0)));
+
+    assertEquals(0, questionService.findById(2).getListPosition());
   }
 
   @Test
@@ -323,6 +351,8 @@ public class QuestionRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", is(1)));
+
+    assertThrows(QuestionNotFoundByIdException.class, () -> questionService.findById(1));
   }
 
   @Test

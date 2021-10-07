@@ -286,7 +286,7 @@ public class QuestionServiceTest {
     Mockito.verify(questionRepository, times(1)).save(any());
     assertEquals(QuestionType.TEXTQUESTION.toString(), converted.getDiscriminatorValue());
   }
-
+  
   @Test
   public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeScaleQuestion() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("scaleQuestionWithDTypeDTO");

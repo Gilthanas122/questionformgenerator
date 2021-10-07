@@ -7,8 +7,8 @@ import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
 import com.bottomupquestionphd.demo.domains.dtos.answerform.CreateAnswerFormDTO;
-import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUserLoginDTO;
+import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDTO;
 import com.bottomupquestionphd.demo.domains.dtos.appuser.ChangePasswordDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionCreateDTO;
 import com.bottomupquestionphd.demo.domains.dtos.question.QuestionWithDTypeDTO;
@@ -86,27 +86,27 @@ public class TestConfigurationBeanFactory {
 
   @Bean(name = {"validChangePasswordDTO"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  ChangePasswordDTO getValidChangePasswordDTO(){
+  ChangePasswordDTO getValidChangePasswordDTO() {
     return new ChangePasswordDTO("Password-11", "Password-11");
   }
 
   @Bean(name = {"invalidChangePasswordDTO"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  ChangePasswordDTO getInvalidChangePasswordDTO(){
+  ChangePasswordDTO getInvalidChangePasswordDTO() {
     return new ChangePasswordDTO("Password-11", "Password-12");
   }
 
   @Bean(name = {"notComplexChangePasswordDTO"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  ChangePasswordDTO getNonComplexChangePasswordDTO(){
+  ChangePasswordDTO getNonComplexChangePasswordDTO() {
     return new ChangePasswordDTO("Password", "Password");
   }
 
   @Bean(name = {"appUsersQuestionFormsDTOs"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  List<AppUsersQuestionFormsDTO> getAppUserQuestionFormsDTOs(){
+  List<AppUsersQuestionFormsDTO> getAppUserQuestionFormsDTOs() {
     List<AppUsersQuestionFormsDTO> appUsersQuestionFormsDTOS = new ArrayList<>();
-    for (int i = 0; i <4 ; i++) {
+    for (int i = 0; i < 4; i++) {
       AppUsersQuestionFormsDTO appUsersQuestionFormsDTO = getAppUsersQuestionFormsDTO();
       appUsersQuestionFormsDTOS.add(appUsersQuestionFormsDTO);
     }
@@ -115,10 +115,10 @@ public class TestConfigurationBeanFactory {
 
   @Bean(name = {"questionFormNotFilledOutByUserDTOs"})
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  List<QuestionFormNotFilledOutByUserDTO> getQuestionFormNotFilledOutByUserDTOs(){
-   List<QuestionFormNotFilledOutByUserDTO> questionFormNotFilledOutByUserDTOs = new ArrayList<>();
+  List<QuestionFormNotFilledOutByUserDTO> getQuestionFormNotFilledOutByUserDTOs() {
+    List<QuestionFormNotFilledOutByUserDTO> questionFormNotFilledOutByUserDTOs = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      QuestionFormNotFilledOutByUserDTO questionFormNotFilledOutByUserDTO = new QuestionFormNotFilledOutByUserDTO(i, "name" +i, i * (int) (Math.random()*3+1));
+      QuestionFormNotFilledOutByUserDTO questionFormNotFilledOutByUserDTO = new QuestionFormNotFilledOutByUserDTO(i, "name" + i, i * (int) (Math.random() * 3 + 1));
       questionFormNotFilledOutByUserDTOs.add(questionFormNotFilledOutByUserDTO);
     }
     return questionFormNotFilledOutByUserDTOs;
@@ -208,21 +208,21 @@ public class TestConfigurationBeanFactory {
   @Bean(name = "textQuestionWithDTypeDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   QuestionWithDTypeDTO getTextQuestionWithDTypeDTO() {
-    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "TextQuestion", "TextQuestionText", null);
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, QuestionType.TEXTQUESTION.toString(), "TextQuestionText", null);
     return questionWithDTypeDTO;
   }
 
   @Bean(name = "scaleQuestionWithDTypeDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   QuestionWithDTypeDTO getScaleQuestionWithDTypeDTO() {
-    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Scale", "ScaleQuestionText", 5);
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, QuestionType.SCALEQUESTION.toString(), "ScaleQuestionText", 5);
     return questionWithDTypeDTO;
   }
 
   @Bean(name = "checkboxQuestionWithDTypeDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   QuestionWithDTypeDTO getCheckBoxQuestionWithDTypeDTO() {
-    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Check box", "CheckboxQuestionText", 5);
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, QuestionType.CHECKBOXQUESTION.toString(), "CheckboxQuestionText", 5);
     questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithCheckBoxQuestion());
     return questionWithDTypeDTO;
   }
@@ -230,7 +230,7 @@ public class TestConfigurationBeanFactory {
   @Bean(name = "radioQuestionWithDTypeDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   QuestionWithDTypeDTO getRadioQuestionWithDTypeDTO() {
-    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, "Radio button", "RadioQuestionText", 5);
+    QuestionWithDTypeDTO questionWithDTypeDTO = new QuestionWithDTypeDTO(1, 1, QuestionType.RADIOBUTTONQUESTION.toString(), "RadioQuestionText", 5);
     questionWithDTypeDTO.setQuestionTextPossibilities(getQuestionTextPossibilitiesWithRadioButtonQuestion());
     return questionWithDTypeDTO;
   }
@@ -278,7 +278,7 @@ public class TestConfigurationBeanFactory {
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   List<AnswerForm> getAnswerFormsWithoutSettingQuestionForm() {
     List<AnswerForm> answerForms = new ArrayList<>();
-    for (int i = 0; i <4 ; i++) {
+    for (int i = 0; i < 4; i++) {
       AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
       answerForm.setAnswers(getAnotherListAnswers());
       answerForms.add(answerForm);
@@ -321,7 +321,11 @@ public class TestConfigurationBeanFactory {
   public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithCheckBoxQuestion() {
     List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
+      if (i == 0 || i == 1) {
+        questionTextPossibilities.add(new QuestionTextPossibility(i, "", getValidCheckBoxQuestion()));
+      } else {
+        questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
+      }
     }
     return questionTextPossibilities;
   }
@@ -331,7 +335,11 @@ public class TestConfigurationBeanFactory {
   public List<QuestionTextPossibility> getQuestionTextPossibilitiesWithRadioButtonQuestion() {
     List<QuestionTextPossibility> questionTextPossibilities = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidRadioButtonQuestion()));
+      if (i == 0 || i == 1) {
+        questionTextPossibilities.add(new QuestionTextPossibility(i, "", getValidCheckBoxQuestion()));
+      } else {
+        questionTextPossibilities.add(new QuestionTextPossibility(i, "questionTextPossibility" + i, getValidCheckBoxQuestion()));
+      }
     }
     return questionTextPossibilities;
   }
@@ -370,7 +378,7 @@ public class TestConfigurationBeanFactory {
   public List<Answer> getAnotherListAnswers() {
     List<Answer> answers = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      Answer answer = new Answer(i+5, getActualAnswerTexts(), new AnswerForm(), getScaleQuestion());
+      Answer answer = new Answer(i + 5, getActualAnswerTexts(), new AnswerForm(), getScaleQuestion());
       answers.add(answer);
     }
     return answers;
@@ -378,7 +386,7 @@ public class TestConfigurationBeanFactory {
 
   @Bean(name = "createAnswerFormDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  public CreateAnswerFormDTO getCreateAnswerFormDTO(){
+  public CreateAnswerFormDTO getCreateAnswerFormDTO() {
     CreateAnswerFormDTO createAnswerFormDTO = new CreateAnswerFormDTO(1l, 1l, 1l, getListQuestions(), getListAnswers());
     return createAnswerFormDTO;
   }
@@ -391,7 +399,7 @@ public class TestConfigurationBeanFactory {
 
   @Bean(name = "questionFormCreateDTO")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  public QuestionFormCreateDTO getQuestionFormCreateDTO(){
+  public QuestionFormCreateDTO getQuestionFormCreateDTO() {
     QuestionFormCreateDTO questionFormCreateDTO = new QuestionFormCreateDTO("test questionFormCreateDTO name", "test questionFormCreateDTO description");
     return questionFormCreateDTO;
   }

@@ -45,14 +45,14 @@ public class QuestionServiceImpl implements QuestionService {
     questionForm.setFinished(false);
     Question question;
     if (type.equals(QuestionType.TEXTQUESTION.toString())) {
-     question =  saveTextQuestion(questionDTO, questionForm);
+      question = saveTextQuestion(questionDTO, questionForm);
     } else if (type.equals(QuestionType.CHECKBOXQUESTION.toString())) {
-      question =   saveCheckBoxQuestion(questionDTO, questionForm);
+      question = saveCheckBoxQuestion(questionDTO, questionForm);
     } else if (type.equals(QuestionType.RADIOBUTTONQUESTION.toString())) {
-      question =   saveRadioQuestion(questionDTO, questionForm);
+      question = saveRadioQuestion(questionDTO, questionForm);
     } else if (type.equals(QuestionType.SCALEQUESTION.toString())) {
-      question =   saveScaleQuestion(questionDTO, questionForm);
-    }else{
+      question = saveScaleQuestion(questionDTO, questionForm);
+    } else {
       throw new InvalidInputFormatException("Invalid Question Type");
     }
     questionFormService.updateAnswerFormAfterAddingNewQuestion(questionForm, question);
@@ -62,15 +62,14 @@ public class QuestionServiceImpl implements QuestionService {
   //RE-TESt
   @Override
   public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
-    checkIfQuestionExistsById(questionId);
-    Question question = questionRepository.findById(questionId);
+    Question question = findById(questionId);
     checkIfQuestionHasBeenAnswered(question);
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
     return questionConversionService.convertFromQuestionToQuestionWithDType(question);
   }
 
   private void checkIfQuestionHasBeenAnswered(Question question) throws QuestionHasBeenAnsweredException {
-    if (question.getAnswers().size()> 1){
+    if (question.getAnswers().size() > 1) {
       throw new QuestionHasBeenAnsweredException("You can not modify a question where answers has been provided, only delete it");
     }
   }
@@ -90,10 +89,12 @@ public class QuestionServiceImpl implements QuestionService {
   //RE-TEST THIS SHIT
   @Override
   public Question saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
-    if (!questionWithDTypeDTO.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())){
+    if (!questionWithDTypeDTO.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())) {
       questionWithDTypeDTO.setScale(0);
+    } else if (questionWithDTypeDTO.getQuestionType().equals(QuestionType.RADIOBUTTONQUESTION.toString())
+            || questionWithDTypeDTO.getQuestionType().equals(QuestionType.CHECKBOXQUESTION.toString())) {
+      questionWithDTypeDTO.setQuestionTextPossibilities(setToDeletedQuestionTextPossibilitiesAndFilterOutEmptyField(questionWithDTypeDTO.getQuestionTextPossibilities()));
     }
-    questionWithDTypeDTO.setQuestionTextPossibilities(setToDeletedQuestionTextPossibilitiesAndFilterOutEmptyField(questionWithDTypeDTO.getQuestionTextPossibilities()));
     ErrorServiceImpl.buildMissingFieldErrorMessage(questionWithDTypeDTO);
     Question question = findById(questionWithDTypeDTO.getId());
     Question converted = questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO);
@@ -110,13 +111,14 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   private List<QuestionTextPossibility> setToDeletedQuestionTextPossibilitiesAndFilterOutEmptyField(List<QuestionTextPossibility> questionTextPossibilitiesFiltered) {
-    for (int i = 0; i <questionTextPossibilitiesFiltered.size(); i++) {
+    for (int i = 0; i < questionTextPossibilitiesFiltered.size(); i++) {
       QuestionTextPossibility currentQuestionTextpossibility = questionTextPossibilitiesFiltered.get(i);
-      if (currentQuestionTextpossibility.getAnswerText() == null || currentQuestionTextpossibility.getAnswerText().isEmpty()){
-        if (currentQuestionTextpossibility.getId() == 0){
+      if (currentQuestionTextpossibility.getAnswerText() == null || currentQuestionTextpossibility.getAnswerText().isEmpty()) {
+        if (currentQuestionTextpossibility.getId() == 0) {
           questionTextPossibilitiesFiltered.remove(currentQuestionTextpossibility);
-        }else{
-          currentQuestionTextpossibility.setDeleted(true);
+          i--;
+        } else {
+          questionTextPossibilitiesFiltered.set(i, deleteService.setQuestionTextPossibilityToBeDeleted(currentQuestionTextpossibility));
         }
       }
     }
@@ -142,16 +144,12 @@ public class QuestionServiceImpl implements QuestionService {
     return question;
   }
 
-  //RE-TEST
   @Override
-  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
+  public long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
     Question question = findById(questionId);
-    question.setDeleted(true);
-    deleteService.setQuestionToBeDeleted(question);
-
     appUserService.checkIfCurrentUserMatchesUserIdInPath(question.getQuestionForm().getAppUser().getId());
+    question = deleteService.setQuestionToBeDeleted(question);
     questionRepository.save(question);
-    
     questionFormService.updateQuestionListPositionAfterDeletingQuestion(question.getQuestionForm());
     return question.getQuestionForm().getId();
   }
@@ -166,7 +164,6 @@ public class QuestionServiceImpl implements QuestionService {
     if (questionDTO.getAnswers().size() < 1) {
       throw new MissingParamsException("Should have a scale value for scale question");
     }
-
     if (!questionDTO.getAnswers().get(0).matches("[0-9]+")) {
       throw new InvalidInputFormatException("Scale value can only be a number");
     }

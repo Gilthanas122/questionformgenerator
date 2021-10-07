@@ -1,5 +1,6 @@
 package com.bottomupquestionphd.demo.unittests.questions;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.*;
@@ -60,7 +61,7 @@ public class QuestionServiceTest {
 
   @Test
   public void saveQuestion_withValidTextQuestion() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "text";
+    String type = QuestionType.TEXTQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
@@ -72,7 +73,7 @@ public class QuestionServiceTest {
 
   @Test
   public void saveQuestion_withValidScaleQuestion() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "scale";
+    String type = QuestionType.SCALEQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     questionCreateDTO.getAnswers().add("5");
@@ -85,7 +86,7 @@ public class QuestionServiceTest {
 
   @Test
   public void saveQuestion_withValidCheckBoxQuestion() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "checkbox";
+    String type = QuestionType.CHECKBOXQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     questionCreateDTO.getAnswers().add("hello there");
@@ -100,7 +101,7 @@ public class QuestionServiceTest {
 
   @Test
   public void saveQuestion_withValidRadioButtonQuestion() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "radio";
+    String type = QuestionType.RADIOBUTTONQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     questionCreateDTO.getAnswers().add("hello there");
@@ -141,7 +142,7 @@ public class QuestionServiceTest {
 
   @Test(expected = MissingParamsException.class)
   public void saveQuestion_TooFewQuestionAnswerPossibilitiesByCheckBoxQuestion_ThrowsInvalidInputFormatException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "checkbox";
+    String type = QuestionType.CHECKBOXQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     questionCreateDTO.getAnswers().add("null");
@@ -154,7 +155,7 @@ public class QuestionServiceTest {
 
   @Test(expected = MissingParamsException.class)
   public void saveQuestion_TooFewQuestionAnswerPossibilitiesByRadioButtonQuestion_ThrowsInvalidInputFormatException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "checkbox";
+    String type = QuestionType.RADIOBUTTONQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = (QuestionCreateDTO) beanFactory.getBean("questionCreateDTO");
     questionCreateDTO.getAnswers().add("null");
@@ -167,7 +168,7 @@ public class QuestionServiceTest {
 
   @Test(expected = NullPointerException.class)
   public void saveQuestion_NullCheckBoxQuestion_ThrowsMissingParamsException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, InvalidInputFormatException {
-    String type = "checkbox";
+    String type = QuestionType.CHECKBOXQUESTION.toString();
     long questionId = 1;
     QuestionCreateDTO questionCreateDTO = null;
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
@@ -193,12 +194,25 @@ public class QuestionServiceTest {
     Mockito.verify(questionConversionService, times(1)).convertFromQuestionToQuestionWithDType(any());
   }
 
+  @Test(expected = QuestionHasBeenAnsweredException.class)
+  public void findByIdConvertToQuestionWithDtypeDTO_withQuestionHavingAnswers_shouldThrowQuestionHasBeenAnsweredException() throws BelongToAnotherUserException, QuestionNotFoundByIdException, QuestionHasBeenAnsweredException {
+    long questionId = 1;
+    QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("textQuestionWithDTypeDTO");
+    Question question = (Question) beanFactory.getBean("validQuestion");
+    question.addOneAnswer(new Answer());
+
+    Mockito.when(questionRepository.existsById(questionId)).thenReturn(true);
+    Mockito.when(questionRepository.findById(questionId)).thenReturn(question);
+    Mockito.when(questionConversionService.convertFromQuestionToQuestionWithDType(any())).thenReturn(questionWithDTypeDTO);
+
+    questionService.findByIdAndConvertToQuestionWithDTypeDTO(1);
+  }
+
   @Test(expected = QuestionNotFoundByIdException.class)
   public void findByIdConvertToQuestionWithDtypeDTO_withInValidQuestionId_throwsQuestionNotFoundException() throws BelongToAnotherUserException, QuestionNotFoundByIdException, QuestionHasBeenAnsweredException {
     Mockito.when(questionRepository.existsById(1l)).thenReturn(false);
     questionService.findByIdAndConvertToQuestionWithDTypeDTO(1);
   }
-
 
   @Test
   public void findById_withValidQuestionId_returnsQuestion() throws BelongToAnotherUserException, QuestionNotFoundByIdException {
@@ -223,15 +237,73 @@ public class QuestionServiceTest {
     CheckBoxQuestion checkBoxQuestion = (CheckBoxQuestion) beanFactory.getBean("checkboxQuestion");
     AppUser appUser = new AppUser.Builder().build();
     checkBoxQuestion.getQuestionForm().setAppUser(appUser);
+    questionWithDTypeDTO.getQuestionTextPossibilities().get(0).setAnswerText("");
 
     Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn((CheckBoxQuestion) beanFactory.getBean("checkboxQuestion"));
     Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(checkBoxQuestion);
 
     doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
-    questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
+    CheckBoxQuestion converted = (CheckBoxQuestion) questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
     Mockito.verify(questionRepository, times(1)).save(any());
+    assertEquals(3, converted.getQuestionTextPossibilities().size());
+    assertEquals(QuestionType.CHECKBOXQUESTION.toString(), converted.getDiscriminatorValue());
 
+  }
+
+  @Test
+  public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeRadioButtonQuestion() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
+    QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("radioQuestionWithDTypeDTO");
+    RadioButtonQuestion radioButtonQuestion = (RadioButtonQuestion) beanFactory.getBean("radioButtonQuestion");
+    AppUser appUser = new AppUser.Builder().build();
+    radioButtonQuestion.getQuestionForm().setAppUser(appUser);
+    questionWithDTypeDTO.getQuestionTextPossibilities().get(0).setAnswerText("");
+
+    Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn((RadioButtonQuestion) beanFactory.getBean("radioButtonQuestion"));
+    Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
+    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(radioButtonQuestion);
+
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
+    RadioButtonQuestion converted = (RadioButtonQuestion) questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
+    Mockito.verify(questionRepository, times(1)).save(any());
+    assertEquals(3, converted.getQuestionTextPossibilities().size());
+    assertEquals(QuestionType.RADIOBUTTONQUESTION.toString(), converted.getDiscriminatorValue());
+  }
+
+  @Test
+  public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeTextQuestion() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
+    QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("textQuestionWithDTypeDTO");
+    TextQuestion textQuestion = (TextQuestion) beanFactory.getBean("textQuestion");
+    AppUser appUser = new AppUser.Builder().build();
+    textQuestion.getQuestionForm().setAppUser(appUser);
+
+    Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn((TextQuestion) beanFactory.getBean("textQuestion"));
+    Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
+    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(textQuestion);
+
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
+    TextQuestion converted = (TextQuestion) questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
+    Mockito.verify(questionRepository, times(1)).save(any());
+    assertEquals(QuestionType.TEXTQUESTION.toString(), converted.getDiscriminatorValue());
+  }
+
+  @Test
+  public void saveQuestionFromQuestionDType_withValidQuestionWithDTypeScaleQuestion() throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
+    QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("scaleQuestionWithDTypeDTO");
+    ScaleQuestion scaleQuestion = (ScaleQuestion) beanFactory.getBean("scaleQuestion");
+    scaleQuestion.setScale(questionWithDTypeDTO.getScale());
+    AppUser appUser = new AppUser.Builder().build();
+    scaleQuestion.getQuestionForm().setAppUser(appUser);
+
+    Mockito.when(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).thenReturn(scaleQuestion);
+    Mockito.when(questionRepository.existsById(questionWithDTypeDTO.getId())).thenReturn(true);
+    Mockito.when(questionRepository.findById(questionWithDTypeDTO.getId())).thenReturn(scaleQuestion);
+
+    doNothing().when(appUserService).checkIfCurrentUserMatchesUserIdInPath(anyLong());
+    ScaleQuestion converted = (ScaleQuestion) questionService.saveQuestionFromQuestionDType(questionWithDTypeDTO);
+    Mockito.verify(questionRepository, times(1)).save(any());
+    assertEquals(QuestionType.SCALEQUESTION.toString(), converted.getDiscriminatorValue());
+    assertEquals(Optional.ofNullable(questionWithDTypeDTO.getScale()), Optional.of(converted.getScale()));
   }
 
   @Test(expected = TypeMismatchException.class)
@@ -314,14 +386,26 @@ public class QuestionServiceTest {
   @Test
   public void deleteQuestion_withValidQuestionId_returnsQuestionFormId() throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException, QuestionHasBeenAnsweredException {
     Question question = (Question) beanFactory.getBean("validQuestion");
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     question.getQuestionForm().setId(3);
 
     Mockito.when(questionRepository.existsById(question.getId())).thenReturn(true);
     Mockito.when(questionRepository.findById(question.getId())).thenReturn(question);
+    Mockito.when(deleteService.setQuestionToBeDeleted(question)).thenReturn(question);
+
     long questionFormId = questionService.deleteQuestion(question.getId());
 
     assertEquals(3, questionFormId);
     Mockito.verify(questionRepository, times(1)).save(question);
+  }
+
+  @Test(expected = QuestionNotFoundByIdException.class)
+  public void deleteQuestion_withInvalidQuestionId_shouldThrowQuestionNotFoundException() throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException, QuestionHasBeenAnsweredException {
+    Question question = (Question) beanFactory.getBean("validQuestion");
+    question.getQuestionForm().setId(3);
+
+    Mockito.when(questionRepository.existsById(question.getId())).thenReturn(false);
+    questionService.deleteQuestion(question.getId());
   }
 
   @Test
@@ -335,5 +419,14 @@ public class QuestionServiceTest {
 
     Assert.assertEquals(3, questionFormId);
     Mockito.verify(questionRepository, times(1)).findById(question.getId());
+  }
+
+  @Test(expected = QuestionNotFoundByIdException.class)
+  public void findQuestionFormIdBelongingToQuestion_withInValidQuestionId_shouldThrowQuestionNotFoundByIdException() throws QuestionNotFoundByIdException {
+    long questionId = 3L;
+
+    questionService.findQuestionFormIdBelongingToQuestion(questionId);
+    Mockito.when(questionRepository.existsById(questionId)).thenReturn(false);
+
   }
 }

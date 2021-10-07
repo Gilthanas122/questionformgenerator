@@ -58,8 +58,6 @@ public class QuestionServiceImpl implements QuestionService {
     questionFormService.updateAnswerFormAfterAddingNewQuestion(questionForm, question);
   }
 
-
-  //RE-TESt
   @Override
   public QuestionWithDTypeDTO findByIdAndConvertToQuestionWithDTypeDTO(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
     Question question = findById(questionId);
@@ -69,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   private void checkIfQuestionHasBeenAnswered(Question question) throws QuestionHasBeenAnsweredException {
-    if (question.getAnswers().size() > 1) {
+    if (question.getAnswers().size() > 0) {
       throw new QuestionHasBeenAnsweredException("You can not modify a question where answers has been provided, only delete it");
     }
   }
@@ -86,7 +84,6 @@ public class QuestionServiceImpl implements QuestionService {
     return questionRepository.findById(questionId);
   }
 
-  //RE-TEST THIS SHIT
   @Override
   public Question saveQuestionFromQuestionDType(QuestionWithDTypeDTO questionWithDTypeDTO) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     if (!questionWithDTypeDTO.getQuestionType().equals(QuestionType.SCALEQUESTION.toString())) {

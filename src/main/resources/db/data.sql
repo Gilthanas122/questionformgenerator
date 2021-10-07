@@ -43,6 +43,15 @@ VALUES('TextQuestion', 4, 0, 3, 0, 'text question text', 1);
 INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
 VALUES('ScaleQuestion', 5, 0, 4, 0, 'scale question text belonging to another user', 3);
 
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('TextQuestion', 6, 0, 4, 0, 'question has been answered', 3);
+
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('TextQuestion', 7, 0, 4, 0, 'text question no answers', 3);
+
+INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
+VALUES('CheckBoxQuestion', 8, 0, 4, 0, 'check box question no answers', 3);
+
 INSERT INTO questiontextpossibilities(id, deleted, answer_text, multiple_answer_question_id)
 VALUES (1, 0, 'Radio', 2);
 
@@ -81,6 +90,9 @@ VALUES (3, 0, 3, 3);
 
 INSERT INTO answers (id, deleted, answer_form_id, question_id)
 VALUES (4, 0, 3, 4);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (5, 0, 3, 6);
 
 INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
 VALUES (1, 'test answer 1 text 1', 0, 2);

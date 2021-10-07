@@ -8,7 +8,6 @@ import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.question.*;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormIsNullException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
 import org.slf4j.Logger;
@@ -55,7 +54,6 @@ public class RestQuestionController {
     return new ResponseEntity<>(question, HttpStatus.OK);
   }
 
-  //RE-TEST
   @PutMapping("update")
   public ResponseEntity<Question> updateQuestionById(@RequestBody QuestionWithDTypeDTO question) throws QuestionNotFoundByIdException, MissingParamsException, BelongToAnotherUserException {
     log.info("REST POST rest/question/update/" + " started");
@@ -74,9 +72,8 @@ public class RestQuestionController {
     return new ResponseEntity<>(question, HttpStatus.OK);
   }
 
-  //RE-TESt
   @DeleteMapping("/delete/{questionId}")
-  public ResponseEntity<Long> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionFormIsNullException, QuestionHasBeenAnsweredException {
+  public ResponseEntity<Long> deleteQuestionById(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException {
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " started");
     long questionFormId = questionService.deleteQuestion(questionId);
     log.info("REST DELETE rest/question/delete" + "/" + questionId + " finished");

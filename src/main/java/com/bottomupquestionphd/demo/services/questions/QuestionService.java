@@ -25,5 +25,5 @@ public interface QuestionService {
 
   Question changeOrderOfQuestion(String change, long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException;
 
-  long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException;
+  long deleteQuestion(long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException;
 }

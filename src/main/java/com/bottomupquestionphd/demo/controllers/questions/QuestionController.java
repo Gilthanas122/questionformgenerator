@@ -150,10 +150,7 @@ public class QuestionController {
     } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("error", e.getMessage());
-    } catch (QuestionHasBeenAnsweredException e) {
-      log.error(e.getMessage());
-      redirectAttributes.addAttribute("error", e.getMessage());
-    }catch (Exception e) {
+    } catch (Exception e) {
       log.error(e.getMessage());
       redirectAttributes.addAttribute("error", e.getMessage());
     }

@@ -1,10 +1,16 @@
 package com.bottomupquestionphd.demo.unittests.answer;
 
+import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
 import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
+import com.bottomupquestionphd.demo.domains.daos.appuser.AppUser;
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.CheckBoxQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.Question;
+import com.bottomupquestionphd.demo.domains.daos.questions.ScaleQuestion;
+import com.bottomupquestionphd.demo.domains.daos.questions.TextQuestion;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
+import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
@@ -26,7 +32,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
 @RunWith(SpringRunner.class)
@@ -46,6 +54,17 @@ public class AnswerServiceTest {
   @Before
   public void setup() {
     answerService = new AnswerServiceImpl(answerRepository, questionFormService, actualAnswerTextService);
+  }
+
+  @Test
+  public void connectQuestionsToAnswers_withValidData() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
+    List<Answer> answers = (List<Answer>) beanFactory.getBean("getAnswers");
+    long questionFormId = 1;
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+
+    Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
+
+    answerService.connectQuestionsToAnswers(answers, questionFormId);
   }
 
   @Test(expected = MissingParamsException.class)
@@ -160,5 +179,78 @@ public class AnswerServiceTest {
     long appUserId = 11;
 
     answerService.removeOwnAATextsFromAATToBeVoted(appUserId, answers);
+  }
+
+  @Test
+  public void findById_withValidData() throws AnswerNotFoundByIdException {
+    Answer answer = (Answer) beanFactory.getBean("checkBoxAnswer");
+
+    Mockito.when(answerRepository.findById(answer.getId())).thenReturn(java.util.Optional.of(answer));
+
+    Answer answerReturned = answerService.findById(answer.getId());
+
+    assertEquals(answer.getId(), answerReturned.getId());
+  }
+
+  @Test(expected = AnswerNotFoundByIdException.class)
+  public void findById_witNonExistentAnswerId_shouldThrowAnswerNotFoundByIdException() throws AnswerNotFoundByIdException {
+    Answer answer = (Answer) beanFactory.getBean("checkBoxAnswer");
+
+    given(answerRepository.findById(answer.getId())).willAnswer(invocation -> {
+      throw new AnswerNotFoundByIdException("Couldn't find answer with the given id");
+    });
+    answerService.findById(answer.getId());
+  }
+
+  @Test
+  public void addActualTextAnswersNotFilledOutByUser_withValidData_shouldReturnListContainingOneTextquestion() {
+    TextQuestion textQuestion = new TextQuestion("text question 1");
+    ScaleQuestion scaleQuestion = new ScaleQuestion("kaki", 5);
+    List<Question> questions = List.of(textQuestion, scaleQuestion);
+    AnswerForm answerForm = new AnswerForm();
+    AppUser appUser = new AppUser();
+    appUser.setId(2);
+    answerForm.setAppUser(appUser);
+    Answer answer = new Answer();
+    List<ActualAnswerText> actualAnswerTexts = (List<ActualAnswerText>) beanFactory.getBean("actualAnswerTexts");
+    answer.setActualAnswerTexts(actualAnswerTexts);
+    textQuestion.addOneAnswer(answer);
+    answer.setAnswerForm(answerForm);
+    long appUserId = 1;
+
+    List<Question> questionsReturned = answerService.addActualTextAnswersNotFilledOutByUser(questions, appUserId);
+
+    assertEquals(1, questionsReturned.size());
+    assertEquals("text question 1", questionsReturned.get(0).getQuestionText());
+  }
+
+  @Test
+  public void addActualTextAnswersNotFilledOutByUser_withValidDataButNoTextQuestion_shouldReturnEmptyList() {
+    CheckBoxQuestion textQuestion = new CheckBoxQuestion();
+    ScaleQuestion scaleQuestion = new ScaleQuestion("kaki", 5);
+    List<Question> questions = List.of(textQuestion, scaleQuestion);
+    AnswerForm answerForm = new AnswerForm();
+    AppUser appUser = new AppUser();
+    appUser.setId(2);
+    answerForm.setAppUser(appUser);
+    Answer answer = new Answer();
+    List<ActualAnswerText> actualAnswerTexts = (List<ActualAnswerText>) beanFactory.getBean("actualAnswerTexts");
+    answer.setActualAnswerTexts(actualAnswerTexts);
+    textQuestion.addOneAnswer(answer);
+    answer.setAnswerForm(answerForm);
+    long appUserId = 1;
+
+    List<Question> questionsReturned = answerService.addActualTextAnswersNotFilledOutByUser(questions, appUserId);
+
+    assertEquals(0, questionsReturned.size());
+  }
+
+  @Test
+  public void setActualAnswerTextsToBeDeletedBelongingToAnswers_withValidData() throws MissingParamsException {
+    List<Long> ids = List.of(1L, 2L, 3L);
+
+    answerService.setActualAnswerTextsToBeDeletedBelongingToAnswers(ids);
+
+    Mockito.verify(actualAnswerTextService, times(1)).setAnswerTextsToBeDeleted(ids);
   }
 }

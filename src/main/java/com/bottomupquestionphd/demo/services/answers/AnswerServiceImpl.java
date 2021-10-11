@@ -92,13 +92,11 @@ public class AnswerServiceImpl implements AnswerService {
     if (allActualAnswerTextsBelongingToAQuestion == null) {
       throw new MissingParamsException("All actual answers belonging to the user can not be null");
     }
-    List<Answer> answers =
-            allActualAnswerTextsBelongingToAQuestion
-                    .stream()
-                    .filter(a -> a.getAnswerForm().getAppUser().getId() != appUserId)
-                    .filter(a -> a.getActualAnswerTexts().size() > 0)
-                    .collect(Collectors.toList());
-    return answers;
+    return allActualAnswerTextsBelongingToAQuestion
+            .stream()
+            .filter(a -> a.getAnswerForm().getAppUser().getId() != appUserId)
+            .filter(a -> a.getActualAnswerTexts().size() > 0)
+            .collect(Collectors.toList());
   }
 
   @Override
@@ -122,13 +120,11 @@ public class AnswerServiceImpl implements AnswerService {
     return answers;
   }
 
-  //NOT TESTED
   @Override
   public Answer findById(long answerId) throws AnswerNotFoundByIdException {
     return answerRepository.findById(answerId).orElseThrow(() -> new AnswerNotFoundByIdException("Couldn't find answer with the given id"));
   }
 
-  //NOT TESTED
   @Override
   public List<Question> addActualTextAnswersNotFilledOutByUser(List<Question> questions, long appUserId) {
     List<Question> questionsAddedActualAnswerTextsNotFilledOutByUser = new ArrayList<>();
@@ -141,13 +137,12 @@ public class AnswerServiceImpl implements AnswerService {
             q.setAnswersNotFilledOutByUser(a.getActualAnswerInList());
           }
         }
+        questionsAddedActualAnswerTextsNotFilledOutByUser.add(q);
       }
-      questionsAddedActualAnswerTextsNotFilledOutByUser.add(q);
     }
     return questionsAddedActualAnswerTextsNotFilledOutByUser;
   }
 
-  // NOT TESTED
   @Override
   public void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> answerIds) throws MissingParamsException {
     actualAnswerTextService.setAnswerTextsToBeDeleted(answerIds);

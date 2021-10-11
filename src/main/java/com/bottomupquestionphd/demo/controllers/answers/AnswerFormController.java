@@ -172,12 +172,12 @@ public class AnswerFormController {
   }
 
   //NOT TESTED
-  @GetMapping("/answers/{questionFormId}")
-  public String showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, Model model) {
+  @GetMapping("/answers/{questionFormId}/{appUserId}")
+  public String showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
     log.info("GET answer-form/answers/ " + questionFormId + " started");
     try {
       log.info("GET answer-form/answers/ " + questionFormId + " finished");
-      model.addAttribute("displayAnswersFromAnAnswerFormDTO", answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId));
+      model.addAttribute("displayAnswersFromAnAnswerFormDTO", answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId, appUserId));
       return "answerform/user-answers";
     } catch (NoUserFilledOutAnswerFormException e) {
       log.error(e.getMessage());

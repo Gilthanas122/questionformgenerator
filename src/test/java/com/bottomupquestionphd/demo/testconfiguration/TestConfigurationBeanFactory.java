@@ -253,6 +253,16 @@ public class TestConfigurationBeanFactory {
     return questionForm;
   }
 
+  @Bean(name = "questionFormWithAnswerFormWithTextQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionFormWithAnswerFormWithTextQuestions() {
+    QuestionForm questionForm = new QuestionForm("question form name text questions", "question form description text questions");
+    questionForm.setQuestions(getListTextQuestions());
+    questionForm.setAnswerForms(getAnswerFormsWithoutSettingQuestionForm());
+    questionForm.setAppUser(getAppUser());
+    return questionForm;
+  }
+
   @Bean(name = "questionForms")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   List<QuestionForm> getQuestionForms() {
@@ -304,8 +314,12 @@ public class TestConfigurationBeanFactory {
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   List<ActualAnswerText> getActualAnswerTexts() {
     List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
+    Answer answer = new Answer();
+    answer.setQuestion(getValidTextQuestion());
     for (int i = 0; i < 5; i++) {
-      actualAnswerTexts.add(new ActualAnswerText(i, "actualanswertext" + i));
+      ActualAnswerText actualAnswerText = new ActualAnswerText(i, "actualAnswerText" + 1);
+      actualAnswerText.setAnswer(answer);
+      actualAnswerTexts.add(actualAnswerText);
     }
     return actualAnswerTexts;
   }
@@ -358,6 +372,18 @@ public class TestConfigurationBeanFactory {
       Question question = new Question("helloka" + i);
       question.setListPosition(i);
       questions.add(question);
+    }
+    return questions;
+  }
+
+  @Bean(name = "getListTextQuestions")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Question> getListTextQuestions() {
+    List<Question> questions = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      TextQuestion textQuestion = new TextQuestion("helloka" + i);
+      textQuestion.setListPosition(i);
+      questions.add(textQuestion);
     }
     return questions;
   }

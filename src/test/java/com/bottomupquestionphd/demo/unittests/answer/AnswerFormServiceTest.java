@@ -352,7 +352,6 @@ public class AnswerFormServiceTest {
   @Test(expected = AnswerNotFoundByIdException.class)
   public void findAnswerFormByAnswerId_withAnswerId_shouldThrowAnswerNotFoundByIdException() throws NoSuchAnswerformById, AnswerNotFoundByIdException, BelongToAnotherUserException {
     long answerId = 1L;
-    AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
 
     given(answerService.findById(answerId)).willAnswer(invocation -> {
               throw new AnswerNotFoundByIdException("Couldn't find answer with the given id");
@@ -389,37 +388,30 @@ public class AnswerFormServiceTest {
 
     answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId, appUserId);
   }
-/*  @Test
-  public void checkIfUserHasFilledOutAnswerForm_withValidInput_returnsFalse() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
-    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerForm");
+
+  @Test
+  public void findAllAnswersBelongingToAnUser_withValidData() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, NoUserFilledOutAnswerFormException {
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerFormWithTextQuestion");
+    AppUser appUser = new AppUser();
+    questionForm.setAppUser(appUser);
     long questionFormId = questionForm.getId();
-    long appUserId = 1l;
+    long appUserId = appUser.getId();
 
-    Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
+    Mockito.when(questionFormService.findById(questionFormId)).thenReturn(questionForm);
 
-    boolean returnedHasUserFilledOutQuestionForm = answerFormService.checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
-
-    Assert.assertFalse(returnedHasUserFilledOutQuestionForm);
+    answerFormService.findAllAnswersBelongingToAnUser(questionFormId, appUserId);
   }
 
-  @Test(expected = AnswerFormAlreadyFilledOutByCurrentUserException.class)
-  public void checkIfUserHasFilledOutAnswerForm_withUserThatHasFilledOut_throwsAnswerFormBelongsAlreadyFilledOutException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
-    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerForm");
+  @Test(expected = NoUserFilledOutAnswerFormException.class)
+  public void findAllAnswersBelongingToAnUser_withNoUserAnswer_shouldThrowNoUserFilledOutAnswerFormException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, NoUserFilledOutAnswerFormException {
+    QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
+    AppUser appUser = new AppUser();
+    questionForm.setAppUser(appUser);
     long questionFormId = questionForm.getId();
-    long appUserId = 0;
+    long appUserId = appUser.getId();
 
-    Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(questionForm);
+    Mockito.when(questionFormService.findById(questionFormId)).thenReturn(questionForm);
 
-    answerFormService.checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
+    answerFormService.findAllAnswersBelongingToAnUser(questionFormId, appUserId);
   }
-
-  @Test(expected = QuestionFormNotFoundException.class)
-  public void checkIfUserHasFilledOutAnswerForm_withUserThatHasFilledOut_throwsQuestionFormNotFoundException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
-    long questionFormId = 1l;
-    long appUserId = 0;
-
-    Mockito.when(questionFormService.findByIdForAnswerForm(questionFormId)).thenReturn(null);
-
-    answerFormService.checkIfUserHasFilledOutAnswerForm(questionFormId, appUserId);
-  }*/
 }

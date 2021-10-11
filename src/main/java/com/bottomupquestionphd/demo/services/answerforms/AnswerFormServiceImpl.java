@@ -245,8 +245,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     return displayAnswersFromAnAnswerFormDTO;
   }
 
-  //NOT TESTED
-  // just send questiontexts;
   @Override
   public DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
@@ -259,7 +257,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
 
-  //NOT TESTED
   private List<List<String>> aggregateAllAnswerTextBelongingToOneQuestions(List<AnswerForm> answerForms) {
     List<List<String>> aggregatedAnswerTextsBelongingToOneAnswers = new ArrayList<>();
     for (AnswerForm answerForm : answerForms) {
@@ -272,12 +269,15 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     return aggregatedAnswerTextsBelongingToOneAnswers;
   }
 
-  //NOT TESTED
   @Override
   public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, AnswerFormNotFoundException {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     QuestionForm questionForm = questionFormService.findById(questionFormId);
-    AnswerForm answerForm = questionForm.getAnswerForms().stream().filter(a -> a.getAppUser().getId() == appUserId).findFirst().orElse(null);
+    AnswerForm answerForm = questionForm.getAnswerForms()
+            .stream()
+            .filter(a -> a.getAppUser().getId() == appUserId)
+            .findFirst()
+            .orElse(null);
     if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
       throw new NoUserFilledOutAnswerFormException("No user filled out the answer form");
     }

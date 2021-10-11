@@ -32,7 +32,7 @@ public class QuestionConversionServiceTest {
     Question question = (Question) beanFactory.getBean("textQuestion");
     QuestionWithDTypeDTO questionWithDTypeDTO = questionConversionService.convertFromQuestionToQuestionWithDType(question);
 
-    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), "Text");
+    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), QuestionType.TEXTQUESTION.toString());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionText(), question.getQuestionText());
     Assert.assertEquals(questionWithDTypeDTO.getId(), question.getId());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionFormId(), question.getQuestionForm().getId());
@@ -43,7 +43,7 @@ public class QuestionConversionServiceTest {
     Question question = (Question) beanFactory.getBean("scaleQuestion");
     QuestionWithDTypeDTO questionWithDTypeDTO = questionConversionService.convertFromQuestionToQuestionWithDType(question);
 
-    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), "Scale");
+    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), QuestionType.SCALEQUESTION.toString());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionText(), question.getQuestionText());
     Assert.assertEquals(questionWithDTypeDTO.getId(), question.getId());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionFormId(), question.getQuestionForm().getId());
@@ -54,7 +54,7 @@ public class QuestionConversionServiceTest {
     Question question = (Question) beanFactory.getBean("checkboxQuestion");
     QuestionWithDTypeDTO questionWithDTypeDTO = questionConversionService.convertFromQuestionToQuestionWithDType(question);
 
-    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), "Check box");
+    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), QuestionType.CHECKBOXQUESTION.toString());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionText(), question.getQuestionText());
     Assert.assertEquals(questionWithDTypeDTO.getId(), question.getId());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionFormId(), question.getQuestionForm().getId());
@@ -65,7 +65,7 @@ public class QuestionConversionServiceTest {
     Question question = (Question) beanFactory.getBean("radioButtonQuestion");
     QuestionWithDTypeDTO questionWithDTypeDTO = questionConversionService.convertFromQuestionToQuestionWithDType(question);
 
-    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), "Radio button");
+    Assert.assertEquals(questionWithDTypeDTO.getQuestionType(), QuestionType.RADIOBUTTONQUESTION.toString());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionText(), question.getQuestionText());
     Assert.assertEquals(questionWithDTypeDTO.getId(), question.getId());
     Assert.assertEquals(questionWithDTypeDTO.getQuestionFormId(), question.getQuestionForm().getId());

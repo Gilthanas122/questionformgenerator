@@ -124,7 +124,7 @@ public class AppUserServiceImpl implements AppUserService {
   }
 
   @Override
-  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
+  public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
     if (token == null || token.isEmpty()){
       throw new MissingParamsException("Token is required.");
     }

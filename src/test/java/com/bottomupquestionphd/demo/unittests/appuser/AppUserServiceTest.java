@@ -390,16 +390,6 @@ public class AppUserServiceTest {
     appUserService.changePassword(changePasswordDTO, appUser.getId());
   }
 
-  @Test(expected = BelongToAnotherUserException.class)
-  public void changePassword_withNotMatchingAppUserId_shouldThrowBelongsToAnotherUserException() throws NoSuchUserByIdException, PassWordMissMachException, InvalidRegexParameterException, BelongToAnotherUserException {
-    ChangePasswordDTO changePasswordDTO = (ChangePasswordDTO) beanFactory.getBean("notComplexChangePasswordDTO");
-    AppUser appuserLoggedIn = new AppUser();
-    appuserLoggedIn.setId(5l);
-
-    Mockito.when(appUserRepository.findByUsername(authentication.getName())).thenReturn(Optional.of(appuserLoggedIn));
-    appUserService.changePassword(changePasswordDTO, 2l);
-  }
-
   @Test
   public void validateChangePassword_withValidData() throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
@@ -425,18 +415,6 @@ public class AppUserServiceTest {
     AppUser appUser = (AppUser) beanFactory.getBean("validUser");
 
     Mockito.when(appUserRepository.findByUsername(authentication.getName())).thenReturn(Optional.of(appUser));
-
-    appUserService.validateChangePassword(appUser.getId(), "");
-  }
-
-  @Test(expected = BelongToAnotherUserException.class)
-  public void validateChangePassword_withNonMatchingUserId_throwsBelongsToAnotherUserException() throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException, BelongToAnotherUserException {
-    AppUser appUser = (AppUser) beanFactory.getBean("validUser");
-
-    AppUser appuserLoggedIn = new AppUser();
-    appuserLoggedIn.setId(5l);
-
-    Mockito.when(appUserRepository.findByUsername(authentication.getName())).thenReturn(Optional.of(appuserLoggedIn));
 
     appUserService.validateChangePassword(appUser.getId(), "");
   }

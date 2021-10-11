@@ -149,7 +149,7 @@ public class AnswerServiceImpl implements AnswerService {
 
   // NOT TESTED
   @Override
-  public void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> answerIds) {
+  public void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> answerIds) throws MissingParamsException {
     actualAnswerTextService.setAnswerTextsToBeDeleted(answerIds);
   }
 }

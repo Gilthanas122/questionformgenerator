@@ -32,5 +32,5 @@ public interface AnswerService {
 
   List<Question> addActualTextAnswersNotFilledOutByUser(List<Question> questions, long appUserId);
 
-  void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> collect);
+  void setActualAnswerTextsToBeDeletedBelongingToAnswers(List<Long> collect) throws MissingParamsException;
 }

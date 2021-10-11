@@ -16,5 +16,5 @@ public interface ActualAnswerTextService {
 
   List<Answer> setActualAnswerTextsToAnswer(List<Answer> answers, List<Answer> originalAnswerFormsAnswers) throws MissingParamsException;
 
-  void setAnswerTextsToBeDeleted(List<Long> answerIds);
+  void setAnswerTextsToBeDeleted(List<Long> answerIds) throws MissingParamsException;
 }

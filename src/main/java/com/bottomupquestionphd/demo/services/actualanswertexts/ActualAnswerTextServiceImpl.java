@@ -31,7 +31,7 @@ public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
 
   @Override
   public void saveActualAnswer(ActualAnswerText actualAnswerText) throws MissingParamsException {
-    if (actualAnswerText == null) {
+    if (actualAnswerText == null || actualAnswerText.getAnswerText().isEmpty()) {
       throw new MissingParamsException("Can not save a null actual answers text");
     }
     this.actualAnswerTextRepository.saveAndFlush(actualAnswerText);
@@ -53,7 +53,10 @@ public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
 
   //NOT TESTED
   @Override
-  public void setAnswerTextsToBeDeleted(List<Long> answerIds) {
+  public void setAnswerTextsToBeDeleted(List<Long> answerIds) throws MissingParamsException {
+    if (answerIds == null){
+      throw new MissingParamsException("List of answerids can not be null");
+    }
     actualAnswerTextRepository.setElementsToBeDeletedByMultipleAnswerIds(answerIds);
   }
 

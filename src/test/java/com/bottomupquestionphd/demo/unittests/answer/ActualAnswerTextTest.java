@@ -30,7 +30,7 @@ public class ActualAnswerTextTest {
   @Autowired
   private BeanFactory beanFactory;
   private ActualAnswerTextService actualAnswerTextService;
-  //ArgumentCaptor
+
   @Before
   public void setup() {
     actualAnswerTextService = new ActualAnswerTextServiceImpl(actualAnswerTextRepository);
@@ -66,6 +66,14 @@ public class ActualAnswerTextTest {
     actualAnswerTextService.saveActualAnswer(actualAnswerText);
   }
 
+  @Test(expected = MissingParamsException.class)
+  public void saveActualAnswer_withEmptyAnswerText_throwsMissingParamsException() throws MissingParamsException {
+    ActualAnswerText actualAnswerText = new ActualAnswerText();
+    actualAnswerText.setAnswerText("");
+
+    actualAnswerTextService.saveActualAnswer(actualAnswerText);
+  }
+
   @Test
   public void setActualAnswerTextsToAnswer_withValidInput_returnsListAnswer() throws MissingParamsException {
     List<Answer> answers = (List<Answer>) beanFactory.getBean("getAnswers");
@@ -79,10 +87,34 @@ public class ActualAnswerTextTest {
   }
 
   @Test(expected = MissingParamsException.class)
-  public void setActualAnswerTextsToAnswer_withNullInput_throwsMissingParamsException() throws MissingParamsException {
+  public void setActualAnswerTextsToAnswer_withNullInputOnOriginalAnswers_throwsMissingParamsException() throws MissingParamsException {
     List<Answer> answers = null;
     List<Answer> originalAnswers = (List<Answer>) beanFactory.getBean("getAnswers");
 
     actualAnswerTextService.setActualAnswerTextsToAnswer(answers, originalAnswers);
+  }
+
+  @Test(expected = MissingParamsException.class)
+  public void setActualAnswerTextsToAnswer_withNullInputOnAnswers_throwsMissingParamsException() throws MissingParamsException {
+    List<Answer> originalAnswers = null;
+    List<Answer> answers = (List<Answer>) beanFactory.getBean("getAnswers");
+
+    actualAnswerTextService.setActualAnswerTextsToAnswer(answers, originalAnswers);
+  }
+
+  @Test
+  public void setAnswerToBeDeleted_withValidInput() throws MissingParamsException {
+    List<Long> answerIds = List.of(1l, 2l, 3l, 4l);
+
+    actualAnswerTextService.setAnswerTextsToBeDeleted(answerIds);
+
+    Mockito.verify(actualAnswerTextRepository, times(1)).setElementsToBeDeletedByMultipleAnswerIds(answerIds);
+  }
+
+  @Test(expected = MissingParamsException.class)
+  public void setAnswerToBeDeleted_withNullInput_shouldThrowMissingParamsException() throws MissingParamsException {
+    List<Long> answerIds = null;
+
+    actualAnswerTextService.setAnswerTextsToBeDeleted(answerIds);
   }
 }

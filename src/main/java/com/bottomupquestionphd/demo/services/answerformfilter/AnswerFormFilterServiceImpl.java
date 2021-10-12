@@ -16,7 +16,6 @@ import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormHasN
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
-import com.bottomupquestionphd.demo.repositories.AnswerFormRepository;
 import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
@@ -31,14 +30,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
-  private final AnswerFormRepository answerFormRepository;
   private final QuestionFormService questionFormService;
   private final AppUserService appUserService;
   private final QueryService queryService;
   private final AnswerFormService answerFormService;
 
-  public AnswerFormFilterServiceImpl(AnswerFormRepository answerFormRepository, QuestionFormService questionFormService, AppUserService appUserService, QueryService queryService, AnswerFormService answerFormService) {
-    this.answerFormRepository = answerFormRepository;
+  public AnswerFormFilterServiceImpl(QuestionFormService questionFormService, AppUserService appUserService, QueryService queryService, AnswerFormService answerFormService) {
     this.questionFormService = questionFormService;
     this.appUserService = appUserService;
     this.queryService = queryService;
@@ -48,7 +45,7 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
   @Override
   public QuestionForm generateSearchFields(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, QuestionFormHasNotQuestionsException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
-    if (questionForm.getQuestions() == null || questionForm.getQuestions() == null) {
+    if (questionForm.getQuestions() == null || questionForm.getQuestions().isEmpty()) {
       throw new QuestionFormHasNotQuestionsException("Can not search a question form without questions");
     }
     appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
@@ -104,15 +101,6 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
     return results;
   }
 
-  private String escapeSpecialCharacters(String data) {
-    String escapedData = data.replaceAll("\\R", " ");
-    if (data.contains(",") || data.contains("\"") || data.contains("'")) {
-      data = data.replace("\"", "\"\"");
-      escapedData = "\"" + data + "\"";
-    }
-    return escapedData;
-  }
-
   private List<String> findQuestionTextsFromQuestionForm(List<Question> questions) {
     return questions
             .stream()
@@ -121,23 +109,26 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
   }
 
   private AnswerSearchTermResultDTO addActualAnswerTextToResult(QuestionForm questionForm, AnswerSearchTermResultDTO answerSearchTermResultDTO, SearchTermsForFilteringDTO searchTermsForFilteringDTO) throws BelongToAnotherUserException {
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
     for (int i = 0; i < searchTermsForFilteringDTO.getSearchTerms().size(); i++) {
-      Question actualQuestion = questionForm.getQuestions().get(i);
-      String actualSearchTerm = searchTermsForFilteringDTO.getSearchTerms().get(i);
-      ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO = new ActualAnswerTextSearchTermResultDTO();
-      appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
-      String questionType = actualQuestion.getDiscriminatorValue();
-      for (Answer answer : actualQuestion.getAnswers()) {
-        actualAnswerTextSearchTermResultDTO.setAnswerId(answer.getId());
-        actualAnswerTextSearchTermResultDTO.setQuestionType(actualQuestion.getDiscriminatorValue());
-        answerSearchTermResultDTO.setAppUserId(answer.getAnswerForm().getAppUser().getId());
-        if (questionType.matches("CheckBoxQuestion|RadioButtonQuestion|TextQuestion")) {
-          actualAnswerTextSearchTermResultDTO = getAnswersForCheckBoxOrRadiobuttonOrTextQuestion(actualSearchTerm, answer, questionType, answerSearchTermResultDTO);
-        } else if (questionType.equals(QuestionType.SCALEQUESTION.toString())) {
-          actualAnswerTextSearchTermResultDTO = getAnswersForScaleQuestion(actualSearchTerm, answer, actualAnswerTextSearchTermResultDTO);
+      for (Question actualQuestion : questionForm.getQuestions()){
+        String actualSearchTerm = searchTermsForFilteringDTO.getSearchTerms().get(i);
+        ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO = new ActualAnswerTextSearchTermResultDTO();
+        String questionType = actualQuestion.getDiscriminatorValue();
+        for (Answer answer : actualQuestion.getAnswers()) {
+          actualAnswerTextSearchTermResultDTO.setAnswerId(answer.getId());
+          actualAnswerTextSearchTermResultDTO.setQuestionType(actualQuestion.getDiscriminatorValue());
+          answerSearchTermResultDTO.setAppUserId(answer.getAnswerForm().getAppUser().getId());
+          if (questionType.matches("CheckBoxQuestion|RadioButtonQuestion|TextQuestion")) {
+            actualAnswerTextSearchTermResultDTO = getAnswersForCheckBoxOrRadiobuttonOrTextQuestion(actualSearchTerm, answer, questionType, answerSearchTermResultDTO);
+          } else if (questionType.equals(QuestionType.SCALEQUESTION.toString())) {
+            actualAnswerTextSearchTermResultDTO = getAnswersForScaleQuestion(actualSearchTerm, answer, actualAnswerTextSearchTermResultDTO);
+          }
+          if (!actualAnswerTextSearchTermResultDTO.getActualAnswers().isEmpty()){
+            answerSearchTermResultDTO.getActualAnswerTextSearchTermResultDTOS().add(actualAnswerTextSearchTermResultDTO);
+          }
         }
       }
-      answerSearchTermResultDTO.getActualAnswerTextSearchTermResultDTOS().add(actualAnswerTextSearchTermResultDTO);
     }
     return answerSearchTermResultDTO;
   }

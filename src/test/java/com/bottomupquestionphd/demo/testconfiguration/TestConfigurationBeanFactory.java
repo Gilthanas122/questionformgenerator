@@ -182,6 +182,14 @@ public class TestConfigurationBeanFactory {
     return question;
   }
 
+  @Bean(name = "scaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  ScaleQuestion getValidScaleQuestion() {
+    ScaleQuestion question = new ScaleQuestion("scale question text", 5);
+    question.setQuestionForm(getQuestionForm());
+    return question;
+  }
+
   @Bean(name = "checkboxQuestion")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   CheckBoxQuestion getValidCheckBoxQuestion() {
@@ -253,6 +261,36 @@ public class TestConfigurationBeanFactory {
     return questionForm;
   }
 
+  @Bean(name = "questionFormWithAnswerFormWitnTextQuestions")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionFormWithAnswerFormWithTextQuestion() {
+    QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+    questionForm.setQuestions(getListTextQuestions());
+    questionForm.setAnswerForms(getAnswerFormsForCheckBoxQuestion());
+    questionForm.setAppUser(getAppUser());
+    return questionForm;
+  }
+
+  @Bean(name = "questionFormWithAnswerFormCheckBoxQuestions")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionFormWithAnswerFormWithCheckBoxQuestions() {
+    QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+    questionForm.setQuestions(getListCheckBoxQuestions());
+    questionForm.setAnswerForms(getAnswerFormsForCheckBoxQuestion());
+    questionForm.setAppUser(getAppUser());
+    return questionForm;
+  }
+
+  @Bean(name = "questionFormWithAnswerFormScaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  QuestionForm getQuestionFormWithAnswerFormWithScaleQuestion() {
+    QuestionForm questionForm = new QuestionForm("question form name", "question form description");
+    questionForm.setQuestions(getListScaleQuestions());
+    questionForm.setAnswerForms(getAnswerFormsForScaleQuestions());
+    questionForm.setAppUser(getAppUser());
+    return questionForm;
+  }
+
   @Bean(name = "questionFormWithAnswerFormWithTextQuestion")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   QuestionForm getQuestionFormWithAnswerFormWithTextQuestions() {
@@ -296,10 +334,41 @@ public class TestConfigurationBeanFactory {
     return answerForms;
   }
 
+  @Bean(name = "answerFormsForCheckBoxQuestions")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AnswerForm> getAnswerFormsForCheckBoxQuestion() {
+    List<AnswerForm> answerForms = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
+      answerForm.setAnswers(getAnswersForCheckBoxQuestion());
+      answerForms.add(answerForm);
+    }
+    return answerForms;
+  }
+
+  @Bean(name = "answerFormsForScaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<AnswerForm> getAnswerFormsForScaleQuestions() {
+    List<AnswerForm> answerForms = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      AnswerForm answerForm = new AnswerForm(0, getQuestionForm(), getAppUser());
+      answerForm.setAnswers(getAnswersForScaleQuestion());
+      answerForms.add(answerForm);
+    }
+    return answerForms;
+  }
+
   @Bean(name = "checkBoxAnswer")
   @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   Answer getCheckBoxAnswer() {
     Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidCheckBoxQuestion());
+    return answer;
+  }
+
+  @Bean(name = "textAnswer")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  Answer getTextAnswer() {
+    Answer answer = new Answer(0, getActualAnswerTexts(), getAnswerForm(), getValidTextQuestion());
     return answer;
   }
 
@@ -317,7 +386,35 @@ public class TestConfigurationBeanFactory {
     Answer answer = new Answer();
     answer.setQuestion(getValidTextQuestion());
     for (int i = 0; i < 5; i++) {
-      ActualAnswerText actualAnswerText = new ActualAnswerText(i, "actualAnswerText" + 1);
+      ActualAnswerText actualAnswerText = new ActualAnswerText(i, "actualAnswerText" + i);
+      actualAnswerText.setAnswer(answer);
+      actualAnswerTexts.add(actualAnswerText);
+    }
+    return actualAnswerTexts;
+  }
+
+  @Bean(name = "actualAnswerTextsForCheckBoxQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<ActualAnswerText> getActualAnswerTextsForCheckBoxQuestion() {
+    List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
+    Answer answer = new Answer();
+    answer.setQuestion(getValidTextQuestion());
+    for (int i = 0; i < 3; i++) {
+      ActualAnswerText actualAnswerText = new ActualAnswerText(i, "checkbox" + i);
+      actualAnswerText.setAnswer(answer);
+      actualAnswerTexts.add(actualAnswerText);
+    }
+    return actualAnswerTexts;
+  }
+
+  @Bean(name = "actualAnswerTextsForScaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  List<ActualAnswerText> getActualAnswerTextsForScaleQuestion() {
+    List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
+    Answer answer = new Answer();
+    answer.setQuestion(getValidScaleQuestion());
+    for (int i = 0; i < 3; i++) {
+      ActualAnswerText actualAnswerText = new ActualAnswerText(i,  String.valueOf(i));
       actualAnswerText.setAnswer(answer);
       actualAnswerTexts.add(actualAnswerText);
     }
@@ -383,7 +480,36 @@ public class TestConfigurationBeanFactory {
     for (int i = 0; i < 4; i++) {
       TextQuestion textQuestion = new TextQuestion("helloka" + i);
       textQuestion.setListPosition(i);
+      textQuestion.addOneAnswer(getTextAnswer());
       questions.add(textQuestion);
+    }
+    return questions;
+  }
+
+  @Bean(name = "getListCheckBoxQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Question> getListCheckBoxQuestions() {
+    List<Question> questions = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      List<QuestionTextPossibility> questionTextPossibilities = List.of(new QuestionTextPossibility("checkbox" +0),
+              new QuestionTextPossibility("checkbox" + 1), new QuestionTextPossibility("checkbox" + 2));
+      CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(i, "checkboxquestion" + i, questionTextPossibilities);
+      checkBoxQuestion.setListPosition(i);
+      checkBoxQuestion.setAnswers(getAnswersForCheckBoxQuestion());
+      questions.add(checkBoxQuestion);
+    }
+    return questions;
+  }
+
+  @Bean(name = "getListScaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Question> getListScaleQuestions() {
+    List<Question> questions = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      ScaleQuestion scaleQuestion = new ScaleQuestion("scalequestiontext" +i, 5);
+      scaleQuestion.setListPosition(i);
+      scaleQuestion.setAnswers(getAnswersForScaleQuestion());
+      questions.add(scaleQuestion);
     }
     return questions;
   }
@@ -405,6 +531,34 @@ public class TestConfigurationBeanFactory {
     List<Answer> answers = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
       Answer answer = new Answer(i + 5, getActualAnswerTexts(), new AnswerForm(), getScaleQuestion());
+      answers.add(answer);
+    }
+    return answers;
+  }
+
+  @Bean(name = "getAnswersForCheckBoxQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Answer> getAnswersForCheckBoxQuestion() {
+    List<Answer> answers = new ArrayList<>();
+    AnswerForm answerForm = new AnswerForm();
+    answerForm.setAppUser(new AppUser());
+    for (int i = 0; i < 4; i++) {
+      Answer answer = new Answer(i + 5, getActualAnswerTextsForCheckBoxQuestion(), new AnswerForm(), getScaleQuestion());
+      answer.setAnswerForm(answerForm);
+      answers.add(answer);
+    }
+    return answers;
+  }
+
+  @Bean(name = "getAnswersForScaleQuestion")
+  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+  public List<Answer> getAnswersForScaleQuestion() {
+    List<Answer> answers = new ArrayList<>();
+    AnswerForm answerForm = new AnswerForm();
+    answerForm.setAppUser(new AppUser());
+    for (int i = 0; i < 4; i++) {
+      Answer answer = new Answer(i, getActualAnswerTextsForScaleQuestion(), new AnswerForm(), getScaleQuestion());
+      answer.setAnswerForm(answerForm);
       answers.add(answer);
     }
     return answers;

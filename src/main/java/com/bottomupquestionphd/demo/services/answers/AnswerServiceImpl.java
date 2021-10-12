@@ -8,8 +8,6 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerRepository;
 import com.bottomupquestionphd.demo.services.actualanswertexts.ActualAnswerTextService;
@@ -33,7 +31,7 @@ public class AnswerServiceImpl implements AnswerService {
   }
 
   @Override
-  public void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException {
+  public void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException {
     if (answers == null) {
       throw new MissingParamsException("Answers can not be null");
     }
@@ -122,7 +120,7 @@ public class AnswerServiceImpl implements AnswerService {
 
   @Override
   public Answer findById(long answerId) throws AnswerNotFoundByIdException {
-    return answerRepository.findById(answerId).orElseThrow(() -> new AnswerNotFoundByIdException("Couldn't find answer with the given id"));
+    return answerRepository.findById(answerId).orElseThrow(() -> new AnswerNotFoundByIdException("Couldn't find answer with the provided id"));
   }
 
   @Override

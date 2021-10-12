@@ -5,8 +5,6 @@ import com.bottomupquestionphd.demo.domains.daos.answers.AnswerForm;
 import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
-import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
-import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,7 @@ import java.util.List;
 
 @Service
 public interface AnswerService {
-  void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException;
+  void connectQuestionsToAnswers(List<Answer> answers, long questionFormId) throws QuestionFormNotFoundException, MissingParamsException;
 
   void connectAnswersToActualAnswers(List<Answer> answers) throws MissingParamsException;
 

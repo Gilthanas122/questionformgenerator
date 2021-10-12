@@ -25,7 +25,7 @@ public class AnswerForm implements Serializable {
   @JsonBackReference(value = "questionForm")
   private QuestionForm questionForm;
 
-  @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "answerForm", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
   @JsonManagedReference(value = "answersAnswerform")
   private List<Answer> answers = new ArrayList<>();
 

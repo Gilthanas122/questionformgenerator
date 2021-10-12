@@ -26,7 +26,7 @@ public class QuestionTextPossibilityTest {
 
   @Before
   public void setup() {
-    questionTextPossibilityService = new QuestionTextPossibilityServiceImpl(questionTextPossibilityRepository);
+    questionTextPossibilityService = new QuestionTextPossibilityServiceImpl();
   }
 
   @Test

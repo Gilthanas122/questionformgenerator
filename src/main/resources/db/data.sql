@@ -71,7 +71,7 @@ INSERT INTO questiontextpossibilities(id, deleted, answer_text, multiple_answer_
 VALUES (6, 0, 'Check box 3', 1);
 
 INSERT INTO answerforms(id, deleted, question_form_id, app_user_id)
-VALUES (1, 0, 1, 5);
+VALUES (1, 0, 1, 3);
 
 INSERT INTO answerforms(id, deleted, question_form_id, app_user_id)
 VALUES (2, 0, 2, 3);
@@ -92,16 +92,25 @@ INSERT INTO answers (id, deleted, answer_form_id, question_id)
 VALUES (4, 0, 3, 4);
 
 INSERT INTO answers (id, deleted, answer_form_id, question_id)
-VALUES (5, 0, 3, 6);
+VALUES (5, 0, 1, 1);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (6, 0, 1, 2);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (7, 0, 1, 3);
+
+INSERT INTO answers (id, deleted, answer_form_id, question_id)
+VALUES (8, 0, 1, 4);
 
 INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
-VALUES (1, 'test answer 1 text 1', 0, 2);
+VALUES (1, 'test answer 1 text 1', 0, 1);
 
 INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
-VALUES (2, 'test answer 1 text 2', 0, 2);
+VALUES (2, 'test answer 1 text 2', 0, 1);
 
 INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
-VALUES (3, '3', 0, 1);
+VALUES (3, 'third actual answertext', 0, 2);
 
 INSERT INTO actualanswertexts(id, answer_text, deleted, answer_id)
 VALUES (4, '4', 0, 3);

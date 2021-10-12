@@ -30,7 +30,7 @@ public interface QuestionFormService {
 
     void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
 
-    QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException, MissingUserException, BelongToAnotherUserException;
+    QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException;
 
     void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException;
 

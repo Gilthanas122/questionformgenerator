@@ -36,9 +36,6 @@ public class AnswerFormController {
       model.addAttribute("answerForm", answerFormService.createAnswerFormDTO(questionFormId));
       log.info("GET answer-form/create/" + questionFormId + "finished");
       return "answerform/create";
-    } catch (MissingUserException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
     } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
@@ -101,9 +98,6 @@ public class AnswerFormController {
     } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (MissingUserException e) {
-      log.error(e.getMessage());
-      model.addAttribute("error", e.getMessage());
     } catch (AnswerFormNotFilledOutException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
@@ -115,7 +109,6 @@ public class AnswerFormController {
     return "app-user/landing-page";
   }
 
-  // SHOULD RE-TEST IT
   @PostMapping("/update/{answerFormId}/{appUserId}")
   public String updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
                                                @ModelAttribute AnswerForm answerForm, Model model) {
@@ -179,7 +172,7 @@ public class AnswerFormController {
       log.info("GET answer-form/answers/ " + questionFormId + " finished");
       model.addAttribute("displayAnswersFromAnAnswerFormDTO", answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId, appUserId));
       return "answerform/user-answers";
-    } catch (NoUserFilledOutAnswerFormException e) {
+    } catch (AnswerFormNotFilledOutException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     } catch (MissingUserException e) {
@@ -200,14 +193,15 @@ public class AnswerFormController {
     }
     return "index";
   }
-  @GetMapping("list-answers/{questionFormId}/{appUserId}")
-  public String seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
-    log.info("GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " started");
+
+  @GetMapping("list-answers/{questionFormId}")
+  public String seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId, Model model) {
+    log.info("GET answer-form/list-answers/ " + questionFormId  + " started");
     try {
-      model.addAttribute("displayOneUserAnswersDTO", answerFormService.findAllAnswersBelongingToAnUser(questionFormId, appUserId));
-      log.info("GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " finished");
+      model.addAttribute("displayOneUserAnswersDTO", answerFormService.findAllAnswersBelongingToAnUser(questionFormId));
+      log.info("GET answer-form/list-answers/ " + questionFormId + " finished");
       return "answerform/list-all-user-answers";
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }

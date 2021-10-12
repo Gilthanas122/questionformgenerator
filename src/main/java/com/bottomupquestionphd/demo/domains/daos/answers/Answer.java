@@ -20,7 +20,7 @@ public class Answer {
 
   private boolean deleted;
 
-  @OneToMany(mappedBy = "answer", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "answer", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
   @JsonManagedReference(value = "answersActualAnswerTexts")
   private List<ActualAnswerText> actualAnswerTexts = new ArrayList<>();
 

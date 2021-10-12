@@ -93,9 +93,11 @@ public class QuestionForm {
     Collections.sort(questions);
     return questions;
   }
+
   public List<String> getQuestionTexts(){
     return this.getQuestions().stream().map(Question::getQuestionText).collect(Collectors.toList());
   }
+
   public List<String> getQuestionTypes(){
     return this.getQuestions().stream().map(Question::getDiscriminatorValue).collect(Collectors.toList());
   }

@@ -1,6 +1,7 @@
 package com.bottomupquestionphd.demo.exceptions;
 
 import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
+import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.*;
 import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
@@ -332,6 +333,14 @@ public class GlobalExceptionHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public @ResponseBody
   ErrorMessageDTO handleAnswerFormNumberOfAnswersShouldMatchException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
+  @ExceptionHandler(AnswerNotFoundByIdException.class)
+  @ResponseStatus(value = HttpStatus.NOT_FOUND)
+  public @ResponseBody
+  ErrorMessageDTO handleAnswerNotFoundByIdException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

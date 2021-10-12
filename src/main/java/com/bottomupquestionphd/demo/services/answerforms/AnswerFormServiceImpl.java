@@ -53,7 +53,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AppUser currentUser = appUserService.findCurrentlyLoggedInUser();
     checkIfUserHasFilledOutAnswerForm(questionForm, currentUser.getId());
@@ -62,12 +62,12 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public AnswerForm saveAnswerForm(AnswerForm answerForm, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public AnswerForm saveAnswerForm(AnswerForm answerForm, long questionFormId, long appUserId) throws NoSuchUserByIdException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, AnswerFormAlreadyFilledOutByCurrentUserException {
     if (answerForm == null) {
-      throw new MissingParamsException("Answer Form can not be null");
+      throw new MissingParamsException("AnswerForm can not be null");
     }
-    appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     AppUser appUser = appUserService.findById(appUserId);
+    appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
 
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     checkIfUserHasFilledOutAnswerForm(questionForm, appUserId);
@@ -115,7 +115,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
   @Override
   @Transactional
-  public CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException {
+  public CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, AnswerFormNotFilledOutException {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     AnswerForm answerForm = questionForm.getAnswerForms()
@@ -155,7 +155,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   @Transactional
   public AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchAnswerformById, BelongToAnotherUserException, MissingParamsException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     if (answerForm == null) {
-      throw new MissingParamsException("Couldn't find answerform");
+      throw new MissingParamsException("AnswerForm can not be null");
     }
 
     AnswerForm originalAnswerForm = findAnswerFormById(answerFormId);
@@ -246,11 +246,11 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException {
+  public DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId, long appUserId) throws QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException, QuestionTypesAndQuestionTextsSizeMissMatchException, AnswerFormNotFilledOutException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
     appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
     if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
-      throw new NoUserFilledOutAnswerFormException("No user filled out the answer form");
+      throw new AnswerFormNotFilledOutException("No user filled out the answer form");
     }
     DisplayAllUserAnswersDTO displayAllUserAnswersDTO = new DisplayAllUserAnswersDTO(questionForm, aggregateAllAnswerTextBelongingToOneQuestions(questionForm.getAnswerForms()));
     return displayAllUserAnswersDTO;
@@ -270,17 +270,17 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, AnswerFormNotFoundException {
-    appUserService.checkIfCurrentUserMatchesUserIdInPath(appUserId);
-    QuestionForm questionForm = questionFormService.findById(questionFormId);
+  public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, AnswerFormNotFoundException, AnswerFormNotFilledOutException {
+    QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
+    if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
+      throw new AnswerFormNotFilledOutException("No user filled out the answer form");
+    }
+    AppUser appUser = appUserService.findCurrentlyLoggedInUser();
     AnswerForm answerForm = questionForm.getAnswerForms()
             .stream()
-            .filter(a -> a.getAppUser().getId() == appUserId)
+            .filter(a -> a.getAppUser().getId() == appUser.getId())
             .findFirst()
             .orElse(null);
-    if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
-      throw new NoUserFilledOutAnswerFormException("No user filled out the answer form");
-    }
     if (answerForm == null) {
       throw new AnswerFormNotFoundException("Couldn't find the required answerform");
     }

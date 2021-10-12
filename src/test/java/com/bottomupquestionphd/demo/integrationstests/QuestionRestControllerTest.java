@@ -199,7 +199,7 @@ public class QuestionRestControllerTest {
   @Test
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   public void getUpdateRest_withQuestionThatHasAlreadyBeenAnswered_shouldThrowQuestionHasBeenAnsweredException() throws Exception {
-    mockMvc.perform(get("/rest/question/update/6")
+    mockMvc.perform(get("/rest/question/update/4")
                     .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", is("You can not modify a question where answers has been provided, only delete it")));

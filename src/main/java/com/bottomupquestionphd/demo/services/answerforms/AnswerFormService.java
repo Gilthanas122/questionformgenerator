@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 public interface AnswerFormService {
-  CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException;
+  CreateAnswerFormDTO createAnswerFormDTO(long questionFormId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException;
 
   AnswerForm saveAnswerForm(AnswerForm answerForm, long questionFormId, long appUserId) throws NoSuchUserByIdException, MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, MissingParamsException, AnswerFormAlreadyFilledOutByCurrentUserException;
 
@@ -32,16 +32,16 @@ public interface AnswerFormService {
 
   List<Long> findQuestionFormIdsFilledOutByUser(long appUserId);
 
-  CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, MissingUserException, AnswerFormNotFilledOutException;
+  CreateAnswerFormDTO createAnswerFormToUpdate(long questionFormId, long appUserId) throws BelongToAnotherUserException, QuestionFormNotFoundException, AnswerFormNotFilledOutException;
 
   AnswerForm saveUpdatedAnswerForm(long answerFormId, long appUserId, AnswerForm answerForm) throws NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, BelongToAnotherUserException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException;
 
   DisplayAnswersFromAnAnswerFormDTO findAnswerFormByAnswerId(long answerId) throws AnswerNotFoundByIdException, NoSuchAnswerformById, BelongToAnotherUserException;
 
-  DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException;
+  DisplayAllUserAnswersDTO findAllAnswersBelongingToQuestionForm(long questionFormId, long appUserId) throws QuestionFormNotFoundException, BelongToAnotherUserException, QuestionTypesAndQuestionTextsSizeMissMatchException, MissingUserException, AnswerFormNotFilledOutException;
 
   List<Answer> sortAnswersByQuestions(List<Question> questions, List<Answer> answers);
 
-  DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId, long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, AnswerFormNotFoundException;
+  DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, AnswerFormNotFilledOutException;
 
 }

@@ -152,7 +152,7 @@ public class QuestionFormServiceImpl implements QuestionFormService {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
     questionForm = deleteService.setQuestionFormToBeDeleted(questionForm);
     questionFormRepository.save(questionForm);
-    queryService.deleteQuestionsBelongingToQuestionForm(questionFormId); // nem kell talan?
+    queryService.deleteQuestionsBelongingToQuestionForm(questionFormId); // don't need this maybe?
   }
 
   @Override

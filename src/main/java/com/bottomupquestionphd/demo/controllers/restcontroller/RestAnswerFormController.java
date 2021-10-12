@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,7 +34,7 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("create/{questionFormId}")
-  public ResponseEntity<CreateAnswerFormDTO> renderCreateAnswerForm(@PathVariable long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException {
+  public ResponseEntity<CreateAnswerFormDTO> renderCreateAnswerForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException, AnswerFormAlreadyFilledOutByCurrentUserException {
     log.info("RESTGET rest/answer-form/create/" + questionFormId + "started");
     CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormDTO(questionFormId);
     log.info("REST GET rest/answer-form/create/" + questionFormId + "finished");
@@ -53,7 +52,7 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("/update/{questionFormId}/{appUserId}")
-  public ResponseEntity<CreateAnswerFormDTO> updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long appUserId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormAlreadyFilledOutByCurrentUserException, MissingParamsException, AnswerFormNotFilledOutException {
+  public ResponseEntity<CreateAnswerFormDTO> updateAnswerFormCreatedByUser(@PathVariable long questionFormId, @PathVariable long appUserId) throws QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFilledOutException {
     log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + appUserId + " started");
     CreateAnswerFormDTO createAnswerFormDTO = answerFormService.createAnswerFormToUpdate(questionFormId, appUserId);
     log.info("REST GET rest/answer-form/update/" + questionFormId + "/" + appUserId + " finished");
@@ -63,7 +62,7 @@ public class RestAnswerFormController {
 
   @PutMapping("/update/{answerFormId}/{appUserId}")
   public ResponseEntity<AnswerForm> updateAnswerFormWithNewAnswers(@PathVariable long appUserId, @PathVariable long answerFormId,
-                                                                   @RequestBody AnswerForm answerForm) throws NoSuchUserByIdException, NoSuchAnswerformById, MissingParamsException, BelongToAnotherUserException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
+                                                                   @RequestBody AnswerForm answerForm) throws NoSuchUserByIdException, NoSuchAnswerformById, MissingParamsException, BelongToAnotherUserException, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     log.info("REST PUT rest/answer-form/update/" + answerFormId + "/" + appUserId + " started");
     AnswerForm answerFormReturned = answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
     log.info("REST PUT rest/answer-form/update/" + answerFormId + "/" + appUserId + " finished");
@@ -80,18 +79,18 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("/answers/{questionFormId}/{appUserId}")
-  public ResponseEntity<?> showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException, QuestionTypesAndQuestionTextsSizeMissMatchException {
+  public ResponseEntity<?> showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId) throws QuestionFormNotFoundException, BelongToAnotherUserException, QuestionTypesAndQuestionTextsSizeMissMatchException, MissingUserException, AnswerFormNotFilledOutException {
     log.info("REST GET answer-form/answers/ " + questionFormId + " started");
     DisplayAllUserAnswersDTO displayAllUserAnswersDTO = answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId, appUserId);
     log.info("REST GET answer-form/answers/ " + questionFormId + " finished");
     return new ResponseEntity<>(displayAllUserAnswersDTO, HttpStatus.OK);
   }
 
-  @GetMapping("list-answers/{questionFormId}/{appUserId}")
-  public ResponseEntity<?> seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) throws MissingUserException, AnswerFormNotFoundException, QuestionFormNotFoundException, BelongToAnotherUserException, NoUserFilledOutAnswerFormException {
-    log.info("REST GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " started");
-    DisplayOneUserAnswersDTO displayOneUserAnswersDTO = answerFormService.findAllAnswersBelongingToAnUser(questionFormId, appUserId);
-    log.info("REST GET answer-form/list-answers/ " + questionFormId + "/" + appUserId + " finished");
+  @GetMapping("list-answers/{questionFormId}")
+  public ResponseEntity<?> seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId) throws MissingUserException, AnswerFormNotFoundException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFilledOutException {
+    log.info("REST GET answer-form/list-answers/ " + questionFormId + " started");
+    DisplayOneUserAnswersDTO displayOneUserAnswersDTO = answerFormService.findAllAnswersBelongingToAnUser(questionFormId);
+    log.info("REST GET answer-form/list-answers/ " + questionFormId + " finished");
     return new ResponseEntity<>(displayOneUserAnswersDTO, HttpStatus.OK);
   }
 }

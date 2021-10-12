@@ -369,13 +369,13 @@ public class AnswerFormServiceTest {
     Mockito.when(questionFormService.findById(questionFormId)).thenReturn(questionForm);
 
     DisplayAllUserAnswersDTO displayAllUserAnswersDTOReturned = answerFormService.findAllAnswersBelongingToQuestionForm(questionFormId, appUserId);
-    String expected = "actualAnswerText1(0.0);; actualAnswerText1(0.0);; actualAnswerText1(0.0);; actualAnswerText1(0.0);; actualAnswerText1(0.0)";
+    String expected = "actualAnswerText0(0.0);; actualAnswerText1(0.0);; actualAnswerText2(0.0);; actualAnswerText3(0.0);; actualAnswerText4(0.0)";
 
     assertEquals(displayAllUserAnswersDTOReturned.getAnswers().size(), questionForm.getQuestions().size());
     assertEquals(displayAllUserAnswersDTOReturned.getAnswers().get(0).get(0), expected);
   }
 
-  @Test(expected = NoUserFilledOutAnswerFormException.class)
+  @Test(expected = AnswerFormNotFilledOutException.class)
   public void findAllAnswersBelongingToQuestionForm_withNoAnswerToTheGivenAnswerForm_shouldThrowNoUserFilledOutAnswerFormException() throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, QuestionTypesAndQuestionTextsSizeMissMatchException, AnswerFormNotFilledOutException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     AppUser appUser = new AppUser();

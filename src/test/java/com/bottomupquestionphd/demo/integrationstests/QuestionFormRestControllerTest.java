@@ -55,9 +55,9 @@ public class QuestionFormRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("question form test name", "question form test description"))))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", is(5)));
+            .andExpect(jsonPath("$", is(6)));
 
-    assertEquals("question form test name", questionFormService.findById(5).getName());
+    assertEquals("question form test name", questionFormService.findById(6).getName());
   }
 
   @Test
@@ -83,7 +83,7 @@ public class QuestionFormRestControllerTest {
     mockMvc.perform(get("/rest/question-form/list")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)));
+            .andExpect(jsonPath("$", hasSize(3)));
   }
 
   @Test

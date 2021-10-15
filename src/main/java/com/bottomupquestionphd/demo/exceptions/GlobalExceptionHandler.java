@@ -3,6 +3,8 @@ package com.bottomupquestionphd.demo.exceptions;
 import com.bottomupquestionphd.demo.domains.dtos.ErrorMessageDTO;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.answerform.*;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormFilteringException;
+import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormHasNotQuestionsException;
 import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionTypesAndQuestionTextsSizeMissMatchException;
 import com.bottomupquestionphd.demo.exceptions.appuser.*;
 import com.bottomupquestionphd.demo.exceptions.email.ConfirmationTokenDoesNotExistException;
@@ -222,6 +224,14 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  @ExceptionHandler(QuestionFormHasNotQuestionsException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionFormHasNotQuestionsException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   // Question Controller
   @ExceptionHandler(InvalidInputFormatException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
@@ -362,6 +372,15 @@ public class GlobalExceptionHandler {
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
+  //Answer Form Filtering Exceptions
+  @ExceptionHandler(QuestionFormFilteringException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public @ResponseBody
+  ErrorMessageDTO handleQuestionFormFilteringException(final Exception exception) {
+    log.error(exception.getMessage());
+    return ErrorServiceImpl.defaultExceptionResponse(exception);
+  }
+
   //Random Exception
 
   @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
@@ -395,5 +414,4 @@ public class GlobalExceptionHandler {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
-
 }

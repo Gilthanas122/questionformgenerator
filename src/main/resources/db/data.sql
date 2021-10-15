@@ -28,6 +28,9 @@ VALUES(3, 0, 'test questionform for another teacher', 1, 'test questionform belo
 INSERT INTO questionforms (id, deleted, description, finished, name, app_user_id)
 VALUES(4, 0, 'test questionform with missing user', 1, 'test questionform with missing user', null);
 
+INSERT INTO questionforms (id, deleted, description, finished, name, app_user_id)
+VALUES(5, 0, 'test questionform not questions', 1, 'test questionform with no questionr', 2);
+
 INSERT INTO questions (question_type, id, deleted, list_position, scale, question_text, question_form_id)
 VALUES('CheckBoxQuestion', 1, 0, 0, 0, 'checkbox question text', 1);
 

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,14 +60,15 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
       throw new QuestionFormFilteringException("Invalid amount of search terms submitted");
     }
     AnswerSearchTermResultDTO answerSearchTermResultDTO = new AnswerSearchTermResultDTO();
-    return addActualAnswerTextToResult(questionForm, answerSearchTermResultDTO, searchTermsForFilteringDTO);
+    AnswerSearchTermResultDTO answerSearchTermResultDTO1 = addActualAnswerTextToResult(questionForm, answerSearchTermResultDTO, searchTermsForFilteringDTO);
+    return answerSearchTermResultDTO1;
   }
 
   @Override
   public void returnAllAnswersBelongingToQuestionForm(long questionFormId, HttpServletResponse response) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, IOException {
     QuestionForm questionForm = questionFormService.findById(questionFormId);
     List<String> questionTexts = findQuestionTextsFromQuestionForm(questionForm.getQuestions());
-    for (int i = 0; i <questionForm.getAnswerForms().size(); i++) {
+    for (int i = 0; i < questionForm.getAnswerForms().size(); i++) {
       answerFormService.sortAnswersByQuestions(questionForm.getQuestions(), questionForm.getAnswerForms().get(i).getAnswers());
     }
     List<List<String>> answerTexts = createListStringFromAnswerFormsAnswers(questionForm.getAnswerForms());
@@ -80,19 +82,16 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
 
   private List<List<String>> createListStringFromAnswerFormsAnswers(List<AnswerForm> answerForms) {
     List<List<String>> results = new ArrayList<>();
-    List<String> actualAnswerTexts = new ArrayList<>();
     for (AnswerForm answerForm : answerForms) {
-      for (int i = 0; i < answerForm.getAnswers().size(); i++) {
-        Answer answer = answerForm.getAnswers().get(i);
+      List<String> actualAnswerTexts = new ArrayList<>();
+      for (Answer answer : answerForm.getAnswers()) {
         StringBuilder result = new StringBuilder();
-        for (int j = 0; j < answer.getActualAnswerTexts().size(); j++) {
-          StringBuilder builder = new StringBuilder(answer.getActualAnswerTexts().get(j).getAnswerText());
-          builder.append(";;");
-          result.append(builder);
+        for (ActualAnswerText actualAnswerText : answer.getActualAnswerTexts()) {
+          result.append(actualAnswerText.getAnswerText() + ";;");
         }
-        if (result.length() > 3){
+        if (result.length() > 0) {
           actualAnswerTexts.add(result.substring(0, result.length() - 2));
-        }else{
+        } else {
           actualAnswerTexts.add("no answer provided");
         }
       }
@@ -111,8 +110,11 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
   private AnswerSearchTermResultDTO addActualAnswerTextToResult(QuestionForm questionForm, AnswerSearchTermResultDTO answerSearchTermResultDTO, SearchTermsForFilteringDTO searchTermsForFilteringDTO) throws BelongToAnotherUserException {
     appUserService.checkIfCurrentUserMatchesUserIdInPath(questionForm.getAppUser().getId());
     for (int i = 0; i < searchTermsForFilteringDTO.getSearchTerms().size(); i++) {
-      for (Question actualQuestion : questionForm.getQuestions()){
+      for (Question actualQuestion : questionForm.getQuestions()) {
         String actualSearchTerm = searchTermsForFilteringDTO.getSearchTerms().get(i);
+        if (actualSearchTerm == null) {
+          continue;
+        }
         ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO = new ActualAnswerTextSearchTermResultDTO();
         String questionType = actualQuestion.getDiscriminatorValue();
         for (Answer answer : actualQuestion.getAnswers()) {
@@ -124,7 +126,7 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
           } else if (questionType.equals(QuestionType.SCALEQUESTION.toString())) {
             actualAnswerTextSearchTermResultDTO = getAnswersForScaleQuestion(actualSearchTerm, answer, actualAnswerTextSearchTermResultDTO);
           }
-          if (!actualAnswerTextSearchTermResultDTO.getActualAnswers().isEmpty()){
+          if (!actualAnswerTextSearchTermResultDTO.getActualAnswers().isEmpty()) {
             answerSearchTermResultDTO.getActualAnswerTextSearchTermResultDTOS().add(actualAnswerTextSearchTermResultDTO);
           }
         }
@@ -134,20 +136,23 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
   }
 
   private ActualAnswerTextSearchTermResultDTO getAnswersForScaleQuestion(String actualSearchTerm, Answer answer, ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO) {
-    String operator = ScaleQuestionFilterEnums.checkIfSearchTermContainsOperator(actualSearchTerm);
-    List<String> filteredActualAnswerTexts = queryService.filterActualAnswerTextsForScaleQuestion(answer.getId(), operator, removeOperatorsFromActualSearchTerm(actualSearchTerm, operator));
-    actualAnswerTextSearchTermResultDTO.setActualAnswers(filteredActualAnswerTexts);
+    String regex = "[0-9]+";
+    if (actualSearchTerm.matches(regex)) {
+      String operator = ScaleQuestionFilterEnums.checkIfSearchTermContainsOperator(actualSearchTerm);
+      List<String> filteredActualAnswerTexts = queryService.filterActualAnswerTextsForScaleQuestion(answer.getId(), operator, removeOperatorsFromActualSearchTerm(actualSearchTerm, operator));
+      actualAnswerTextSearchTermResultDTO.setActualAnswers(filteredActualAnswerTexts);
+    }
     return actualAnswerTextSearchTermResultDTO;
   }
 
   private ActualAnswerTextSearchTermResultDTO getAnswersForCheckBoxOrRadiobuttonOrTextQuestion(String actualSearchTerm, Answer answer, String questionType, AnswerSearchTermResultDTO answerSearchTermResultDTO) {
-    List<String> filteredActualAnswerTexts = filterActualAnswerTextsBelongingToAnswer(answer.getActualAnswerTexts(), actualSearchTerm);
     ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO = new ActualAnswerTextSearchTermResultDTO();
+    List<String> filteredActualAnswerTexts = filterActualAnswerTextsBelongingToAnswer(answer.getActualAnswerTexts(), actualSearchTerm);
     if (filteredActualAnswerTexts.size() > 0) {
       actualAnswerTextSearchTermResultDTO.setActualAnswers(filteredActualAnswerTexts);
-    }
-    if (questionType.equals("TextQuestion")) {
-      setAverageForActualAnswerTextsTextAnswerVotes(answerSearchTermResultDTO, answer);
+      if (questionType.equals("TextQuestion")) {
+        setAverageForActualAnswerTextsTextAnswerVotes(answerSearchTermResultDTO, answer);
+      }
     }
     return actualAnswerTextSearchTermResultDTO;
   }
@@ -159,40 +164,50 @@ public class AnswerFormFilterServiceImpl implements AnswerFormFilterService {
     return actualSearchTerm.replace(operator, "");
   }
 
-  private List<String> filterActualAnswerTextsBelongingToAnswer(List<ActualAnswerText> filtereActualAnswerTexts, String actualSearchTerm) {
-    List<String> actualAnswerTexts = new ArrayList<>();
-    String[] actualSearchTerms = new String[1];
+  private List<String> filterActualAnswerTextsBelongingToAnswer(List<ActualAnswerText> filteredActualAnswerTexts, String actualSearchTerm) {
+    List<String> actualAnswerTextsMatching = new ArrayList<>();
+    List<String> actualSearchTerms = new ArrayList<>();
+    boolean shouldItContainAll = false;
     if (actualSearchTerm.contains("AND")) {
-      actualSearchTerms[0] = convertActualSearchTermWithAndToSearchTerm(actualSearchTerm);
+      shouldItContainAll = true;
+      actualSearchTerms.addAll(convertActualSearchTermWithAndOrToSearchTerm(actualSearchTerm, "AND"));
     } else if (actualSearchTerm.contains("OR")) {
-      actualSearchTerms = actualSearchTerm.split("OR");
+      actualSearchTerms.addAll(convertActualSearchTermWithAndOrToSearchTerm(actualSearchTerm, "OR"));
     } else {
-      actualSearchTerms[0] = actualSearchTerm;
+      actualSearchTerms.add(actualSearchTerm);
     }
-    for (String searchTerm : actualSearchTerms) {
-      actualAnswerTexts.addAll(filtereActualAnswerTexts
-              .stream()
-              .filter(answerText -> !searchTerm.isBlank() && answerText.getAnswerText().contains(searchTerm))
-              .map(ActualAnswerText::getAnswerText)
-              .collect(Collectors.toList()));
+    for (ActualAnswerText actualAnswerText : filteredActualAnswerTexts) {
+      int matchCounter = 0;
+      for (String searchTerm : actualSearchTerms) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+          continue;
+        } else if (actualAnswerText.getAnswerText().contains(searchTerm)) {
+          matchCounter++;
+        }
+      }
+      if (shouldItContainAll && matchCounter == actualSearchTerms.size()) {
+        actualAnswerTextsMatching.add(actualAnswerText.getAnswerText());
+      } else if (!shouldItContainAll && matchCounter > 0) {
+        actualAnswerTextsMatching.add(actualAnswerText.getAnswerText());
+      }
     }
-    return actualAnswerTexts;
+    return actualAnswerTextsMatching;
   }
 
-  private String convertActualSearchTermWithAndToSearchTerm(String actualSearchTerm) {
-    StringBuilder result = new StringBuilder();
-    String[] searchTerms = actualSearchTerm.split("AND");
-    for (String searchTerm : searchTerms) {
-      result.append(searchTerm).append(" ");
-    }
-    return result.toString().trim();
+  private List<String> convertActualSearchTermWithAndOrToSearchTerm(String actualSearchTerm, String operator) {
+    String[] searchTerms = actualSearchTerm.split(operator);
+    return Arrays.asList(searchTerms);
   }
 
   private AnswerSearchTermResultDTO setAverageForActualAnswerTextsTextAnswerVotes(AnswerSearchTermResultDTO answerSearchTermResultDTO, Answer answer) {
     List<Double> averages = answer.getActualAnswerTexts().stream().mapToDouble(ActualAnswerText::getAverageOfTextAnswerVotes).boxed().collect(Collectors.toList());
     for (int i = 0; i < answerSearchTermResultDTO.getActualAnswerTextSearchTermResultDTOS().size(); i++) {
       ActualAnswerTextSearchTermResultDTO actualAnswerTextSearchTermResultDTO = answerSearchTermResultDTO.getActualAnswerTextSearchTermResultDTOS().get(i);
-      actualAnswerTextSearchTermResultDTO.setTextAnswerVotesAverage(averages.get(0));
+      if (averages.size() > 0) {
+        actualAnswerTextSearchTermResultDTO.setTextAnswerVotesAverage(averages.get(0));
+      } else {
+        actualAnswerTextSearchTermResultDTO.setTextAnswerVotesAverage(0);
+      }
     }
     return answerSearchTermResultDTO;
   }

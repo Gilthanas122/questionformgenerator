@@ -140,7 +140,6 @@ public class AnswerFormController {
     return "app-user/landing-page";
   }
 
-  //NOT TESTED
   @GetMapping("/get/{answerId}")
   public String getAnswerFormBelongingToAnswer(@PathVariable long answerId, Model model) {
     log.info("GET answer-form/get/ " + answerId + " started");
@@ -164,7 +163,6 @@ public class AnswerFormController {
     return "app-user/landing-page";
   }
 
-  //NOT TESTED
   @GetMapping("/answers/{questionFormId}/{appUserId}")
   public String showAllAnswersBelongingToQuestionForm(@PathVariable long questionFormId, @PathVariable long appUserId, Model model) {
     log.info("GET answer-form/answers/ " + questionFormId + " started");

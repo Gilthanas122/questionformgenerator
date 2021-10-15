@@ -1,1 +1,0 @@
-DELETE FROM questionforms where app_user_id = 2;

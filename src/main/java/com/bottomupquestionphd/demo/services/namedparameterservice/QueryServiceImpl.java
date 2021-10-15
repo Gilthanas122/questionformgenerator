@@ -34,9 +34,6 @@ public class QueryServiceImpl implements QueryService {
               (rs, rownum) -> new QuestionFormNotFilledOutByUserDTO(rs.getLong("id"), rs.getString("name"), rs.getInt("numberofquestions"))
       );
     }
-       /* List<Query> list = new ArrayList<>();
-        list.add()
-        list.stream().*/
     return namedParameterJdbcTemplate.query(
             "SELECT qf.id, qf.name, COUNT(q.question_form_id) as numberofquestions FROM questions q JOIN questionforms qf ON q.question_form_id = qf.id" +
                     " WHERE qf.deleted = 0 AND qf.id NOT IN (:ids) GROUP BY qf.id", parameters,

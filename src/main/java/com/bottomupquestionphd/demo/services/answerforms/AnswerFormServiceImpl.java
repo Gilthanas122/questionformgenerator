@@ -270,7 +270,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
   }
 
   @Override
-  public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, AnswerFormNotFoundException, AnswerFormNotFilledOutException {
+  public DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, NoSuchAnswerformById, AnswerFormNotFilledOutException {
     QuestionForm questionForm = questionFormService.findByIdForAnswerForm(questionFormId);
     if (questionForm.getAnswerForms() == null || questionForm.getAnswerForms().isEmpty()) {
       throw new AnswerFormNotFilledOutException("No user filled out the answer form");
@@ -282,7 +282,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
             .findFirst()
             .orElse(null);
     if (answerForm == null) {
-      throw new AnswerFormNotFoundException("Couldn't find the required answerform");
+      throw new NoSuchAnswerformById("Couldn't find the required answerform");
     }
 
     List<String> filteredAnswers = aggregateAllAnswerTextBelongingToAnswerForm(answerForm);

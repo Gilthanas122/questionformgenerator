@@ -42,6 +42,6 @@ public interface AnswerFormService {
 
   List<Answer> sortAnswersByQuestions(List<Question> questions, List<Answer> answers);
 
-  DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, AnswerFormNotFilledOutException;
+  DisplayOneUserAnswersDTO findAllAnswersBelongingToAnUser(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException, NoSuchAnswerformById, AnswerFormNotFilledOutException;
 
 }

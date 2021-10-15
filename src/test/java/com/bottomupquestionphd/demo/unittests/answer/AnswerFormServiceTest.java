@@ -201,7 +201,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test
-  public void saveUpdatedAnswerForm_withValidInput() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
+  public void saveUpdatedAnswerForm_withValidInput() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     long answerFormId = answerForm.getId();
     long appUserId = answerForm.getAppUser().getId();
@@ -216,7 +216,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test(expected = NumberOfQuestionAndAnswersShouldMatchException.class)
-  public void saveUpdatedAnswerForm_withNonMatchingNumberOfAnswersAndQuestion_shouldThrowNumberOfQuestionAndAnswersShouldMatchException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
+  public void saveUpdatedAnswerForm_withNonMatchingNumberOfAnswersAndQuestion_shouldThrowNumberOfQuestionAndAnswersShouldMatchException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     long answerFormId = answerForm.getId();
     long appUserId = answerForm.getAppUser().getId();
@@ -229,7 +229,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test(expected = BelongToAnotherUserException.class)
-  public void saveUpdatedAnswerForm_withNotMatchingAppUserId_throwsBelongsToAnotherUserException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException, AnswerFormNotFoundException {
+  public void saveUpdatedAnswerForm_withNotMatchingAppUserId_throwsBelongsToAnotherUserException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     long appUserId = 12;
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     long answerFormId = answerForm.getId();
@@ -239,14 +239,14 @@ public class AnswerFormServiceTest {
     answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
   }
 
-  @Test(expected = AnswerFormNotFoundException.class)
+  @Test(expected = NoSuchAnswerformById.class)
   public void saveUpdatedAnswerForm_withNonExistentAnswerFormId_shouldThrowAnswerFormNotFoundException() throws BelongToAnotherUserException, NoSuchUserByIdException, MissingParamsException, NoSuchAnswerformById, NumberOfQuestionAndAnswersShouldMatchException, AnswerFormNumberOfAnswersShouldMatchException {
     AnswerForm answerForm = (AnswerForm) beanFactory.getBean("answerForm");
     long answerFormId = answerForm.getId();
     long appUserId = answerForm.getAppUser().getId();
 
     given(answerFormRepository.findById(answerForm.getId())).willAnswer(invocation -> {
-      throw new AnswerFormNotFoundException("Couldn't find answer with the given id");
+      throw new NoSuchAnswerformById("Couldn't find answer with the given id");
     });
 
     answerFormService.saveUpdatedAnswerForm(answerFormId, appUserId, answerForm);
@@ -389,7 +389,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test
-  public void findAllAnswersBelongingToAnUser_withValidData() throws QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, AnswerFormNotFilledOutException {
+  public void findAllAnswersBelongingToAnUser_withValidData() throws QuestionFormNotFoundException, BelongToAnotherUserException, NoSuchAnswerformById, AnswerFormNotFilledOutException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionFormWithAnswerFormWithTextQuestion");
     AppUser appUser = new AppUser();
     questionForm.setAppUser(appUser);
@@ -402,7 +402,7 @@ public class AnswerFormServiceTest {
   }
 
   @Test(expected = AnswerFormNotFilledOutException.class)
-  public void findAllAnswersBelongingToAnUser_withNoUserAnswer_shouldThrowAnswerFormNotFilledOutException() throws QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFoundException, NoUserFilledOutAnswerFormException, AnswerFormNotFilledOutException {
+  public void findAllAnswersBelongingToAnUser_withNoUserAnswer_shouldThrowAnswerFormNotFilledOutException() throws QuestionFormNotFoundException, BelongToAnotherUserException, NoSuchAnswerformById, AnswerFormNotFilledOutException {
     QuestionForm questionForm = (QuestionForm) beanFactory.getBean("questionForm");
     AppUser appUser = new AppUser();
     questionForm.setAppUser(appUser);

@@ -87,7 +87,7 @@ public class RestAnswerFormController {
   }
 
   @GetMapping("list-answers/{questionFormId}")
-  public ResponseEntity<?> seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId) throws MissingUserException, AnswerFormNotFoundException, QuestionFormNotFoundException, BelongToAnotherUserException, AnswerFormNotFilledOutException {
+  public ResponseEntity<?> seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException, NoSuchAnswerformById, AnswerFormNotFilledOutException {
     log.info("REST GET answer-form/list-answers/ " + questionFormId + " started");
     DisplayOneUserAnswersDTO displayOneUserAnswersDTO = answerFormService.findAllAnswersBelongingToAnUser(questionFormId);
     log.info("REST GET answer-form/list-answers/ " + questionFormId + " finished");

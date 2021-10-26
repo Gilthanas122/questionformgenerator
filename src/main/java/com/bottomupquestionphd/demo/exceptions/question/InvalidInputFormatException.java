@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.question;
 
-public class InvalidInputFormatException extends Exception{
+public class InvalidInputFormatException extends Exception {
 
   public InvalidInputFormatException() {
   }

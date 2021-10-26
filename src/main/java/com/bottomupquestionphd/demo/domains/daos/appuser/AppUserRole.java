@@ -1,13 +1,13 @@
 package com.bottomupquestionphd.demo.domains.daos.appuser;
 
 public enum AppUserRole {
-  ADMIN ("ROLE_ADMIN"),
-  TEACHER ("ROLE_TEACHER"),
-  USER ("ROLE_USER");
+  ADMIN("ROLE_ADMIN"),
+  TEACHER("ROLE_TEACHER"),
+  USER("ROLE_USER");
 
   private final String name;
 
-  private AppUserRole(String s) {
+  AppUserRole(String s) {
     name = s;
   }
 

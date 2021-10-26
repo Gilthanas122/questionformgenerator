@@ -7,7 +7,8 @@ public class QuestionCreateDTO {
   private String questionText;
   private List<String> answers = new ArrayList<>();
 
-  public QuestionCreateDTO(){}
+  public QuestionCreateDTO() {
+  }
 
   public QuestionCreateDTO(String questionText) {
     this.questionText = questionText;

@@ -47,9 +47,9 @@ public class RestQuestionController {
 
   @GetMapping("update/{questionId}")
   public ResponseEntity<QuestionWithDTypeDTO> renderQuestionUpdateRest(@PathVariable long questionId) throws QuestionNotFoundByIdException, BelongToAnotherUserException, QuestionHasBeenAnsweredException {
-    log.info("REST GET rest/question/update/" + questionId+ "/" + " started");
+    log.info("REST GET rest/question/update/" + questionId + "/" + " started");
     QuestionWithDTypeDTO question = questionService.findByIdAndConvertToQuestionWithDTypeDTO(questionId);
-    log.info("REST GET rest/question/update/" + questionId+ "/" + " finished");
+    log.info("REST GET rest/question/update/" + questionId + "/" + " finished");
 
     return new ResponseEntity<>(question, HttpStatus.OK);
   }
@@ -65,9 +65,9 @@ public class RestQuestionController {
 
   @PutMapping("/update-position/{change}/{questionId}")
   public ResponseEntity<Question> updateListPosition(@PathVariable String change, @PathVariable long questionId) throws QuestionNotFoundByIdException, InvalidQuestionPositionException, InvalidQuestionPositionChangeException, BelongToAnotherUserException {
-    log.info("REST PUT rest/question/update-position/" + change+ "/" + questionId + " started");
+    log.info("REST PUT rest/question/update-position/" + change + "/" + questionId + " started");
     Question question = questionService.changeOrderOfQuestion(change, questionId);
-    log.info("REST PUT rest/question/update-position/" + change+ "/" + questionId + " finished");
+    log.info("REST PUT rest/question/update-position/" + change + "/" + questionId + " finished");
 
     return new ResponseEntity<>(question, HttpStatus.OK);
   }

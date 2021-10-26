@@ -6,13 +6,14 @@ import java.util.List;
 
 @Entity(name = "CheckBoxQuestion")
 @DiscriminatorValue("CheckBoxQuestion")
-public class CheckBoxQuestion extends MultipleAnswerQuestion{
+public class CheckBoxQuestion extends MultipleAnswerQuestion {
 
   public CheckBoxQuestion() {
 
   }
+
   public CheckBoxQuestion(String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
-  super(questionText, questionTextPossibilities);
+    super(questionText, questionTextPossibilities);
   }
 
   public CheckBoxQuestion(long id, String questionText, List<QuestionTextPossibility> questionTextPossibilities) {

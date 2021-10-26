@@ -10,16 +10,16 @@ import java.util.regex.Pattern;
 @Service
 public class RegexServiceImpl {
 
-  private static String passwordErrorMessage = "Password must be at least 8 and max 20 characters long, at least one uppercase letter and one number and special character of the following ones: @#$%^&+-=";
-  private static String emailErrorMessage = "Not valid email format";
-  private static String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=-])(?=\\S+$).{8,}$";
-  private static String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+  private static final String passwordErrorMessage = "Password must be at least 8 and max 20 characters long, at least one uppercase letter and one number and special character of the following ones: @#$%^&+-=";
+  private static final String emailErrorMessage = "Not valid email format";
+  private static final String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=-])(?=\\S+$).{8,}$";
+  private static final String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
   public static void checkRegex(String toValidate, String type) throws InvalidRegexParameterException {
     String errorMessage = "";
     String regExpn = "";
     if (type.equals("password")) {
-      errorMessage =passwordErrorMessage;
+      errorMessage = passwordErrorMessage;
       regExpn = passwordRegex;
     } else if (type.equals("email")) {
       regExpn = emailRegex;

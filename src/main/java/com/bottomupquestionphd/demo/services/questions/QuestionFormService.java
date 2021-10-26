@@ -16,28 +16,28 @@ import java.util.List;
 
 @Service
 public interface QuestionFormService {
-    long save(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException, NoSuchUserNameException;
+  long save(QuestionFormCreateDTO questionFormCreateDTO) throws MissingParamsException, QuestionFormNameAlreadyExistsException, NoSuchUserNameException;
 
-    QuestionForm findById(long id) throws QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException;
+  QuestionForm findById(long id) throws QuestionFormNotFoundException, BelongToAnotherUserException, MissingUserException;
 
-    List<QuestionForm> findAll() throws NoQuestionFormsInDatabaseException;
+  List<QuestionForm> findAll() throws NoQuestionFormsInDatabaseException;
 
-    void finishQuestionForm(long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NotEnoughQuestionsToCreateFormException;
+  void finishQuestionForm(long id) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException, NotEnoughQuestionsToCreateFormException;
 
-    List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
+  List<QuestionWithDTypeDTO> findByIdAndAddQuestionType(long questionFormId) throws MissingUserException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
-    Question findQuestionToSwitchPositionWith(QuestionForm questionForm, int currentPosition, String direction) throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
+  Question findQuestionToSwitchPositionWith(QuestionForm questionForm, int currentPosition, String direction) throws InvalidQuestionPositionException, InvalidQuestionPositionChangeException;
 
-    void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
+  void updateQuestionListPositionAfterDeletingQuestion(QuestionForm questionForm);
 
-    QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException;
+  QuestionForm findByIdForAnswerForm(long questionFormId) throws QuestionFormNotFoundException;
 
-    void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException;
+  void deleteQuestionForm(long questionFormId) throws QuestionFormNotFoundException, BelongToAnotherUserException;
 
-    List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm);
+  List<Long> getAllTextQuestionIdsFromQuestionForm(QuestionForm questionForm);
 
-    void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException;
+  void updateQuestionForm(QuestionFormCreateDTO questionFormCreateDTO, long id) throws MissingParamsException, QuestionFormNotFoundException, BelongToAnotherUserException;
 
-    void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question);
+  void updateAnswerFormAfterAddingNewQuestion(QuestionForm questionForm, Question question);
 
 }

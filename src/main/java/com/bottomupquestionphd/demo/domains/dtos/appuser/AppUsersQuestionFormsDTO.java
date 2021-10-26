@@ -1,13 +1,13 @@
 package com.bottomupquestionphd.demo.domains.dtos.appuser;
 
 public interface AppUsersQuestionFormsDTO {
-//using projection https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projections
-    long getQuestionFormId();
+  //using projection https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projections
+  long getQuestionFormId();
 
-    String getName();
+  String getName();
 
-    long getAnswerFormId();
+  long getAnswerFormId();
 
-    long getAppUserId();
+  long getAppUserId();
 
 }

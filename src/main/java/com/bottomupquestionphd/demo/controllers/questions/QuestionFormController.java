@@ -109,7 +109,7 @@ public class QuestionFormController {
   }
 
   @GetMapping("list")
-  public String listTeachersQuestionForms(Model model, @RequestParam (required = false) String error) {
+  public String listTeachersQuestionForms(Model model, @RequestParam(required = false) String error) {
     log.info("GET question-form/list started");
     try {
       model.addAttribute("error", error);

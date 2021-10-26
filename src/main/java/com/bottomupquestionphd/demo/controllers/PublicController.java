@@ -96,33 +96,33 @@ public class PublicController {
   }
 
   @GetMapping("change-password")
-  public String getChangeUserPassword(){
+  public String getChangeUserPassword() {
     log.info("GET /change-password started");
     log.info("GET /change-password finished");
     return "change-password";
   }
 
   @PostMapping("change-password")
-  public String postChangeUserPassword(Model model, @RequestParam String email){
+  public String postChangeUserPassword(Model model, @RequestParam String email) {
     log.info("POST /change-password started");
     try {
       appUserService.sendEmailToRegeneratePassword(email);
       log.info("POST /change-password finished");
       model.addAttribute("successMessage", new SuccessMessageDTO("ok", "Email sent to the provided email address to change password"));
       return "login";
-    }catch (MissingParamsException e){
+    } catch (MissingParamsException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (AppUserNotActivatedException e){
+    } catch (AppUserNotActivatedException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoSuchUserByEmailException e){
+    } catch (NoSuchUserByEmailException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (InvalidRegexParameterException e){
+    } catch (InvalidRegexParameterException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -130,23 +130,23 @@ public class PublicController {
   }
 
   @GetMapping("reset-password/{appUserId}")
-  public String getResetPassword(@PathVariable long appUserId, Model model, @RequestParam String token){
+  public String getResetPassword(@PathVariable long appUserId, Model model, @RequestParam String token) {
     log.info("GET /reset-password started");
     try {
       appUserService.validateChangePassword(appUserId, token);
       model.addAttribute("appUserId", appUserId);
       log.info("GET /reset-password finished");
       return "reset-password";
-    }catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (InvalidChangePasswordException e){
+    } catch (InvalidChangePasswordException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (MissingParamsException e){
+    } catch (MissingParamsException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -154,22 +154,22 @@ public class PublicController {
   }
 
   @PostMapping("reset-password/{appUserId}")
-  public String postResetPassword(Model model, @ModelAttribute ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId){
+  public String postResetPassword(Model model, @ModelAttribute ChangePasswordDTO changePasswordDTO, @PathVariable long appUserId) {
     log.info("POST /reset-password started");
     try {
       appUserService.changePassword(changePasswordDTO, appUserId);
       log.info("POST /reset-password finished");
       return "login";
-    }catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (PassWordMissMachException e){
+    } catch (PassWordMissMachException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (InvalidRegexParameterException e){
+    } catch (InvalidRegexParameterException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }

@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.appuser;
 
-public class InvalidChangePasswordException extends Exception{
+public class InvalidChangePasswordException extends Exception {
   public InvalidChangePasswordException() {
   }
 

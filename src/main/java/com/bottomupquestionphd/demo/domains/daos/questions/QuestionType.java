@@ -1,15 +1,15 @@
 package com.bottomupquestionphd.demo.domains.daos.questions;
 
 public enum QuestionType {
-  TEXTQUESTION ("TextQuestion"),
-  CHECKBOXQUESTION ("CheckBoxQuestion"),
-  RADIOBUTTONQUESTION ("RadioButtonQuestion"),
-  SCALEQUESTION ("ScaleQuestion"),
-  MULTIPLEANSWERQUESTION ("MultipleAnswerQuestion");
+  TEXTQUESTION("TextQuestion"),
+  CHECKBOXQUESTION("CheckBoxQuestion"),
+  RADIOBUTTONQUESTION("RadioButtonQuestion"),
+  SCALEQUESTION("ScaleQuestion"),
+  MULTIPLEANSWERQUESTION("MultipleAnswerQuestion");
 
   private final String name;
 
-  private QuestionType(String s) {
+  QuestionType(String s) {
     name = s;
   }
 

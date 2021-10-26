@@ -12,11 +12,11 @@ import com.bottomupquestionphd.demo.domains.daos.questions.QuestionType;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeleteServiceImpl implements DeleteService{
+public class DeleteServiceImpl implements DeleteService {
   @Override
   public QuestionForm setQuestionFormToBeDeleted(QuestionForm questionForm) {
     questionForm.setDeleted(true);
-    for (int i = 0; i <questionForm.getAnswerForms().size(); i++) {
+    for (int i = 0; i < questionForm.getAnswerForms().size(); i++) {
       setAnswerFormToBeDeleted(questionForm.getAnswerForms().get(i));
     }
     return questionForm;
@@ -25,7 +25,7 @@ public class DeleteServiceImpl implements DeleteService{
   @Override
   public AnswerForm setAnswerFormToBeDeleted(AnswerForm answerForm) {
     answerForm.setDeleted(true);
-    for (int i = 0; i <answerForm.getAnswers().size(); i++) {
+    for (int i = 0; i < answerForm.getAnswers().size(); i++) {
       setAnswerToBeDeleted(answerForm.getAnswers().get(i));
     }
     return answerForm;
@@ -34,12 +34,12 @@ public class DeleteServiceImpl implements DeleteService{
   @Override
   public Question setQuestionToBeDeleted(Question question) {
     question.setDeleted(true);
-    for (int i = 0; i <question.getAnswers().size(); i++) {
+    for (int i = 0; i < question.getAnswers().size(); i++) {
       setAnswerToBeDeleted(question.getAnswers().get(i));
     }
-    if (question.getDiscriminatorValue().equals(QuestionType.CHECKBOXQUESTION.toString()) || question.getDiscriminatorValue().equals(QuestionType.RADIOBUTTONQUESTION.toString())){
+    if (question.getDiscriminatorValue().equals(QuestionType.CHECKBOXQUESTION.toString()) || question.getDiscriminatorValue().equals(QuestionType.RADIOBUTTONQUESTION.toString())) {
       MultipleAnswerQuestion multipleAnswerQuestion = (MultipleAnswerQuestion) question;
-      for (int i = 0; i <multipleAnswerQuestion.getQuestionTextPossibilities().size(); i++) {
+      for (int i = 0; i < multipleAnswerQuestion.getQuestionTextPossibilities().size(); i++) {
         setQuestionTextPossibilityToBeDeleted(multipleAnswerQuestion.getQuestionTextPossibilities().get(i));
       }
     }
@@ -55,7 +55,7 @@ public class DeleteServiceImpl implements DeleteService{
   @Override
   public Answer setAnswerToBeDeleted(Answer answer) {
     answer.setDeleted(true);
-    for (int i = 0; i <answer.getActualAnswerTexts().size(); i++) {
+    for (int i = 0; i < answer.getActualAnswerTexts().size(); i++) {
       setActualAnswerTextToBeDeleted(answer.getActualAnswerTexts().get(i));
     }
     return answer;

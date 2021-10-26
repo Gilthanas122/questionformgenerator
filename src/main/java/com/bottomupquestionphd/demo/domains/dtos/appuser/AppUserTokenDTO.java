@@ -4,7 +4,8 @@ public class AppUserTokenDTO {
   private String status;
   private String token;
 
-  public AppUserTokenDTO(){}
+  public AppUserTokenDTO() {
+  }
 
   public AppUserTokenDTO(String status, String token) {
     this.status = status;

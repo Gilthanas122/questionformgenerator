@@ -6,7 +6,7 @@ import com.bottomupquestionphd.demo.domains.daos.questions.Question;
 import java.util.List;
 
 public interface QuestionAndAnswersForUpdatingAnswerFormDTO {
-    List<Question> getQuestions();
+  List<Question> getQuestions();
 
-    List<Answer> getAnswers();
+  List<Answer> getAnswers();
 }

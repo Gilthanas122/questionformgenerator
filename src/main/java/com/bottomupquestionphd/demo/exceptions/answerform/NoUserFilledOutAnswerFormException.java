@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.answerform;
 
-public class NoUserFilledOutAnswerFormException extends Exception{
+public class NoUserFilledOutAnswerFormException extends Exception {
   public NoUserFilledOutAnswerFormException() {
   }
 

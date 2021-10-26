@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.appuser;
 
-public class UserAlreadyDisabledException extends Exception{
+public class UserAlreadyDisabledException extends Exception {
   public UserAlreadyDisabledException() {
   }
 

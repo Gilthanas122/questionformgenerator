@@ -19,7 +19,7 @@ public enum ScaleQuestionFilterEnums {
   private static final Map<String, ScaleQuestionFilterEnums> BY_SCALEFILTER = new HashMap<>();
 
   static {
-    for (ScaleQuestionFilterEnums e: values()) {
+    for (ScaleQuestionFilterEnums e : values()) {
       BY_SCALEFILTER.put(e.label, e);
     }
   }
@@ -28,9 +28,9 @@ public enum ScaleQuestionFilterEnums {
     return BY_SCALEFILTER.get(label).label;
   }
 
-  public static String checkIfSearchTermContainsOperator(String searchTerm){
-    for (ScaleQuestionFilterEnums e: values()){
-      if (searchTerm.contains(e.label)){
+  public static String checkIfSearchTermContainsOperator(String searchTerm) {
+    for (ScaleQuestionFilterEnums e : values()) {
+      if (searchTerm.contains(e.label)) {
         return e.label;
       }
     }

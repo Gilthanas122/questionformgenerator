@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "appusers")
-@Where(clause="disabled=0")
+@Where(clause = "disabled=0")
 public class AppUser {
 
   @Id
@@ -49,7 +49,7 @@ public class AppUser {
     this.confirmationToken = generateRandomTokenNotSstatic();
   }
 
-  public static class Builder{
+  public static class Builder {
     private long id;
     private String username;
     private String password;
@@ -58,55 +58,55 @@ public class AppUser {
     private String roles = "ROLE_USER";
     private boolean disabled;
     private List<QuestionForm> questionForms = new ArrayList<>();
-    private List <AnswerForm> answerForms = new ArrayList<>();
+    private List<AnswerForm> answerForms = new ArrayList<>();
     private String confirmationToken;
 
-    private Builder id(long id){
+    private Builder id(long id) {
       this.id = id;
       return this;
     }
 
-    public Builder username(String username){
+    public Builder username(String username) {
       this.username = username;
       return this;
     }
 
-    public Builder password(String password){
+    public Builder password(String password) {
       this.password = password;
       return this;
     }
 
-    public Builder emailId(String emailId){
+    public Builder emailId(String emailId) {
       this.emailId = emailId;
       return this;
     }
 
-    public Builder active(boolean active){
+    public Builder active(boolean active) {
       this.active = active;
-      return  this;
-    }
-
-    public Builder roles(String roles){
-      this.roles +="," + roles;
       return this;
     }
 
-    public Builder disabled(boolean disabled){
+    public Builder roles(String roles) {
+      this.roles += "," + roles;
+      return this;
+    }
+
+    public Builder disabled(boolean disabled) {
       this.disabled = disabled;
       return this;
     }
 
-    public Builder questionForms(List<QuestionForm> questionForms){
+    public Builder questionForms(List<QuestionForm> questionForms) {
       this.questionForms = questionForms;
       return this;
     }
 
-    public Builder answerForms(List<AnswerForm> answerForms){
+    public Builder answerForms(List<AnswerForm> answerForms) {
       this.answerForms = answerForms;
       return this;
     }
 
-    public AppUser build(){
+    public AppUser build() {
       AppUser appUser = new AppUser();
       appUser.setId(this.id);
       appUser.setUsername(this.username);

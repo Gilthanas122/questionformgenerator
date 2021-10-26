@@ -31,7 +31,7 @@ public class RESTPublicController {
 
 
   @GetMapping("register")
-  public ResponseEntity<AppUser> renderAppUserCreateForm(){
+  public ResponseEntity<AppUser> renderAppUserCreateForm() {
     log.info("REST GET /rest/register started");
     log.info("REST GET /rest/register finished");
     return new ResponseEntity<>(new AppUser.Builder().build(), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("login")
-  public ResponseEntity<AppUserLoginDTO> createLoginDTO(){
+  public ResponseEntity<AppUserLoginDTO> createLoginDTO() {
     log.info("REST GET /rest/login started");
     log.info("REST GET /rest/login finished");
     return new ResponseEntity<>(new AppUserLoginDTO(), HttpStatus.OK);
@@ -58,7 +58,7 @@ public class RESTPublicController {
     log.info("REST POST rest/login started");
     appUserService.validateLogin(appUserLoginDTO);
     log.info("REST POST rest/login finished");
-    return new ResponseEntity<>(new SuccessMessageDTO("ok","Successful login"), HttpStatus.OK);
+    return new ResponseEntity<>(new SuccessMessageDTO("ok", "Successful login"), HttpStatus.OK);
   }
 
   @GetMapping("verify-account")
@@ -70,7 +70,7 @@ public class RESTPublicController {
   }
 
   @GetMapping("change-password")
-  public ResponseEntity<?> getChangeUserPassword(){
+  public ResponseEntity<?> getChangeUserPassword() {
     log.info("REST GET rest/change-password started");
     log.info("REST GET /change-password finished");
     return new ResponseEntity<>(HttpStatus.OK);

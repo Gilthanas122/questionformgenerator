@@ -25,7 +25,7 @@ public class CreateAnswerFormDTO {
     this.answers = answers;
   }
 
-  public CreateAnswerFormDTO(long answerFormId, long questionFormId,  long appUserId, List<Question> questions) {
+  public CreateAnswerFormDTO(long answerFormId, long questionFormId, long appUserId, List<Question> questions) {
     this.questionFormId = questionFormId;
     this.answerFormId = answerFormId;
     this.appUserId = appUserId;

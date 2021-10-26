@@ -29,49 +29,49 @@ public class AdminController {
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       log.info("GET admin/change-user-role finished");
       return "admin/change-user-role";
-    }catch (NoUsersInDatabaseException e){
+    } catch (NoUsersInDatabaseException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
-    model.addAttribute("error", e.getMessage());
-  }
+      model.addAttribute("error", e.getMessage());
+    }
     return "admin/change-user-role";
   }
 
   @GetMapping("/add-user-role/{role}/{id}")
-  public String addUserRole(Model model, @PathVariable String role, @PathVariable long id){
+  public String addUserRole(Model model, @PathVariable String role, @PathVariable long id) {
     log.info("GET admin/add-user-role/" + role + "/" + id + "started");
-      try{
-        adminAppUserService.addNewRole(role, id);
-        model.addAttribute("allUsers", adminAppUserService.findAllUsers());
-        log.info("GET admin/add-user-role/" + role + "/" + id + "finished");
-        return "redirect:/admin/change-user-role";
-      }catch (NoSuchUserByIdException e){
-        log.error(e.getMessage());
-        model.addAttribute("error", e.getMessage());
-      }catch (Exception e){
-        log.error(e.getMessage());
-        model.addAttribute("error", e.getMessage());
-      }
-      return "admin/change-user-role";
+    try {
+      adminAppUserService.addNewRole(role, id);
+      model.addAttribute("allUsers", adminAppUserService.findAllUsers());
+      log.info("GET admin/add-user-role/" + role + "/" + id + "finished");
+      return "redirect:/admin/change-user-role";
+    } catch (NoSuchUserByIdException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    }
+    return "admin/change-user-role";
   }
 
   @GetMapping("/remove-user-role/{role}/{id}")
-  public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id){
+  public String removeUserRole(Model model, @PathVariable String role, @PathVariable long id) {
     log.info("GET admin/remove-user-role/" + role + "/" + id + " started");
-    try{
+    try {
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.removeRole(role, id);
       log.info("GET admin/remove-user-role/" + role + "/" + id + " finished");
       return "redirect:/admin/change-user-role";
-    }catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (RoleMissMatchException e){
+    } catch (RoleMissMatchException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -81,21 +81,21 @@ public class AdminController {
   @GetMapping("deactivate-user/{id}")
   public String deactivateUser(@PathVariable long id, Model model) {
     log.info("GET admin/deactivate-user/" + id + " started");
-    try{
+    try {
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.deactivateUser(id);
       log.info("GET admin/deactivate-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
-    }catch (UserDeactivateException e){
+    } catch (UserDeactivateException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoUsersInDatabaseException e){
+    } catch (NoUsersInDatabaseException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch(Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -105,21 +105,21 @@ public class AdminController {
   @GetMapping("activate-user/{id}")
   public String activateUser(@PathVariable long id, Model model) {
     log.info("GET admin/activate-user/" + id + " started");
-    try{
+    try {
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       adminAppUserService.activateUser(id);
       log.info("GET admin/activate-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
-    }catch (UserDeactivateException e){
+    } catch (UserDeactivateException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoUsersInDatabaseException e){
+    } catch (NoUsersInDatabaseException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -127,27 +127,27 @@ public class AdminController {
   }
 
   @GetMapping("delete-user/{id}")
-  public String deleteUser(@PathVariable long id, Model model){
+  public String deleteUser(@PathVariable long id, Model model) {
     log.info("GET admin/delete-user/" + id + " started");
-    try{
+    try {
       adminAppUserService.deleteUser(id);
       model.addAttribute("allUsers", adminAppUserService.findAllUsers());
       log.info("GET admin/delete-user/" + id + " finished");
       return "redirect:/admin/change-user-role";
-    }catch (NoUsersInDatabaseException e){
+    } catch (NoUsersInDatabaseException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (NoSuchUserByIdException e){
+    } catch (NoSuchUserByIdException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    } catch (UserAlreadyDisabledException e){
+    } catch (UserAlreadyDisabledException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e) {
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
-      return "admin/change-user-role";
+    return "admin/change-user-role";
   }
 
 }

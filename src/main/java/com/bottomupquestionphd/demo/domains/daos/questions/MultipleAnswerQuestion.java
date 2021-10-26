@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity(name = "MultipleAnswerQuestion")
 @DiscriminatorValue("MultipleAnswerQuestion")
-public abstract class MultipleAnswerQuestion extends Question{
+public abstract class MultipleAnswerQuestion extends Question {
 
   @OneToMany(mappedBy = "multipleAnswerQuestion", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JsonManagedReference
@@ -35,12 +35,12 @@ public abstract class MultipleAnswerQuestion extends Question{
   }
 
 
-  protected void addAnswerToPost(List<QuestionTextPossibility> questionTextPossibilities){
+  protected void addAnswerToPost(List<QuestionTextPossibility> questionTextPossibilities) {
     for (QuestionTextPossibility questionTextPossibility : questionTextPossibilities) {
       this.questionTextPossibilities.add(questionTextPossibility);
       questionTextPossibility.setMultipleAnswerQuestion(this);
     }
-  };
+  }
 
   public List<QuestionTextPossibility> getQuestionTextPossibilities() {
     return questionTextPossibilities;
@@ -50,11 +50,11 @@ public abstract class MultipleAnswerQuestion extends Question{
     this.questionTextPossibilities = questionTextPossibilities;
   }
 
-  public List<String> getQuestionTextPossibilitiesTexts(){
+  public List<String> getQuestionTextPossibilitiesTexts() {
     List<String> questionTextPossibilities = new ArrayList<>();
     this.questionTextPossibilities
             .stream()
-            .forEach( questionTextPossibility -> questionTextPossibilities.add(questionTextPossibility.getAnswerText()));
+            .forEach(questionTextPossibility -> questionTextPossibilities.add(questionTextPossibility.getAnswerText()));
     return questionTextPossibilities;
   }
 }

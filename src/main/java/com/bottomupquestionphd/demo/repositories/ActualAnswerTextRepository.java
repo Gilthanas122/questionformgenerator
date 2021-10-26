@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface ActualAnswerTextRepository extends JpaRepository<ActualAnswerText, Long> {
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE ActualAnswerText m SET m.deleted = 1 WHERE m.answer.id = ?1")
-    void setElementsToDeleted(long answerId);
+  @Modifying
+  @Transactional
+  @Query("UPDATE ActualAnswerText m SET m.deleted = 1 WHERE m.answer.id = ?1")
+  void setElementsToDeleted(long answerId);
 
   @Modifying
   @Transactional

@@ -41,14 +41,16 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(InvalidRegexParameterException.class)
   @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
-  public @ResponseBody ErrorMessageDTO handleInvalidRegexParameterException(final Exception exception){
+  public @ResponseBody
+  ErrorMessageDTO handleInvalidRegexParameterException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }
 
   @ExceptionHandler(MissingParamsException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-  public @ResponseBody ErrorMessageDTO handleMissingParamsException(final Exception exception) {
+  public @ResponseBody
+  ErrorMessageDTO handleMissingParamsException(final Exception exception) {
     log.error(exception.getMessage());
     return ErrorServiceImpl.defaultExceptionResponse(exception);
   }

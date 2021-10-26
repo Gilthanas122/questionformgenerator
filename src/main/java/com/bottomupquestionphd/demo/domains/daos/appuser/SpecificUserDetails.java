@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SpecificUserDetails implements UserDetails {
 
- private AppUser user;
+  private final AppUser user;
 
   public SpecificUserDetails(AppUser user) {
     this.user = user;
@@ -18,7 +18,7 @@ public class SpecificUserDetails implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    List<SimpleGrantedAuthority> authorities=new ArrayList<SimpleGrantedAuthority>();
+    List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
     for (String role : user.getRoleList()) {
       authorities.add(new SimpleGrantedAuthority(role));
     }

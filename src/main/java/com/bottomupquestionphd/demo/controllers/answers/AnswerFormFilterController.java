@@ -21,21 +21,21 @@ import javax.servlet.http.HttpServletResponse;
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_TEACHER')")
 public class AnswerFormFilterController {
   private static final Logger log = LoggerFactory.getLogger(AnswerFormController.class);
-  private AnswerFormFilterService answerFormFilterService;
+  private final AnswerFormFilterService answerFormFilterService;
 
   public AnswerFormFilterController(AnswerFormFilterService answerFormFilterService) {
     this.answerFormFilterService = answerFormFilterService;
   }
 
   @GetMapping("search/{questionFormId}")
-  public String renderSearchFormForQuestions(@PathVariable long questionFormId, Model model){
+  public String renderSearchFormForQuestions(@PathVariable long questionFormId, Model model) {
     log.info("GET answer-form-filter/search started");
-    try{
+    try {
       QuestionForm questionForm = answerFormFilterService.generateSearchFields(questionFormId);
       model.addAttribute("questionForm", questionForm);
       log.info("GET answer-form-filter/search finished");
       return "answerform-filter/search";
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -43,25 +43,25 @@ public class AnswerFormFilterController {
   }
 
   @PostMapping("search/{questionFormId}")
-  public String postFilterAnswers(@PathVariable long questionFormId, @ModelAttribute SearchTermsForFilteringDTO searchTermsForFilteringDTO, Model model){
+  public String postFilterAnswers(@PathVariable long questionFormId, @ModelAttribute SearchTermsForFilteringDTO searchTermsForFilteringDTO, Model model) {
     log.info("POST answer-form/filter/search started");
     try {
       log.info("POST answer-form/filter/search finished");
       model.addAttribute("answerResult", answerFormFilterService.filterAnswers(questionFormId, searchTermsForFilteringDTO));
       return "answerform-filter/result";
-    }catch (MissingUserException e){
+    } catch (MissingUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormNotFoundException e){
+    } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (BelongToAnotherUserException e){
+    } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormFilteringException e){
+    } catch (QuestionFormFilteringException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -69,21 +69,21 @@ public class AnswerFormFilterController {
   }
 
   @GetMapping("/download-all-answers/{questionFormId}")
-  public String returnAllAnswers(@PathVariable long questionFormId, Model model, HttpServletResponse response){
+  public String returnAllAnswers(@PathVariable long questionFormId, Model model, HttpServletResponse response) {
     log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " started");
     try {
       log.info("GET answer-form/filter/return-all-answers/" + questionFormId + " finished");
-      answerFormFilterService.returnAllAnswersBelongingToQuestionForm(questionFormId,response);
-    }catch (MissingUserException e){
+      answerFormFilterService.returnAllAnswersBelongingToQuestionForm(questionFormId, response);
+    } catch (MissingUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (BelongToAnotherUserException e){
+    } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormNotFoundException e){
+    } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }

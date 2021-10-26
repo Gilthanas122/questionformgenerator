@@ -54,7 +54,7 @@ public class ActualAnswerTextServiceImpl implements ActualAnswerTextService {
   //NOT TESTED
   @Override
   public void setAnswerTextsToBeDeleted(List<Long> answerIds) throws MissingParamsException {
-    if (answerIds == null){
+    if (answerIds == null) {
       throw new MissingParamsException("List of answerids can not be null");
     }
     actualAnswerTextRepository.setElementsToBeDeletedByMultipleAnswerIds(answerIds);

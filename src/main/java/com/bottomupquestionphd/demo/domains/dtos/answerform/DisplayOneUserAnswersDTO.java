@@ -10,7 +10,7 @@ public class DisplayOneUserAnswersDTO {
   public DisplayOneUserAnswersDTO() {
   }
 
-  public DisplayOneUserAnswersDTO( List<String> answers, List<String> questionTexts) {
+  public DisplayOneUserAnswersDTO(List<String> answers, List<String> questionTexts) {
     this.answers = answers;
     this.questionTexts = questionTexts;
   }

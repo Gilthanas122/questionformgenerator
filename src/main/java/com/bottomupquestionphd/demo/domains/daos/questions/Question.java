@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "questions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "Question_Type")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 public class Question implements Comparable<Question> {
 
   @Id
@@ -37,7 +37,8 @@ public class Question implements Comparable<Question> {
   @JsonManagedReference("answersQuestion")
   private List<Answer> answers = new ArrayList<>();
 
-  public Question(){}
+  public Question() {
+  }
 
   public Question(String questionText) {
     this.questionText = questionText;

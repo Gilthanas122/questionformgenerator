@@ -194,7 +194,7 @@ public class AnswerFormController {
 
   @GetMapping("list-answers/{questionFormId}")
   public String seeUsersAnswersBelongingToAQuestionForm(@PathVariable long questionFormId, Model model) {
-    log.info("GET answer-form/list-answers/ " + questionFormId  + " started");
+    log.info("GET answer-form/list-answers/ " + questionFormId + " started");
     try {
       model.addAttribute("displayOneUserAnswersDTO", answerFormService.findAllAnswersBelongingToAnUser(questionFormId));
       log.info("GET answer-form/list-answers/ " + questionFormId + " finished");

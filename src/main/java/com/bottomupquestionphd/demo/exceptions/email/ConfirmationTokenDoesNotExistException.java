@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.email;
 
-public class ConfirmationTokenDoesNotExistException extends Exception{
+public class ConfirmationTokenDoesNotExistException extends Exception {
 
   public ConfirmationTokenDoesNotExistException() {
   }

@@ -16,76 +16,76 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @PreAuthorize("isAuthenticated()")
 @RequestMapping("app-user")
 public class AppUserController {
-    private static final Logger log = LoggerFactory.getLogger(AppUserController.class);
-    private final AppUserContentService appUserContentService;
+  private static final Logger log = LoggerFactory.getLogger(AppUserController.class);
+  private final AppUserContentService appUserContentService;
 
-    public AppUserController(AppUserContentService appUserContentService) {
-        this.appUserContentService = appUserContentService;
+  public AppUserController(AppUserContentService appUserContentService) {
+    this.appUserContentService = appUserContentService;
+  }
+
+  @GetMapping("landing-page")
+  public String renderLandingPage() {
+    log.info("GET /landing-page started");
+    log.info("GET /landing-page finished");
+    return "app-user/landing-page";
+  }
+
+  @GetMapping("question-form/list")
+  public String getQuestionFormsFilledOutUserByUserIdFromNavBarMenu(Model model) {
+    log.info("GET /question-form/list started");
+    try {
+      long appUserId = appUserContentService.findCurrentlyLoggedInUsersId();
+      model.addAttribute("questionFormDTOs", appUserContentService.findQuestionFormsFilledOutByUser(appUserId));
+      log.info("GET /question-form/list finished");
+      return "app-user/list-filled-out-questionforms";
+    } catch (NoSuchUserByIdException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }
+    return "app-user/landing-page";
+  }
 
-    @GetMapping("landing-page")
-    public String renderLandingPage() {
-        log.info("GET /landing-page started");
-        log.info("GET /landing-page finished");
-        return "app-user/landing-page";
+
+  @GetMapping("question-form/list/{appUserId}")
+  public String getQuestionFormsFilledOutUserByUserId(@PathVariable long appUserId, Model model) {
+    log.info("GET /question-form/list/" + appUserId + " started");
+    try {
+      model.addAttribute("questionFormDTOs", appUserContentService.findQuestionFormsFilledOutByUser(appUserId));
+      log.info("GET /question-form/list/" + appUserId + " finished");
+      return "app-user/list-filled-out-questionforms";
+    } catch (NoSuchUserByIdException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }
+    return "app-user/landing-page";
+  }
 
-    @GetMapping("question-form/list")
-    public String getQuestionFormsFilledOutUserByUserIdFromNavBarMenu(Model model) {
-        log.info("GET /question-form/list started");
-        try {
-            long appUserId = appUserContentService.findCurrentlyLoggedInUsersId();
-            model.addAttribute("questionFormDTOs", appUserContentService.findQuestionFormsFilledOutByUser(appUserId));
-            log.info("GET /question-form/list finished");
-            return "app-user/list-filled-out-questionforms";
-        } catch (NoSuchUserByIdException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        } catch (BelongToAnotherUserException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        }
-        return "app-user/landing-page";
+  @GetMapping("/question-form/list-not-filled-out")
+  public String returnQuestionFormsNotFilledOutByUser(Model model) {
+    log.info("GET /question-form/list-not-filled-out/" + " started");
+    try {
+      model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser());
+      log.info("GET /question-form/list-not-filled-out/" + " finished");
+      return "app-user/list-not-filled-out-question-forms";
+    } catch (BelongToAnotherUserException e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      model.addAttribute("error", e.getMessage());
     }
-
-
-    @GetMapping("question-form/list/{appUserId}")
-    public String getQuestionFormsFilledOutUserByUserId(@PathVariable long appUserId, Model model) {
-        log.info("GET /question-form/list/" + appUserId + " started");
-        try {
-            model.addAttribute("questionFormDTOs", appUserContentService.findQuestionFormsFilledOutByUser(appUserId));
-            log.info("GET /question-form/list/" + appUserId + " finished");
-            return "app-user/list-filled-out-questionforms";
-        } catch (NoSuchUserByIdException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        } catch (BelongToAnotherUserException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        }
-        return "app-user/landing-page";
-    }
-
-    @GetMapping("/question-form/list-not-filled-out")
-    public String returnQuestionFormsNotFilledOutByUser(Model model) {
-        log.info("GET /question-form/list-not-filled-out/" +" started");
-        try {
-            model.addAttribute("questionForms", appUserContentService.findAllQuestionFormsNotFilledOutByUser());
-            log.info("GET /question-form/list-not-filled-out/" + " finished");
-            return "app-user/list-not-filled-out-question-forms";
-        } catch (BelongToAnotherUserException e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            model.addAttribute("error", e.getMessage());
-        }
-        return "app-user/landing-page";
-    }
+    return "app-user/landing-page";
+  }
 }

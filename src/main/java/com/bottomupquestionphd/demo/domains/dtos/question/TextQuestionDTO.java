@@ -3,7 +3,8 @@ package com.bottomupquestionphd.demo.domains.dtos.question;
 public class TextQuestionDTO {
   private String questionText;
 
-  public TextQuestionDTO(){}
+  public TextQuestionDTO() {
+  }
 
   public TextQuestionDTO(String questionText) {
     this.questionText = questionText;

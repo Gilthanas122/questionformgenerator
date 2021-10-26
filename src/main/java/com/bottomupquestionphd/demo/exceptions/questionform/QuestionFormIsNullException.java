@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.questionform;
 
-public class QuestionFormIsNullException extends Exception{
+public class QuestionFormIsNullException extends Exception {
 
   public QuestionFormIsNullException() {
   }

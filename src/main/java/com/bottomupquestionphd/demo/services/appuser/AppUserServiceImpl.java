@@ -77,14 +77,14 @@ public class AppUserServiceImpl implements AppUserService {
   @Override
   public void checkIfCurrentUserMatchesUserIdInPath(long appUserId) throws BelongToAnotherUserException {
     AppUser appUser = findCurrentlyLoggedInUser();
-  if (appUser.getId() != appUserId && !appUser.getRoles().contains(AppUserRole.ADMIN.toString())) {
+    if (appUser.getId() != appUserId && !appUser.getRoles().contains(AppUserRole.ADMIN.toString())) {
       throw new BelongToAnotherUserException("Current data belongs to another user");
     }
   }
 
   @Override
   public String activateUserByEmail(String token) throws NoSuchUserByEmailException, AppUserIsAlreadyActivatedException, MissingParamsException {
-    if (token == null || token.isEmpty()){
+    if (token == null || token.isEmpty()) {
       throw new MissingParamsException("Token is required");
     }
     AppUser appUser = appUserRepository.findByConfirmationToken(token);
@@ -125,7 +125,7 @@ public class AppUserServiceImpl implements AppUserService {
 
   @Override
   public void validateChangePassword(long appUserId, String token) throws NoSuchUserByIdException, InvalidChangePasswordException, MissingParamsException {
-    if (token == null || token.isEmpty()){
+    if (token == null || token.isEmpty()) {
       throw new MissingParamsException("Token is required.");
     }
     AppUser appUser = findById(appUserId);

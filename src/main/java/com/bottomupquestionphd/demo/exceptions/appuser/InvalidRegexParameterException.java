@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.appuser;
 
-public class InvalidRegexParameterException extends Exception{
+public class InvalidRegexParameterException extends Exception {
   public InvalidRegexParameterException() {
   }
 

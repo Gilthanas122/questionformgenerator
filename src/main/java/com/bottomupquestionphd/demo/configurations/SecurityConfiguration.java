@@ -19,7 +19,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-  private UserDetailsService userDetailsService;
+  private final UserDetailsService userDetailsService;
 
   public SecurityConfiguration(@Qualifier("myUserDetailsService") UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
@@ -38,7 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .formLogin()
             .loginPage("/login")
-           // .loginProcessingUrl("/login")
+            // .loginProcessingUrl("/login")
             .defaultSuccessUrl("/app-user/landing-page")
             .failureUrl("/login?error=Bad username or password or not activated user by email")
             .and()

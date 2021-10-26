@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "questionforms")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 public class QuestionForm {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,13 +36,14 @@ public class QuestionForm {
   @JsonManagedReference(value = "questionsQuestionForm")
   private List<Question> questions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "questionForm",cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "questionForm", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JsonManagedReference(value = "questionForm")
   private List<AnswerForm> answerForms = new ArrayList<>();
 
-  public QuestionForm(){}
+  public QuestionForm() {
+  }
 
-  public QuestionForm(List<AnswerForm> answerForms){
+  public QuestionForm(List<AnswerForm> answerForms) {
     this.answerForms = answerForms;
   }
 
@@ -94,11 +95,11 @@ public class QuestionForm {
     return questions;
   }
 
-  public List<String> getQuestionTexts(){
+  public List<String> getQuestionTexts() {
     return this.getQuestions().stream().map(Question::getQuestionText).collect(Collectors.toList());
   }
 
-  public List<String> getQuestionTypes(){
+  public List<String> getQuestionTypes() {
     return this.getQuestions().stream().map(Question::getDiscriminatorValue).collect(Collectors.toList());
   }
 

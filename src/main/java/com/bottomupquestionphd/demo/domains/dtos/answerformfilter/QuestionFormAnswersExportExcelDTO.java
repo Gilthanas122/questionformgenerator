@@ -28,7 +28,7 @@ public class QuestionFormAnswersExportExcelDTO {
     this.sheet = workbook.createSheet("Answer Forms Answers");
   }
 
-  private void writeHeaderRow(){
+  private void writeHeaderRow() {
     int rownum = 0;
     int cellnum = 0;
     ///create first row for questions texts
@@ -40,17 +40,17 @@ public class QuestionFormAnswersExportExcelDTO {
     }
   }
 
-  private void writeDataRows(){
+  private void writeDataRows() {
     int rownum = 1;
     int cellnum = 0;
     Iterator<List<String>> i = answerTexts.iterator();
     while (i.hasNext()) {
-      List<String> templist = (List<String>) i.next();
+      List<String> templist = i.next();
       Iterator<String> tempIterator = templist.iterator();
       Row row = sheet.createRow(rownum++);
       cellnum = 0;
       while (tempIterator.hasNext()) {
-        String temp = (String) tempIterator.next();
+        String temp = tempIterator.next();
         Cell cell = row.createCell(cellnum++);
         cell.setCellValue(temp);
       }

@@ -4,7 +4,8 @@ public class AppUserLoginDTO {
   private String username;
   private String password;
 
-  public AppUserLoginDTO(){}
+  public AppUserLoginDTO() {
+  }
 
   public AppUserLoginDTO(String username, String password) {
     this.username = username;

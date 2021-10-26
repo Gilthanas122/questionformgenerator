@@ -22,7 +22,7 @@ public interface QuestionFormRepository extends JpaRepository<QuestionForm, Long
   @Modifying
   @Transactional
   @Query("UPDATE QuestionForm q SET q.deleted = 1 where q.id = ?1 ")
-    void deleteQuestionFormById(long questionFormId);
+  void deleteQuestionFormById(long questionFormId);
 
 }
 

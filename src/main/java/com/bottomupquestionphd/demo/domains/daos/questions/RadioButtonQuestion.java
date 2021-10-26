@@ -11,6 +11,7 @@ public class RadioButtonQuestion extends MultipleAnswerQuestion {
   public RadioButtonQuestion() {
 
   }
+
   public RadioButtonQuestion(String questionText, List<QuestionTextPossibility> questionTextPossibilities) {
     super(questionText, questionTextPossibilities);
   }

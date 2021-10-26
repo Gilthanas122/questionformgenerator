@@ -99,22 +99,22 @@ public class AnswerServiceImpl implements AnswerService {
 
   @Override
   public List<Answer> removeNullAnswerTextsFromAnswer(List<Answer> answers) throws MissingParamsException {
-    if (answers == null){
+    if (answers == null) {
       throw new MissingParamsException("List of answers can not be null");
     }
-      for (int i = 0; i <answers.size(); i++) {
-        Answer answer = answers.get(i);
-        if (answer == null){
-          throw new MissingParamsException("Answer can not be null");
-        }
-        List<ActualAnswerText> temp = new ArrayList<>();
-        for (ActualAnswerText actualAnswerText: answer.getActualAnswerTexts()) {
-          if(actualAnswerText.getAnswerText() != null && !actualAnswerText.getAnswerText().isEmpty()){
-            temp.add(actualAnswerText);
-          }
-        }
-        answer.setActualAnswerTexts(temp);
+    for (int i = 0; i < answers.size(); i++) {
+      Answer answer = answers.get(i);
+      if (answer == null) {
+        throw new MissingParamsException("Answer can not be null");
       }
+      List<ActualAnswerText> temp = new ArrayList<>();
+      for (ActualAnswerText actualAnswerText : answer.getActualAnswerTexts()) {
+        if (actualAnswerText.getAnswerText() != null && !actualAnswerText.getAnswerText().isEmpty()) {
+          temp.add(actualAnswerText);
+        }
+      }
+      answer.setActualAnswerTexts(temp);
+    }
     return answers;
   }
 
@@ -126,12 +126,12 @@ public class AnswerServiceImpl implements AnswerService {
   @Override
   public List<Question> addActualTextAnswersNotFilledOutByUser(List<Question> questions, long appUserId) {
     List<Question> questionsAddedActualAnswerTextsNotFilledOutByUser = new ArrayList<>();
-    for (int i = 0; i <questions.size(); i++) {
+    for (int i = 0; i < questions.size(); i++) {
       Question q = questions.get(i);
-      if (q.getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString())){
-        for (int j = 0; j <q.getAnswers().size(); j++) {
+      if (q.getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString())) {
+        for (int j = 0; j < q.getAnswers().size(); j++) {
           Answer a = q.getAnswers().get(j);
-          if (a.getAnswerForm().getAppUser().getId() != appUserId){
+          if (a.getAnswerForm().getAppUser().getId() != appUserId) {
             q.setAnswersNotFilledOutByUser(a.getActualAnswerInList());
           }
         }

@@ -7,7 +7,8 @@ public class CheckBoxQuestionDTO {
   private String questionText;
   private List<String> answers = new ArrayList<>();
 
-  public  CheckBoxQuestionDTO(){}
+  public CheckBoxQuestionDTO() {
+  }
 
   public CheckBoxQuestionDTO(String questionText, List<String> answers) {
     this.questionText = questionText;

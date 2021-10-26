@@ -5,13 +5,13 @@ import javax.persistence.Entity;
 
 @Entity(name = "TextQuestion")
 @DiscriminatorValue("TextQuestion")
-public class TextQuestion extends Question{
+public class TextQuestion extends Question {
 
   public TextQuestion() {
 
   }
 
-  public TextQuestion(long id, String questionText){
+  public TextQuestion(long id, String questionText) {
     super(id, questionText);
   }
 

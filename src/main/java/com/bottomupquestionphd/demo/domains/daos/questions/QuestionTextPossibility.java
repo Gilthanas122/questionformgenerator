@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "questiontextpossibilities")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 @Builder(toBuilder = true)
 public class QuestionTextPossibility {
   @Id
@@ -21,7 +21,8 @@ public class QuestionTextPossibility {
   @JsonBackReference(value = "questionTextPossibilitysMultipleAnswerQuestion")
   private MultipleAnswerQuestion multipleAnswerQuestion;
 
-  public QuestionTextPossibility(){}
+  public QuestionTextPossibility() {
+  }
 
   public QuestionTextPossibility(String answerText) {
     this.answerText = answerText;
@@ -50,7 +51,7 @@ public class QuestionTextPossibility {
   }
 
   public void setAnswerText(String answerText) {
-    if (!answerText.isBlank()){
+    if (!answerText.isBlank()) {
       this.answerText = answerText;
     }
   }

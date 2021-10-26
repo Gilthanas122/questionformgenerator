@@ -10,9 +10,9 @@ import java.util.List;
 
 @Service
 public interface AppUserContentService {
-    List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByUser(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException;
+  List<AppUsersQuestionFormsDTO> findQuestionFormsFilledOutByUser(long appUserId) throws NoSuchUserByIdException, BelongToAnotherUserException;
 
-    List<QuestionFormNotFilledOutByUserDTO>  findAllQuestionFormsNotFilledOutByUser() throws BelongToAnotherUserException;
+  List<QuestionFormNotFilledOutByUserDTO> findAllQuestionFormsNotFilledOutByUser() throws BelongToAnotherUserException;
 
-    long findCurrentlyLoggedInUsersId();
+  long findCurrentlyLoggedInUsersId();
 }

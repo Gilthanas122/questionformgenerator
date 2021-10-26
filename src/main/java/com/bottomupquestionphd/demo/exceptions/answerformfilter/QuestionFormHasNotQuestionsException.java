@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.answerformfilter;
 
-public class QuestionFormHasNotQuestionsException extends Exception{
+public class QuestionFormHasNotQuestionsException extends Exception {
   public QuestionFormHasNotQuestionsException() {
   }
 

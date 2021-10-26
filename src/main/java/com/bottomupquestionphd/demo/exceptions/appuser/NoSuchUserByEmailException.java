@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.appuser;
 
-public class NoSuchUserByEmailException extends Exception{
+public class NoSuchUserByEmailException extends Exception {
   public NoSuchUserByEmailException() {
   }
 

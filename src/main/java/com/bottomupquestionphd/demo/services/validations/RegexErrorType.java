@@ -1,12 +1,12 @@
 package com.bottomupquestionphd.demo.services.validations;
 
 public enum RegexErrorType {
-  REGEXEMAIL ("email"),
-  REGEXPASSWORD ("password");
+  REGEXEMAIL("email"),
+  REGEXPASSWORD("password");
 
   private final String name;
 
-  private RegexErrorType(String s) {
+  RegexErrorType(String s) {
     name = s;
   }
 

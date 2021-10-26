@@ -29,32 +29,32 @@ public class TextAnswerVoteController {
 
   // NOT TESTED
   @GetMapping("create/{appUserid}/{questionFormId}/{answerFormId}")
-  public String renderOtherUsersAnswers(@PathVariable long appUserid, @PathVariable long questionFormId, @PathVariable long answerFormId, Model model){
+  public String renderOtherUsersAnswers(@PathVariable long appUserid, @PathVariable long questionFormId, @PathVariable long answerFormId, Model model) {
     log.info("GET answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " started");
     try {
       model.addAttribute("answersTextsNotVotedByUser", textAnswerVoteService.returnAnswersNotVotedByCurrentUser(appUserid, questionFormId, answerFormId));
       model.addAttribute("receiveTextAnswerVotesDTO", new ReceiveTextAnswerVotesDTO());
       log.info("GET answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " finished");
       return "answerform/vote";
-    }catch (BelongToAnotherUserException e){
+    } catch (BelongToAnotherUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (MissingUserException e){
+    } catch (MissingUserException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (QuestionFormNotFoundException e){
+    } catch (QuestionFormNotFoundException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (AnswerFormNotFilledOutException e){
+    } catch (AnswerFormNotFilledOutException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (MissingParamsException e){
+    } catch (MissingParamsException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (NoActualAnswerTextsToVoteForException e){
+    } catch (NoActualAnswerTextsToVoteForException e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }
@@ -63,13 +63,13 @@ public class TextAnswerVoteController {
 
   //NOT TESTED
   @PostMapping("create/{appUserid}/{questionFormId}/{answerFormId}")
-  public String saveOtherUsersAnswers(@ModelAttribute ReceiveTextAnswerVotesDTO receiveTextAnswerVotesDTO, @PathVariable long appUserid, @PathVariable long questionFormId, @PathVariable long answerFormId, Model model){
+  public String saveOtherUsersAnswers(@ModelAttribute ReceiveTextAnswerVotesDTO receiveTextAnswerVotesDTO, @PathVariable long appUserid, @PathVariable long questionFormId, @PathVariable long answerFormId, Model model) {
     log.info("POST answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " started");
     try {
       textAnswerVoteService.saveVotes(receiveTextAnswerVotesDTO, appUserid, questionFormId, answerFormId);
       log.info("POST answer-form/vote/ " + appUserid + "/" + questionFormId + "/" + appUserid + " finished");
       return "app-user/landing-page";
-    }catch (Exception e){
+    } catch (Exception e) {
       log.error(e.getMessage());
       model.addAttribute("error", e.getMessage());
     }

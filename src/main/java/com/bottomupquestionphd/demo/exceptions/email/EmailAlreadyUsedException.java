@@ -1,6 +1,6 @@
 package com.bottomupquestionphd.demo.exceptions.email;
 
-public class EmailAlreadyUsedException extends Exception{
+public class EmailAlreadyUsedException extends Exception {
   public EmailAlreadyUsedException() {
   }
 

@@ -5,7 +5,8 @@ public class QuestionFormCreateDTO {
   private String name;
   private String description;
 
-  public QuestionFormCreateDTO(){}
+  public QuestionFormCreateDTO() {
+  }
 
   public QuestionFormCreateDTO(String name, String description) {
     this.name = name;

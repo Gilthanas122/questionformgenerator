@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "actualanswertexts")
-@Where(clause="deleted=0")
+@Where(clause = "deleted=0")
 public class ActualAnswerText {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,7 +73,7 @@ public class ActualAnswerText {
     this.deleted = deleted;
   }
 
-  public boolean actualAnswerTextIsNullOrEmpty(){
+  public boolean actualAnswerTextIsNullOrEmpty() {
     return this.getAnswerText() == null || this.getAnswerText().isEmpty();
   }
 
@@ -85,18 +85,18 @@ public class ActualAnswerText {
     this.textAnswerVotes = textAnswerVotes;
   }
 
-  public double getAverageOfTextAnswerVotes(){
+  public double getAverageOfTextAnswerVotes() {
     return textAnswerVotes.stream().mapToDouble(TextAnswerVote::getValue).average().orElse(0);
   }
 
-  public String getAnswerTextWithAverageOfTextAnswerVotes(){
-    if (answer.getQuestion().getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString())){
+  public String getAnswerTextWithAverageOfTextAnswerVotes() {
+    if (answer.getQuestion().getDiscriminatorValue().equals(QuestionType.TEXTQUESTION.toString())) {
       return this.answerText + "(" + getAverageOfTextAnswerVotes() + ")";
     }
     return this.answerText;
   }
 
-  public void addOneTextAnswerVote(TextAnswerVote textAnswerVote){
+  public void addOneTextAnswerVote(TextAnswerVote textAnswerVote) {
     this.textAnswerVotes.add(textAnswerVote);
   }
 }

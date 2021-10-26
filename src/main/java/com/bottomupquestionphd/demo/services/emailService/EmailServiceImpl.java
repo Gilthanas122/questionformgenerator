@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
   @Override
   public String findUserByToken(String token) throws ConfirmationTokenDoesNotExistException {
     AppUser appUser = appUserRepository.findByConfirmationToken(token);
-    if (appUser == null){
+    if (appUser == null) {
       throw new ConfirmationTokenDoesNotExistException("Given confirmation token does not exist");
     }
     return appUser.getEmailId();
@@ -50,7 +50,7 @@ public class EmailServiceImpl implements EmailService {
     message.setTo(appUser.getEmailId());
     message.setSubject("Change password");
     message.setFrom(System.getenv("EMAIL_USERNAME"));
-    message.setText("To change password the account please click here http://localhost:8080/reset-password/"+ appUser.getId() +
+    message.setText("To change password the account please click here http://localhost:8080/reset-password/" + appUser.getId() +
             "?token=" + appUser.getConfirmationToken());
     javaMailSender.send(message);
   }

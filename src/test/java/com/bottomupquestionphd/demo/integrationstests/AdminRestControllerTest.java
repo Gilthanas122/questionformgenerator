@@ -204,7 +204,7 @@ public class AdminRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(4)));
 
-    assertThrows(NoSuchUserByIdException.class, ()-> appUserService.findById(2));
+    assertThrows(NoSuchUserByIdException.class, () -> appUserService.findById(2));
   }
 
   @Test

@@ -95,7 +95,7 @@ public class QuestionConversionServiceTest {
     Assert.assertTrue(questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO) instanceof CheckBoxQuestion);
     Assert.assertEquals(5, ((CheckBoxQuestion) questionConversionService.convertQuestionWithDTypeToQuestion(questionWithDTypeDTO)).getQuestionTextPossibilities().size());
   }
-  
+
   @Test
   public void convertQuestionWithDTypeDTOToQuestion_withRadioButtonQuestion_returnRadioButtonQuestion() {
     QuestionWithDTypeDTO questionWithDTypeDTO = (QuestionWithDTypeDTO) beanFactory.getBean("radioQuestionWithDTypeDTO");

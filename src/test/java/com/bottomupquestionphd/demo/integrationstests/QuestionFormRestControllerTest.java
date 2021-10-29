@@ -4,7 +4,9 @@ import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormCreate
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,7 +46,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void getRestQuestionFormCreate_withValidInput_shouldReturnNewQuestionForm() throws Exception {
     mockMvc.perform(get("/rest/question-form/create")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.finished", is(false)));
   }
@@ -52,8 +54,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void postRestQuestionFormCreate_withValidInput_shouldReturnQuestionFormId() throws Exception {
     mockMvc.perform(post("/rest/question-form/create")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("question form test name", "question form test description"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("question form test name", "question form test description"))))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", is(6)));
 
@@ -63,8 +65,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void postRestQuestionFormCreate_withMissingName_shouldMissingParamsException() throws Exception {
     mockMvc.perform(post("/rest/question-form/create")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO(null, "Userpass-13"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO(null, "Userpass-13"))))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", is("Name is required.")));
   }
@@ -72,8 +74,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void postRestQuestionFormCreate_withDuplicateQuestionFormName_shouldThrowQuestionFormAlreadyExistsException() throws Exception {
     mockMvc.perform(post("/rest/question-form/create")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("test questionform", "Userpass-13"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("test questionform", "Userpass-13"))))
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.message", is("There is a question form with the provided name")));
   }
@@ -81,7 +83,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void questionFormList_withValidInput_shouldReturnAllTheQuestionForms() throws Exception {
     mockMvc.perform(get("/rest/question-form/list")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(3)));
   }
@@ -90,7 +92,7 @@ public class QuestionFormRestControllerTest {
   @WithMockUser(username = "teacher2", roles = {"TEACHER"})
   public void questionFormList_NoQuestionFormInDB_shouldReturnAllTheQuestionForms() throws Exception {
     mockMvc.perform(get("/rest/question-form/list")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("No question form belonging to the user.")));
   }
@@ -98,7 +100,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void getQuestionFormUpdate_withValidInput_shouldReturnModifiedQuestionForm() throws Exception {
     mockMvc.perform(get("/rest/question-form/update/1")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.description", is("test questionform description")))
             .andExpect(jsonPath("$.name", is("test questionform")));
@@ -107,7 +109,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void getQuestionFormUpdate_withInValidID_shouldThrowQuestionFormNotFoundException() throws Exception {
     mockMvc.perform(get("/rest/question-form/update/666")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Question form doesn't exist with the provided id")));
   }
@@ -115,7 +117,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void getQuestionFormUpdate_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws Exception {
     mockMvc.perform(get("/rest/question-form/update/3")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
   }
@@ -123,7 +125,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void getQuestionFormUpdate_withQuestionFormWithNoUser_shouldThrowMissingUserException() throws Exception {
     mockMvc.perform(get("/rest/question-form/update/4")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("No user belonging to the question form")));
   }
@@ -131,8 +133,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putUpdateQuestionFormByID_withValidData_shouldReturnCreatedStatuscode() throws Exception {
     mockMvc.perform(put("/rest/question-form/update/2")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
             .andExpect(status().isCreated());
 
     assertEquals("modified name", questionFormService.findById(2).getName());
@@ -141,8 +143,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putUpdateQuestionFormByID_withMissingParams_shouldThrowMissingParamsException() throws Exception {
     mockMvc.perform(put("/rest/question-form/update/2")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO(null, "modified description"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO(null, "modified description"))))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", is("Name is required.")));
   }
@@ -150,8 +152,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putUpdateQuestionFormByID_withInvalidId_shouldThrowQuestionFormNotFoundException() throws Exception {
     mockMvc.perform(put("/rest/question-form/update/7")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("No question form with the given id in the database, can not update it")));
   }
@@ -159,8 +161,8 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putUpdateQuestionFormByID_withQuestionFormBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws Exception {
     mockMvc.perform(put("/rest/question-form/update/3")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(new QuestionFormCreateDTO("modified name", "modified description"))))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
   }
@@ -168,7 +170,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putFinish_withValidData_shouldReturnQuestionFormId() throws Exception {
     mockMvc.perform(put("/rest/question-form/finish/1")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", is(1)));
   }
@@ -176,7 +178,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putFinish_withNoQuestionsBelongingToTheQuestionForm_shouldThrowNotEnoughQuestionsToCreateFormException() throws Exception {
     mockMvc.perform(put("/rest/question-form/finish/2")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", is("There should be at least one question to submit a form")));
   }
@@ -184,7 +186,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putFinish_withMissingAppUser_shouldThrowMissingUserException() throws Exception {
     mockMvc.perform(put("/rest/question-form/finish/4")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("No user belonging to the question form")));
   }
@@ -192,7 +194,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putFinish_withInValidQuestionFormID_shouldThrowQuestionFormNotFoundException() throws Exception {
     mockMvc.perform(put("/rest/question-form/finish/66")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Question form doesn't exist with the provided id")));
   }
@@ -200,7 +202,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void putFinish_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws Exception {
     mockMvc.perform(put("/rest/question-form/finish/3")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
   }
@@ -208,7 +210,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void listQuestions_withValidDate_shouldReturnListQuestionWithDTypeDTO() throws Exception {
     mockMvc.perform(get("/rest/question-form/list-questions/1")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()", is(4)))
             .andExpect(jsonPath("$[1].id", is(2)))
@@ -223,7 +225,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void listQuestions_withMissingAppUser_shouldThrowMissingUserException() throws Exception {
     mockMvc.perform(get("/rest/question-form/list-questions/4")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("No user belonging to the question form")));
   }
@@ -231,7 +233,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void listQuestions_withInvalidQuestionFormId_shouldThrowQuestionFormNotFoundException() throws Exception {
     mockMvc.perform(get("/rest/question-form/list-questions/66")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Question form doesn't exist with the provided id")));
   }
@@ -239,7 +241,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void listQuestions_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongToAnotherUserException() throws Exception {
     mockMvc.perform(get("/rest/question-form/list-questions/3")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
   }
@@ -257,7 +259,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void delete_withNonExistingQuestionFormId_shouldThrowQuestionFormNotFoundException() throws Exception {
     mockMvc.perform(delete("/rest/question-form/delete/66")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Question form doesn't exist with the provided id")));
   }
@@ -265,7 +267,7 @@ public class QuestionFormRestControllerTest {
   @Test
   public void delete_withQuestionFormIdBelongingToAnotherUser_shouldThrowBelongsToAnotherUserException() throws Exception {
     mockMvc.perform(delete("/rest/question-form/delete/3")
-            .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message", is("Current data belongs to another user")));
   }

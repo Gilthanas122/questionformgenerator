@@ -50,7 +50,7 @@ public class QuestionServiceTest {
   private final AppUserService appUserService = Mockito.mock(AppUserService.class);
   private final QuestionConversionService questionConversionService = Mockito.mock(QuestionConversionService.class);
   private QuestionService questionService;
-  private DeleteService deleteService = Mockito.mock(DeleteService.class);
+  private final DeleteService deleteService = Mockito.mock(DeleteService.class);
   @Autowired
   private BeanFactory beanFactory;
 

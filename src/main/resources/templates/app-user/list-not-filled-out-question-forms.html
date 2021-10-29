@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Not Filled Out Question Forms</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Not Filled Out Question Forms</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 <div th:replace="fragments/messages.html :: error"></div>
 <div th:if="${questionForms == null}">
-    <p>No available question forms to fill out</p>
+  <p>No available question forms to fill out</p>
 </div>
 <div th:unless="${questionForms == null}">
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Question Form Name</th>
-            <th>Fill it out</th>
-            <th>Number of questions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="questionForm, iter : ${questionForms}" th:object="${questionForm}">
-            <td th:text="*{name}"></td>
-            <td>
-                <a class="button" th:href="@{|/answer-form/create/*{questionFormId}|}">
-                    START FILLING OUT</a>
-            </td>
-            <td th:text="*{numberOfQuestionInQuestionForm}"></td>
-        </tr>
-        </tbody>
-    </table>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>Question Form Name</th>
+      <th>Fill it out</th>
+      <th>Number of questions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="questionForm, iter : ${questionForms}" th:object="${questionForm}">
+      <td th:text="*{name}"></td>
+      <td>
+        <a class="button" th:href="@{|/answer-form/create/*{questionFormId}|}">
+          START FILLING OUT</a>
+      </td>
+      <td th:text="*{numberOfQuestionInQuestionForm}"></td>
+    </tr>
+    </tbody>
+  </table>
 </div>
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

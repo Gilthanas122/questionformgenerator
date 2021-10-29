@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Question for Question Form</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Create Question for Question Form</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 
 
-<header th:replace="fragments/navbar.html :: navbar"> </header>
-<div th:replace="fragments/messages.html :: error" ></div>
+<header th:replace="fragments/navbar.html :: navbar"></header>
+<div th:replace="fragments/messages.html :: error"></div>
 
-        <div id="typediv">
-            <p hidden id="questionFormId" th:text="${questionFormId}"></p>
-            <p id="explanationtext"> Choose what type of question you wish to create</p>
-            <button  class="inputbuttons" id="RadioButtonQuestion" type="button"> Radio button</button>
-            <button  class="inputbuttons" id="CheckBoxQuestion" type="button"> Check box </button>
-            <button  class="inputbuttons" id="ScaleQuestion" type="button"> Scale 1-10 </button>
-            <button  class="inputbuttons" id="TextQuestion" type="button"> Text answer </button>
-            <a  class="btn btn-warning" th:href="@{|/question-form/finish/${questionFormId}|}" id="finish" type="button">Submit Form </a>
-        </div>
+<div id="typediv">
+  <p hidden id="questionFormId" th:text="${questionFormId}"></p>
+  <p id="explanationtext"> Choose what type of question you wish to create</p>
+  <button class="inputbuttons" id="RadioButtonQuestion" type="button"> Radio button</button>
+  <button class="inputbuttons" id="CheckBoxQuestion" type="button"> Check box</button>
+  <button class="inputbuttons" id="ScaleQuestion" type="button"> Scale 1-10</button>
+  <button class="inputbuttons" id="TextQuestion" type="button"> Text answer</button>
+  <a class="btn btn-warning" th:href="@{|/question-form/finish/${questionFormId}|}" id="finish" type="button">Submit
+    Form </a>
+</div>
 
 
-
-
-    <script th:replace="fragments/scripts.html :: jquery"></script>
-    <script th:replace="fragments/scripts.html :: cloudflare"></script>
-    <script th:replace="fragments/scripts.html :: bootstrap"></script>
+<script th:replace="fragments/scripts.html :: jquery"></script>
+<script th:replace="fragments/scripts.html :: cloudflare"></script>
+<script th:replace="fragments/scripts.html :: bootstrap"></script>
 <script type="text/javascript" th:src="@{/js/renderquestiontypesexamples.js}">
 </script>
 </body>

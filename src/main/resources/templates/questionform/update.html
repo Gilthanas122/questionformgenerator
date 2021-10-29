@@ -7,9 +7,9 @@
   <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
-<header th:replace="fragments/navbar.html :: navbar"> </header>
+<header th:replace="fragments/navbar.html :: navbar"></header>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 
 <h1>Renew your questionform</h1>
 <form th:action="@{/question-form/update}" method="post" th:object="${questionForm}">

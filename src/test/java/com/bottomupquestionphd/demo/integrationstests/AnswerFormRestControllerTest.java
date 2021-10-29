@@ -255,7 +255,7 @@ public class AnswerFormRestControllerTest {
   @WithMockUser(username = "teacher2")
   public void getAnswerFormBelongingToAnswer_withInvalidAnswerId_shouldThrowsAnswerNotFoundByIdException() throws Exception {
     mockMvc.perform(get("/rest/answer-form/get/66")
-             .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message", is("Couldn't find answer with the provided id")));
   }

@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
-<header th:replace="fragments/navbar.html :: navbar"> </header>
-<div th:replace="fragments/messages.html :: error" ></div>
+<header th:replace="fragments/navbar.html :: navbar"></header>
+<div th:replace="fragments/messages.html :: error"></div>
 
 
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>EDIT</th>
-            <th>SEE MY ANSWERS</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="questionForm : ${questionFormDTOs}" th:object="${questionForm}">
-            <td th:text="*{name}"></td>
-            <td>
-                <a class="button" th:href="@{|/answer-form/update/*{questionFormId}/*{appUserId}|}"> EDIT YOUR ANSWERS</a>
-            </td>
-            <td><a class="button" th:href="@{|/answer-form/list-answers/*{questionFormId}/*{appUserId}|}"> See your answers</a></td>
-        </tr>
-        </tbody>
-    </table>
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>EDIT</th>
+    <th>SEE MY ANSWERS</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="questionForm : ${questionFormDTOs}" th:object="${questionForm}">
+    <td th:text="*{name}"></td>
+    <td>
+      <a class="button" th:href="@{|/answer-form/update/*{questionFormId}/*{appUserId}|}"> EDIT YOUR ANSWERS</a>
+    </td>
+    <td><a class="button" th:href="@{|/answer-form/list-answers/*{questionFormId}/*{appUserId}|}"> See your answers</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
 
 
 <script th:replace="fragments/scripts.html :: jquery"></script>

@@ -58,7 +58,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withValidTextQuestion_shouldReturnStatusOk() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.TEXTQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.TEXTQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test check box question text"))))
             .andExpect(status().isOk());
@@ -68,7 +68,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withValidRadioButtonQuestion_shouldReturnStatusOk() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.RADIOBUTTONQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.RADIOBUTTONQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test radio button question text", List.of("radio answer text", "radio answer text 2", "radio answer text 3")))))
             .andExpect(status().isOk());
@@ -78,7 +78,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withValidScaleQuestion_shouldReturnStatusOk() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.SCALEQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.SCALEQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text scale", List.of("5")))))
             .andExpect(status().isOk());
@@ -88,10 +88,10 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withValidCheckBoxQuestion_shouldReturnStatusOk() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("test question text", List.of("checkbox answer text", "checkbox answer text 2", "checkbox answer text 3")))))
-                    .andExpect(status().isOk());
+            .andExpect(status().isOk());
 
     assertEquals("test question text", questionService.findById(10).getQuestionText());
 
@@ -117,7 +117,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withNoScaleValueByScaleQuestion_shouldThrowMissingParamsException() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.SCALEQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.SCALEQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("scale question text"))))
             .andExpect(status().isBadRequest())
@@ -126,7 +126,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withNotEnoughAnswerByRadioButtonQuestion_shouldThrowMissingParamsException() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.RADIOBUTTONQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.RADIOBUTTONQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("radio button question text"))))
             .andExpect(status().isBadRequest())
@@ -135,7 +135,7 @@ public class QuestionRestControllerTest {
 
   @Test
   public void postQuestionCreateRest_withNotEnoughAnswerByCheckboxQuestion_shouldThrowMissingParamsException() throws Exception {
-    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION.toString() + "/1")
+    mockMvc.perform(post("/rest/question/create/" + QuestionType.CHECKBOXQUESTION + "/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(new ObjectMapper().writeValueAsString(new QuestionCreateDTO("check box question text"))))
             .andExpect(status().isBadRequest())

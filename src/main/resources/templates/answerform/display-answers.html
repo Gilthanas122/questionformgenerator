@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Display Answers</title>
+  <meta charset="UTF-8">
+  <title>Display Answers</title>
   <link th:replace="fragments/navbar.html :: bootstrap-link">
   <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
-<header th:replace="fragments/navbar.html :: navbar"> </header>
+<header th:replace="fragments/navbar.html :: navbar"></header>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 <table class="table table-hover">
   <thead>
   <tr>
@@ -19,15 +19,15 @@
   </tr>
   </thead>
   <tbody>
-    <tr th:each="answer, iter : ${displayAnswers.answers}">
-      <td th:text="${displayAnswers.questionTypes[__${iter.index}__]}"></td>
-      <td th:text="${displayAnswers.questionTexts[__${iter.index}__]}"></td>
-      <td>
-        <ul th:each="actualAnswerText : ${answer.actualAnswerTexts}">
-          <li th:text="${actualAnswerText.answerText}"></li>
-        </ul>
-      </td>
-    </tr>
+  <tr th:each="answer, iter : ${displayAnswers.answers}">
+    <td th:text="${displayAnswers.questionTypes[__${iter.index}__]}"></td>
+    <td th:text="${displayAnswers.questionTexts[__${iter.index}__]}"></td>
+    <td>
+      <ul th:each="actualAnswerText : ${answer.actualAnswerTexts}">
+        <li th:text="${actualAnswerText.answerText}"></li>
+      </ul>
+    </td>
+  </tr>
   </tbody>
 </table>
 

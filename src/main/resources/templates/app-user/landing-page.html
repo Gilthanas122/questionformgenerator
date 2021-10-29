@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Hello</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <meta charset="UTF-8">
+  <title>Hello</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
 <h1>Landing page</h1>
-<header th:replace="fragments/navbar.html :: navbar"> </header>
-<div th:replace="fragments/messages.html :: error" ></div>
-<div th:replace="fragments/messages.html :: success" ></div>
+<header th:replace="fragments/navbar.html :: navbar"></header>
+<div th:replace="fragments/messages.html :: error"></div>
+<div th:replace="fragments/messages.html :: success"></div>
 
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

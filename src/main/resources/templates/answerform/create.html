@@ -38,13 +38,13 @@
         </div>
 
         <div th:case="'ScaleQuestion'">
-            <th:block th:each="i: ${#numbers.sequence(1, question.scale)}">
-              <tabel th:text="${i}"></tabel>
-              <input
-                     th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
-                     th:value="${i}"
-                     type="radio">
-            </th:block>
+          <th:block th:each="i: ${#numbers.sequence(1, question.scale)}">
+            <tabel th:text="${i}"></tabel>
+            <input
+                th:name="answers[__${iterStat.index}__].actualAnswerTexts[0].answerText"
+                th:value="${i}"
+                type="radio">
+          </th:block>
         </div>
 
         <div th:id="|textquestioncreate[__${iterStat.index}__]|" th:case="'TextQuestion'">

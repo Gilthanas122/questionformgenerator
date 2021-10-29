@@ -414,7 +414,7 @@ public class TestConfigurationBeanFactory {
     Answer answer = new Answer();
     answer.setQuestion(getValidScaleQuestion());
     for (int i = 0; i < 3; i++) {
-      ActualAnswerText actualAnswerText = new ActualAnswerText(i,  String.valueOf(i));
+      ActualAnswerText actualAnswerText = new ActualAnswerText(i, String.valueOf(i));
       actualAnswerText.setAnswer(answer);
       actualAnswerTexts.add(actualAnswerText);
     }
@@ -491,7 +491,7 @@ public class TestConfigurationBeanFactory {
   public List<Question> getListCheckBoxQuestions() {
     List<Question> questions = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      List<QuestionTextPossibility> questionTextPossibilities = List.of(new QuestionTextPossibility("checkbox" +0),
+      List<QuestionTextPossibility> questionTextPossibilities = List.of(new QuestionTextPossibility("checkbox" + 0),
               new QuestionTextPossibility("checkbox" + 1), new QuestionTextPossibility("checkbox" + 2));
       CheckBoxQuestion checkBoxQuestion = new CheckBoxQuestion(i, "checkboxquestion" + i, questionTextPossibilities);
       checkBoxQuestion.setListPosition(i);
@@ -506,7 +506,7 @@ public class TestConfigurationBeanFactory {
   public List<Question> getListScaleQuestions() {
     List<Question> questions = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      ScaleQuestion scaleQuestion = new ScaleQuestion("scalequestiontext" +i, 5);
+      ScaleQuestion scaleQuestion = new ScaleQuestion("scalequestiontext" + i, 5);
       scaleQuestion.setListPosition(i);
       scaleQuestion.setAnswers(getAnswersForScaleQuestion());
       questions.add(scaleQuestion);

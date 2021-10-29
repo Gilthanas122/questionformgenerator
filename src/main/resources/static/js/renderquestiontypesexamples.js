@@ -162,7 +162,7 @@ function createSubDivExampleRadioOrCheckboxOrScale(buttonId) {
         container.appendChild(createInputs("CheckBoxQuestion", "Which character(s) do you like from the following?", "Ron", "Harry"));
     } else if (buttonId == "RadioButtonQuestion") {
         container.appendChild(createInputs("RadioButtonQuestion", "Which one is your favourite character?", "Hermione", "Dumbledore"));
-    }else{
+    } else {
         container.appendChild(createInputs("ScaleQuestion", "How much do you like Harry Potter?", null, null))
     }
     return container;
@@ -172,7 +172,7 @@ function createInputs(inputType, questionTextInput, input1, input2) {
     let container = document.createElement("DIV");
     let questionText = createTextNode(questionTextInput, "P");
     container.appendChild(questionText);
-    if (inputType == "ScaleQuestion"){
+    if (inputType == "ScaleQuestion") {
         for (let i = 1; i <= 5; i++) {
             let radioButton = document.createElement("INPUT");
             radioButton.className += "check";
@@ -185,7 +185,7 @@ function createInputs(inputType, questionTextInput, input1, input2) {
             container.appendChild(radioButtonLabel);
             container.appendChild(radioButton);
         }
-    }else{
+    } else {
         for (i = 0; i < 2; i++) {
             let radioButton = document.createElement("INPUT");
             radioButton.className += "check";
@@ -196,10 +196,10 @@ function createInputs(inputType, questionTextInput, input1, input2) {
             radioButtonLabel.for = inputType + i;
             if (i === 0) {
                 radioButtonLabel.textContent = input1;
-                radioButton.checked=true;
+                radioButton.checked = true;
             } else {
-                if (inputType === "CheckBoxQuestion"){
-                    radioButton.checked =true;
+                if (inputType === "CheckBoxQuestion") {
+                    radioButton.checked = true;
                 }
                 radioButtonLabel.textContent = input2;
             }
@@ -277,18 +277,18 @@ function addEventlistenerToItem(input) {
     }
 }
 
-function validateEnablingSubmit(){
+function validateEnablingSubmit() {
     let answers = document.getElementById("input0");
-    if (answers !== null){
+    if (answers !== null) {
         console.log(answers.value);
     }
     let questionInput = document.getElementById("questiontext");
     console.log(questionInput.value);
 
-    if ((answers === null && questionInput.value !== "") ||(answers !== null &&
-        answers.value !== "" && questionInput.value !=="")) {
+    if ((answers === null && questionInput.value !== "") || (answers !== null &&
+        answers.value !== "" && questionInput.value !== "")) {
         document.getElementById("formsubmit").disabled = false;
-    }else{
+    } else {
         document.getElementById("formsubmit").disabled = true;
 
     }

@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Search Questions</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Search Questions</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
-<header th:replace="fragments/navbar.html :: navbar"> </header>
+<header th:replace="fragments/navbar.html :: navbar"></header>
 
-<div th:replace="fragments/messages.html :: error" ></div>
+<div th:replace="fragments/messages.html :: error"></div>
 <h1>Fill in your search terms</h1>
 
 <form th:action="@{|/answer-form/filter/search/${questionForm.id}/|}" method="post">
-    <tr th:each="question, itemStat : ${questionForm.questions}">
-        <h3 th:text="${question.questionText}"></h3>
-        <div>
-            <th:block th:switch="${question.getDiscriminatorValue()}">
+  <tr th:each="question, itemStat : ${questionForm.questions}">
+    <h3 th:text="${question.questionText}"></h3>
+    <div>
+      <th:block th:switch="${question.getDiscriminatorValue()}">
 
-                <div th:case="'CheckBoxQuestion'">
-                    <p>Answer possibilities</p>
-                    <select th:name="searchTerms[__${itemStat.index}__]">
-                        <option th:each="q : ${question.questionTextPossibilities}" selected=""
-                                th:value="${q.answerText}" th:text="${q.answerText}">
-                        </option>
-                        <option selected value="">Please Select</option>
-                    </select>
-                </div>
-
-                <div th:case="'RadioButtonQuestion'">
-                    <p>Answer possibilities</p>
-                    <select th:name="searchTerms[__${itemStat.index}__]">
-                        <option th:each="q : ${question.questionTextPossibilities}" selected=""
-                                th:value="${q.answerText}" th:text="${q.answerText}">
-                        </option>
-                        <option selected value="">Please Select</option>
-                    </select>
-                </div>
-
-                <div th:case="'ScaleQuestion'">
-                    <p th:text="${question.questionText}"></p>
-                    <input th:max="${question.scale}" min="1"
-                           th:name="searchTerms[__${itemStat.index}__]">
-                </div>
-
-                <div th:case="'TextQuestion'">
-                    <p th:text="${question.questionText}"></p>
-                    <input
-                           th:name="searchTerms[__${itemStat.index}__]">
-                </div>
-            </th:block>
+        <div th:case="'CheckBoxQuestion'">
+          <p>Answer possibilities</p>
+          <select th:name="searchTerms[__${itemStat.index}__]">
+            <option th:each="q : ${question.questionTextPossibilities}" selected=""
+                    th:value="${q.answerText}" th:text="${q.answerText}">
+            </option>
+            <option selected value="">Please Select</option>
+          </select>
         </div>
-    </tr>
-    </table>
-    <button type="submit">SUBMIT</button>
-    <button type="reset">RESET</button>
+
+        <div th:case="'RadioButtonQuestion'">
+          <p>Answer possibilities</p>
+          <select th:name="searchTerms[__${itemStat.index}__]">
+            <option th:each="q : ${question.questionTextPossibilities}" selected=""
+                    th:value="${q.answerText}" th:text="${q.answerText}">
+            </option>
+            <option selected value="">Please Select</option>
+          </select>
+        </div>
+
+        <div th:case="'ScaleQuestion'">
+          <p th:text="${question.questionText}"></p>
+          <input th:max="${question.scale}" min="1"
+                 th:name="searchTerms[__${itemStat.index}__]">
+        </div>
+
+        <div th:case="'TextQuestion'">
+          <p th:text="${question.questionText}"></p>
+          <input
+              th:name="searchTerms[__${itemStat.index}__]">
+        </div>
+      </th:block>
+    </div>
+  </tr>
+  </table>
+  <button type="submit">SUBMIT</button>
+  <button type="reset">RESET</button>
 </form>
 
 <script th:replace="fragments/scripts.html :: jquery"></script>

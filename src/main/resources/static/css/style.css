@@ -18,17 +18,15 @@ form, #subdivexample {
     border: thick solid #0000FF;
 }
 
-#subdivexample input:disabled ~ .check{
+#subdivexample input:disabled ~ .check {
     background-color: #2196F3;
 }
 
 
-
-
 #iconfas {
-    transform: scale(1.5,1);
+    transform: scale(1.5, 1);
 }
 
-.icon{
+.icon {
     font-size: 30px;
 }

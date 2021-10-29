@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Change User Roles</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <meta charset="UTF-8">
+  <title>Change User Roles</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
 </head>
 <body>
 
-<header th:insert="fragments/navbar.html :: navbar"> </header>
+<header th:insert="fragments/navbar.html :: navbar"></header>
 <div th:if="${allUsers} != null">
-    <table class="table table-hover">
-        <tr>
-            <th>Username</th>
-            <th>User roles</th>
-            <th>Active</th>
-            <th>Add Teacher Role</th>
-            <th>Add Admin Role</th>
-            <th>Remove Teacher Role</th>
-            <th>Remove Admin Role</th>
-            <th>Activate User</th>
-            <th>Deactivate User</th>
-            <th>Delete User</th>
+  <table class="table table-hover">
+    <tr>
+      <th>Username</th>
+      <th>User roles</th>
+      <th>Active</th>
+      <th>Add Teacher Role</th>
+      <th>Add Admin Role</th>
+      <th>Remove Teacher Role</th>
+      <th>Remove Admin Role</th>
+      <th>Activate User</th>
+      <th>Deactivate User</th>
+      <th>Delete User</th>
 
-        </tr>
-        <tr th:each="user:${allUsers}" th:object="${user}">
-            <td th:text="*{username}"> </td>
-            <td th:text="*{roles}"> </td>
-            <td th:text="*{active}"> </td>
-            <td> <a type="button" th:href="@{|/admin/add-user-role/teacher/*{id}|}">TO TEACHER</a></td>
-            <td> <a type="button" th:href="@{|/admin/add-user-role/admin/*{id}|}">TO ADMIN</a></td>
-            <td> <a type="button" th:href="@{|/admin/remove-user-role/teacher/*{id}|}">REMOVE TEACHER</a></td>
-            <td> <a type="button" th:href="@{|/admin/remove-user-role/admin/*{id}|}">REMOVE ADMIN</a></td>
-            <td> <a type="button" th:href="@{|/admin/activate-user/*{id}|}">Activate User</a></td>
-            <td> <a type="button" th:href="@{|/admin/deactivate-user/*{id}|}">Deactivate User</a></td>
-            <td> <a type="button" th:href="@{|/admin/delete-user/*{id}|}">Delete User</a></td>
-        </tr>
-    </table>
+    </tr>
+    <tr th:each="user:${allUsers}" th:object="${user}">
+      <td th:text="*{username}"></td>
+      <td th:text="*{roles}"></td>
+      <td th:text="*{active}"></td>
+      <td><a type="button" th:href="@{|/admin/add-user-role/teacher/*{id}|}">TO TEACHER</a></td>
+      <td><a type="button" th:href="@{|/admin/add-user-role/admin/*{id}|}">TO ADMIN</a></td>
+      <td><a type="button" th:href="@{|/admin/remove-user-role/teacher/*{id}|}">REMOVE TEACHER</a></td>
+      <td><a type="button" th:href="@{|/admin/remove-user-role/admin/*{id}|}">REMOVE ADMIN</a></td>
+      <td><a type="button" th:href="@{|/admin/activate-user/*{id}|}">Activate User</a></td>
+      <td><a type="button" th:href="@{|/admin/deactivate-user/*{id}|}">Deactivate User</a></td>
+      <td><a type="button" th:href="@{|/admin/delete-user/*{id}|}">Delete User</a></td>
+    </tr>
+  </table>
 </div>
 <div th:if="${error} != null">
-    <h2 th:text="${error}"></h2>
+  <h2 th:text="${error}"></h2>
 </div>
 
 

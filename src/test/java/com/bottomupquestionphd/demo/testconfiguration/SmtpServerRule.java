@@ -10,7 +10,7 @@ import javax.mail.internet.MimeMessage;
 public class SmtpServerRule extends ExternalResource {
 
   private GreenMail smtpServer;
-  private int port;
+  private final int port;
 
   public SmtpServerRule(int port) {
     this.port = port;

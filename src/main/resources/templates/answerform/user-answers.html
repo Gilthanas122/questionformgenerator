@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Search Results</title>
-    <link th:replace="fragments/navbar.html :: bootstrap-link">
-    <link th:replace="fragments/navbar.html :: css">
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <link th:replace="fragments/navbar.html :: bootstrap-link">
+  <link th:replace="fragments/navbar.html :: css">
 </head>
 <body>
 <header th:replace="fragments/navbar.html :: navbar"></header>
 
 <div th:replace="fragments/messages.html :: error"></div>
 <table class="table table-hover">
-    <thead>
-    <tr>
+  <thead>
+  <tr>
         <span th:each="questionTextAndTypes: ${displayAnswersFromAnAnswerFormDTO.questionTextsAndTypes}">
             <td th:text="${questionTextAndTypes}"></td>
         </span>
-    </tr>
-    </thead>
-    <tbody>
-    <th:block th:each="answer: ${displayAnswersFromAnAnswerFormDTO.answers}">
-        <tr>
+  </tr>
+  </thead>
+  <tbody>
+  <th:block th:each="answer: ${displayAnswersFromAnAnswerFormDTO.answers}">
+    <tr>
             <span th:each="answerText : ${answer}">
                 <td th:text="${answerText}"></td>
             </span>
-        </tr>
-    </th:block>
-    </tbody>
+    </tr>
+  </th:block>
+  </tbody>
 </table>
 <script th:replace="fragments/scripts.html :: jquery"></script>
 <script th:replace="fragments/scripts.html :: cloudflare"></script>

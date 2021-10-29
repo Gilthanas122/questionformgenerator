@@ -58,7 +58,6 @@ public class QuestionFormController {
     return "app-user/landing-page";
   }
 
-  //RE-TESt
   @GetMapping("update/{id}")
   public String modifyQuestionForm(@PathVariable long id, Model model) {
     log.info("GET question-form/update" + id + " started");
@@ -82,7 +81,6 @@ public class QuestionFormController {
     return "questionform/list";
   }
 
-  //RE-TESt
   @PostMapping("update")
   public String updateQuestionForm(@ModelAttribute QuestionFormCreateDTO questionForm, Model model) {
     log.info("POST question-form/create started");

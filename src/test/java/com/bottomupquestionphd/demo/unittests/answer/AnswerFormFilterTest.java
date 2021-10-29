@@ -8,9 +8,9 @@ import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormHasN
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
-import com.bottomupquestionphd.demo.services.answerformfilter.AnswerFormFilterService;
-import com.bottomupquestionphd.demo.services.answerformfilter.AnswerFormFilterServiceImpl;
-import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
+import com.bottomupquestionphd.demo.services.answers.answerformfilter.AnswerFormFilterService;
+import com.bottomupquestionphd.demo.services.answers.answerformfilter.AnswerFormFilterServiceImpl;
+import com.bottomupquestionphd.demo.services.answers.answerforms.AnswerFormService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.namedparameterservice.QueryService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;

@@ -5,7 +5,7 @@ import com.bottomupquestionphd.demo.domains.dtos.appuser.AppUsersQuestionFormsDT
 import com.bottomupquestionphd.demo.domains.dtos.questionform.QuestionFormNotFilledOutByUserDTO;
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
-import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
+import com.bottomupquestionphd.demo.services.answers.answerforms.AnswerFormService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserContentService;
 import com.bottomupquestionphd.demo.services.appuser.AppUserContentServiceImpl;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;

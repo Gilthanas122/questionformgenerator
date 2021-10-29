@@ -19,7 +19,7 @@ import com.bottomupquestionphd.demo.services.questions.QuestionConversionService
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import com.bottomupquestionphd.demo.services.questions.QuestionService;
 import com.bottomupquestionphd.demo.services.questions.QuestionServiceImpl;
-import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
+import com.bottomupquestionphd.demo.services.questions.questiontextpossibilities.QuestionTextPossibilityService;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.hibernate.TypeMismatchException;
 import org.junit.Assert;

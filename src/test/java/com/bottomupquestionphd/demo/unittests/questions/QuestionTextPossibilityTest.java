@@ -2,8 +2,8 @@ package com.bottomupquestionphd.demo.unittests.questions;
 
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionTextPossibility;
 import com.bottomupquestionphd.demo.repositories.QuestionTextPossibilityRepository;
-import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
-import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityServiceImpl;
+import com.bottomupquestionphd.demo.services.questions.questiontextpossibilities.QuestionTextPossibilityService;
+import com.bottomupquestionphd.demo.services.questions.questiontextpossibilities.QuestionTextPossibilityServiceImpl;
 import com.bottomupquestionphd.demo.testconfiguration.TestConfigurationBeanFactory;
 import org.junit.Assert;
 import org.junit.Before;

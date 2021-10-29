@@ -15,7 +15,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserExcept
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerRepository;
-import com.bottomupquestionphd.demo.services.actualanswertexts.ActualAnswerTextService;
+import com.bottomupquestionphd.demo.services.answers.actualanswertexts.ActualAnswerTextService;
 import com.bottomupquestionphd.demo.services.answers.AnswerService;
 import com.bottomupquestionphd.demo.services.answers.AnswerServiceImpl;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;

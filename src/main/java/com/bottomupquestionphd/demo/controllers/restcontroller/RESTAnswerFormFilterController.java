@@ -9,7 +9,7 @@ import com.bottomupquestionphd.demo.exceptions.answerformfilter.QuestionFormHasN
 import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
-import com.bottomupquestionphd.demo.services.answerformfilter.AnswerFormFilterService;
+import com.bottomupquestionphd.demo.services.answers.answerformfilter.AnswerFormFilterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

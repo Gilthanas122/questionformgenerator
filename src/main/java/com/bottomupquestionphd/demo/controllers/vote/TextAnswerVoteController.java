@@ -8,7 +8,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserExcept
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.exceptions.textanswervote.NoActualAnswerTextsToVoteForException;
-import com.bottomupquestionphd.demo.services.textanswervotes.TextAnswerVoteService;
+import com.bottomupquestionphd.demo.services.answers.textanswervotes.TextAnswerVoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

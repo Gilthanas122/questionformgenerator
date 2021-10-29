@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.answerformfilter;
+package com.bottomupquestionphd.demo.services.answers.answerformfilter;
 
 import com.bottomupquestionphd.demo.domains.daos.questionform.QuestionForm;
 import com.bottomupquestionphd.demo.domains.dtos.answerformfilter.AnswerSearchTermResultDTO;

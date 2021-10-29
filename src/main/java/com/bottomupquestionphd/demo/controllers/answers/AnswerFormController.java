@@ -9,7 +9,7 @@ import com.bottomupquestionphd.demo.exceptions.appuser.BelongToAnotherUserExcept
 import com.bottomupquestionphd.demo.exceptions.appuser.NoSuchUserByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.MissingUserException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
-import com.bottomupquestionphd.demo.services.answerforms.AnswerFormService;
+import com.bottomupquestionphd.demo.services.answers.answerforms.AnswerFormService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

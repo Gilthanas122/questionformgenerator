@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.questiontextpossibilities;
+package com.bottomupquestionphd.demo.services.questions.questiontextpossibilities;
 
 import com.bottomupquestionphd.demo.domains.daos.questions.QuestionTextPossibility;
 import com.bottomupquestionphd.demo.exceptions.MissingParamsException;

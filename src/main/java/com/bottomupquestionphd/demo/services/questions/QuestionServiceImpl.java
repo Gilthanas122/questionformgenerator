@@ -12,7 +12,7 @@ import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFound
 import com.bottomupquestionphd.demo.repositories.QuestionRepository;
 import com.bottomupquestionphd.demo.services.appuser.AppUserService;
 import com.bottomupquestionphd.demo.services.deleteservice.DeleteService;
-import com.bottomupquestionphd.demo.services.questiontextpossibilities.QuestionTextPossibilityService;
+import com.bottomupquestionphd.demo.services.questions.questiontextpossibilities.QuestionTextPossibilityService;
 import com.bottomupquestionphd.demo.services.validations.ErrorServiceImpl;
 import org.hibernate.TypeMismatchException;
 import org.springframework.stereotype.Service;

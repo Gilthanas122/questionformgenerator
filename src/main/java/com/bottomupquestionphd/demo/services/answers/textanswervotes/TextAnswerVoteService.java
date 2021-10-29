@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.textanswervotes;
+package com.bottomupquestionphd.demo.services.answers.textanswervotes;
 
 import com.bottomupquestionphd.demo.domains.dtos.textanswervote.ReceiveTextAnswerVotesDTO;
 import com.bottomupquestionphd.demo.domains.dtos.textanswervote.TextAnswerVoteForVotingDTO;

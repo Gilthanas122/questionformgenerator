@@ -10,7 +10,7 @@ import com.bottomupquestionphd.demo.exceptions.MissingParamsException;
 import com.bottomupquestionphd.demo.exceptions.answer.AnswerNotFoundByIdException;
 import com.bottomupquestionphd.demo.exceptions.questionform.QuestionFormNotFoundException;
 import com.bottomupquestionphd.demo.repositories.AnswerRepository;
-import com.bottomupquestionphd.demo.services.actualanswertexts.ActualAnswerTextService;
+import com.bottomupquestionphd.demo.services.answers.actualanswertexts.ActualAnswerTextService;
 import com.bottomupquestionphd.demo.services.questions.QuestionFormService;
 import org.springframework.stereotype.Service;
 

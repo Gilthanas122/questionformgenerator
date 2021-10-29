@@ -1,4 +1,4 @@
-package com.bottomupquestionphd.demo.services.actualanswertexts;
+package com.bottomupquestionphd.demo.services.answers.actualanswertexts;
 
 import com.bottomupquestionphd.demo.domains.daos.answers.ActualAnswerText;
 import com.bottomupquestionphd.demo.domains.daos.answers.Answer;
